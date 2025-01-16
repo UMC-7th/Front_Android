@@ -1,6 +1,6 @@
 ---
-name: Feature request
-about: 기능 추가 이슈 템플릿
+name: Issue request
+about: "기능, UI, 버그, 문서 개선 및 추가 요청을 위한 템플릿입니다 \U0001F680"
 title: ''
 labels: ''
 assignees: ''
@@ -12,7 +12,9 @@ assignees: ''
 ## 어떤 기능인가요?
 
 > 추가하려는 기능에 대해 간결하게 설명해주세요
-## Progress 🏃‍♀️
+
+## Progress 
+
 - [ ] TODO
 - [ ] TODO
 - [ ] TODO
