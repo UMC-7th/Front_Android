@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Spacing -->
+    <dimen name="spacing_4">4dp</dimen>
+    <dimen name="spacing_8">8dp</dimen>
+    <dimen name="spacing_12">12dp</dimen>
+    <dimen name="spacing_16">16dp</dimen>
+    <dimen name="spacing_20">20dp</dimen>
+    <dimen name="spacing_24">24dp</dimen>
+    <dimen name="spacing_32">32dp</dimen>
+    <dimen name="spacing_48">48dp</dimen>
+    <dimen name="spacing_64">64dp</dimen>
+
+    <!-- Grid System -->
+    <dimen name="grid_column_count">6</dimen>  <!-- 6 컬럼 시스템 -->
+    <dimen name="grid_gutter">12dp</dimen>     <!-- 컬럼 간격 -->
+    <dimen name="grid_margin">16dp</dimen>     <!-- 좌우 마진 -->
+
+    <!-- 8 Grid System -->
+    <dimen name="grid_8_column_count">8</dimen>  <!-- 8 컬럼 시스템 -->
+    <dimen name="grid_8_gutter">12dp</dimen>     <!-- 8 그리드 컬럼 간격 -->
+    <dimen name="grid_8_margin">16dp</dimen>     <!-- 8 그리드 마진 -->
+
+    <!-- Shadow/Elevation -->
+    <dimen name="elevation_1">2dp</dimen>
+    <dimen name="elevation_2">4dp</dimen>
+    <dimen name="elevation_3">8dp</dimen>
+    <dimen name="elevation_4">16dp</dimen>
+
+    <!-- Rounding -->
+    <dimen name="radius_box">10dp</dimen>
+    <dimen name="radius_button">40dp</dimen>
+
+</resources>

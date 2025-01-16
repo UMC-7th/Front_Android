@@ -1,0 +1,13 @@
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <gradient
+        android:angle="0"
+        android:startColor="@color/Gradient_Start"
+        android:endColor="@color/Gradient_End"/>
+
+    <!--    android:angle="0"-->
+    <!-- angle 0 으로 맞추면 가로 90 은 세로-->
+
+    <!-- 원하는 곳에 android:background="@drawable/gradient_background" 로 넣어주기-->
+
+</shape>
