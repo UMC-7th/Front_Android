@@ -11,11 +11,11 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.example.umc.R
-import com.example.umc.databinding.SigninEmailBinding
+import com.example.umc.databinding.FragmentSigninEmailBinding
 
 class SigninEmailFragment : Fragment() {
 
-    private var _binding: SigninEmailBinding? = null
+    private var _binding: FragmentSigninEmailBinding? = null
     private val binding get() = _binding!!
 
     override fun onCreateView(
@@ -23,7 +23,7 @@ class SigninEmailFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = SigninEmailBinding.inflate(inflater, container, false)
+        _binding = FragmentSigninEmailBinding.inflate(inflater, container, false)
 
         // TextView 밑줄 추가
         binding.select1.paintFlags = binding.select1.paintFlags or Paint.UNDERLINE_TEXT_FLAG

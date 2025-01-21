@@ -10,11 +10,11 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import com.example.umc.R
-import com.example.umc.databinding.SigninPhoneBinding
+import com.example.umc.databinding.FragmentSigninPhoneBinding
 
 class SigninPhoneFragment : Fragment() {
 
-    private lateinit var binding: SigninPhoneBinding  // ViewBinding 객체
+    private lateinit var binding: FragmentSigninPhoneBinding  // ViewBinding 객체
     private var isPhoneNumberValid = false
     private var isCodeValid = false
     private var timer: CountDownTimer? = null
@@ -24,7 +24,7 @@ class SigninPhoneFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = SigninPhoneBinding.inflate(inflater, container, false)
+        binding = FragmentSigninPhoneBinding.inflate(inflater, container, false)
 
         // 전화번호 입력 형식 검사
         binding.editText.addTextChangedListener(object : TextWatcher {

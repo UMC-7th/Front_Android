@@ -11,7 +11,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import com.example.umc.R
-import com.example.umc.databinding.SigninInfoBinding
+import com.example.umc.databinding.FragmentSigninInfoBinding
 import java.util.regex.Pattern
 
 // 1) clickevent 시 활성화 (background가 아니라 밑줄이되어야함)
@@ -19,13 +19,13 @@ import java.util.regex.Pattern
 
 class SigninInfoFragment : Fragment() {
 
-    private var _binding: SigninInfoBinding? = null
+    private var _binding: FragmentSigninInfoBinding? = null
     private val binding get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
-        _binding = SigninInfoBinding.inflate(inflater, container, false)
+        _binding = FragmentSigninInfoBinding.inflate(inflater, container, false)
 
         // EditText 선택 시 색상 변경
         setupEditTextFocus()

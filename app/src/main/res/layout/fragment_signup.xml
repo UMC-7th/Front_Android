@@ -84,18 +84,6 @@
         app:layout_constraintStart_toStartOf="@+id/naverButton"
         app:layout_constraintTop_toTopOf="@+id/naverButton" />
 
-    <ImageButton
-        android:id="@+id/imageButton4"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:elevation="3dp"
-        android:layout_marginTop="17dp"
-        android:layout_marginLeft="70dp"
-        android:padding="0dp"
-        android:src="@drawable/ic_google"
-        app:layout_constraintStart_toStartOf="@+id/googleButton"
-        app:layout_constraintTop_toTopOf="@+id/googleButton" />
-        <!--구글 SVG 새로 받아서 추가 할 것-->
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/emialButton"
