@@ -1,21 +1,57 @@
-package com.example.umc.Main
+package com.example.umc
 
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import com.example.umc.R
-import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.example.umc.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
-    private lateinit var bottomNavigationView: BottomNavigationView
+    private val binding: ActivityMainBinding by lazy {
+        ActivityMainBinding.inflate(layoutInflater)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main) // 먼저 레이아웃을 설정
+        setContentView(binding.root)
 
-        bottomNavigationView = findViewById(R.id.bottom_navigation_view) // 이제 뷰를 찾을 수 있습니다
         enableEdgeToEdge()
+        setBottomNavigationView()
 
+        // 앱 초기 실행 시 홈화면으로 설정
+        if (savedInstanceState == null) {
+            binding.bottomNavigationView.selectedItemId = R.id.fragment_home
+        }
+    }
 
+    private fun setBottomNavigationView() {
+        binding.bottomNavigationView.setOnItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.fragment_home -> {
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.main_container, HomeContainerFragment())
+                        .commit()
+                    true
+                }
+                R.id.fragment_price -> {
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.main_container, PriceFragment())
+                        .commit()
+                    true
+                }
+                R.id.fragment_sub -> {
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.main_container, SubFragment())
+                        .commit()
+                    true
+                }
+                R.id.fragment_my -> {
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.main_container, MyFragment())
+                        .commit()
+                    true
+                }
+                else -> false
+            }
+        }
     }
 }

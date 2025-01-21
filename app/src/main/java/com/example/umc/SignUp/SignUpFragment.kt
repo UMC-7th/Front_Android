@@ -15,7 +15,7 @@ class SignUpFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.signup, container, false)
+        val view = inflater.inflate(R.layout.fragment_signup, container, false)
 
         // emailButton 클릭 시 Fragment 전환
         // 1.emailbutton -> signupemailfragment
@@ -26,6 +26,7 @@ class SignUpFragment : Fragment() {
             transaction.replace(R.id.fragmentContainer, SigninEmailFragment())
             transaction.addToBackStack(null) // 뒤로 가기 지원
             transaction.commit()
+
         }
 
         return view

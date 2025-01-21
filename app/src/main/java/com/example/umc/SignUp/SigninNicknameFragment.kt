@@ -8,11 +8,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.example.umc.R
-import com.example.umc.databinding.SigninNicknameBinding
+import com.example.umc.databinding.FragmentSigninNicknameBinding
 
 class SigninNicknameFragment : Fragment() {
 
-    private var _binding: SigninNicknameBinding? = null
+    private var _binding: FragmentSigninNicknameBinding? = null
     private val binding get() = _binding!!
 
     override fun onCreateView(
@@ -20,7 +20,7 @@ class SigninNicknameFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = SigninNicknameBinding.inflate(inflater, container, false)
+        _binding = FragmentSigninNicknameBinding.inflate(inflater, container, false)
         val view = binding.root
 
         // EditText 선택 시 밑줄 색상 변경

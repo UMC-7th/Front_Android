@@ -64,4 +64,21 @@
         <item>12</item>
         <!-- 더 많은 일 추가 -->
     </string-array>
+
+
+    <!--Bottom Navigation-->
+    <string name="home_title">식단</string>
+    <string name="price_title">시세</string>
+    <string name="sub_title">구독</string>
+    <string name="my_title">마이</string>
+
+    <!--Home Fragment-->
+    <string name="today">오늘</string>
+    <string name="month">월간</string>
+    <string name="serve">%s님, 안녕하세요!</string>
+    <string name="greeting">활기찬 아침 되세요!</string>
+    <string name="breakfast">아침</string>
+    <string name="lunch">점심</string>
+    <string name="dinner">저녁</string>
+
 </resources>
