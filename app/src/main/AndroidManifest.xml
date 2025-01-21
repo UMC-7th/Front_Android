@@ -33,6 +33,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+<!--        &lt;!&ndash; DietActivity 등록 &ndash;&gt;-->
+<!--        <activity android:name=".DietActivity" />-->
+<!--        <activity android:name=".PriceActivity" />-->
+<!--        <activity android:name=".SubscribeActivity" />-->
+<!--        <activity android:name=".MyActivity" />-->
     </application>
 
 </manifest>

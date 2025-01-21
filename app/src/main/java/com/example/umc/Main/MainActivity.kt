@@ -1,6 +1,8 @@
 package com.example.umc
 
+import android.content.Intent
 import android.os.Bundle
+import android.widget.Button
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import com.example.umc.databinding.ActivityMainBinding
@@ -22,6 +24,15 @@ class MainActivity : AppCompatActivity() {
             binding.bottomNavigationView.selectedItemId = R.id.fragment_home
         }
     }
+
+//    // 시작 버튼 클릭 이벤트 설정
+//    val startButton = findViewById<Button>(R.id.startButton)
+//    startButton.setOnClickListener {
+//        val intent = Intent(this, DietActivity::class.java)
+//        startActivity(intent) //DietActivity로 이동
+//    }
+//}
+
 
     private fun setBottomNavigationView() {
         binding.bottomNavigationView.setOnItemSelectedListener { item ->
