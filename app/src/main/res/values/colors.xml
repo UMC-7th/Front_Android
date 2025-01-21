@@ -37,4 +37,9 @@
     <color name="Gradient_Start">#FF7300</color>">
     <color name="Gradient_End">#FDA756</color>">
 
+    <!-- 경고문구 색상-->
+    <color name="Invalid">#EB5757</color>
+    <color name="Valid">#3070F8</color>
+
+
 </resources>
