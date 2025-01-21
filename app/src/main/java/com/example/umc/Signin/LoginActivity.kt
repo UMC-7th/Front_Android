@@ -10,18 +10,18 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.commit
 import com.example.umc.R
 import com.example.umc.SignUp.SignUpFragment
-import com.example.umc.databinding.SigninBinding
+import com.example.umc.databinding.FragmentSigninBinding
 
 class LoginActivity : AppCompatActivity() {
 
-    private lateinit var binding: SigninBinding
+    private lateinit var binding: FragmentSigninBinding
     private var isPasswordVisible = false // 비밀번호 표시 상태
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         // ViewBinding 설정
-        binding = SigninBinding.inflate(layoutInflater)
+        binding = FragmentSigninBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         setupUI()
@@ -97,11 +97,11 @@ class LoginActivity : AppCompatActivity() {
         if (isPasswordVisible) {
             // 비밀번호 숨기기
             binding.passwordLoginEditText.transformationMethod = PasswordTransformationMethod.getInstance()
-            binding.signinvisible.setImageResource(R.drawable.signin_visible) // 숨기기 아이콘 설정
+            binding.signinvisible.setImageResource(R.drawable.ic_eye_visible) // 숨기기 아이콘 설정
         } else {
             // 비밀번호 표시
             binding.passwordLoginEditText.transformationMethod = HideReturnsTransformationMethod.getInstance()
-            binding.signinvisible.setImageResource(R.drawable.sigin_invisible) // 보이기 아이콘 설정
+            binding.signinvisible.setImageResource(R.drawable.ic_eye_visible) // 보이기 아이콘 설정
         }
         isPasswordVisible = !isPasswordVisible
         binding.passwordLoginEditText.text?.let { binding.passwordLoginEditText.setSelection(it.length) } // 커서를 끝으로 이동

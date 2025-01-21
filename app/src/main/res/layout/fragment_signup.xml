@@ -141,19 +141,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/kakaoButton" />
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/googleButton"
-        android:layout_width="326dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="10dp"
-        android:backgroundTint="@color/Gray9"
-        android:text="구글로 시작하기"
-        android:textColor="@color/Gray3"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/naverButton" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
