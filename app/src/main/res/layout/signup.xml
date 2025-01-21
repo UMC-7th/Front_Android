@@ -15,7 +15,7 @@
         android:layout_height="24dp"
         android:layout_marginStart="204dp"
         android:layout_marginTop="100dp"
-        android:src="@drawable/union2"
+        android:src="@drawable/ic_union2_login"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="1.0" />
@@ -55,7 +55,7 @@
         android:layout_marginTop="17dp"
         android:elevation="3dp"
         android:padding="0dp"
-        android:src="@drawable/email"
+        android:src="@drawable/ic_email"
         app:layout_constraintStart_toStartOf="@+id/emialButton"
         app:layout_constraintTop_toTopOf="@+id/emialButton" />
 
@@ -67,7 +67,7 @@
         android:layout_marginLeft="70dp"
         android:elevation="3dp"
         android:padding="0dp"
-        android:src="@drawable/kakao"
+        android:src="@drawable/ic_kakao"
         app:layout_constraintStart_toStartOf="@+id/kakaoButton"
         app:layout_constraintTop_toTopOf="@+id/kakaoButton" />
 
@@ -80,7 +80,7 @@
         android:layout_marginTop="17dp"
         android:elevation="3dp"
         android:padding="0dp"
-        android:src="@drawable/naver"
+        android:src="@drawable/ic_naver"
         app:layout_constraintStart_toStartOf="@+id/naverButton"
         app:layout_constraintTop_toTopOf="@+id/naverButton" />
 
@@ -92,10 +92,10 @@
         android:layout_marginTop="17dp"
         android:layout_marginLeft="70dp"
         android:padding="0dp"
-        android:src="@drawable/google"
+        android:src="@drawable/ic_google"
         app:layout_constraintStart_toStartOf="@+id/googleButton"
         app:layout_constraintTop_toTopOf="@+id/googleButton" />
-
+        <!--구글 SVG 새로 받아서 추가 할 것-->
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/emialButton"

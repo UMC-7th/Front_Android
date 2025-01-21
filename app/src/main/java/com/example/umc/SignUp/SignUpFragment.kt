@@ -26,6 +26,7 @@ class SignUpFragment : Fragment() {
             transaction.replace(R.id.fragmentContainer, SigninEmailFragment())
             transaction.addToBackStack(null) // 뒤로 가기 지원
             transaction.commit()
+
         }
 
         return view

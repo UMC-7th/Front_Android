@@ -1,31 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    >
-
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/home"
-        android:icon="@drawable/realspoon"
-        android:title="식단"
-        />
-
+        android:id="@+id/fragment_home"
+        android:title="@string/home_title"
+        android:icon="@drawable/ic_home"
+        android:enabled="true" />
     <item
-        android:id="@+id/somelse"
-        android:icon="@drawable/realvector"
-        android:title="시세"
-        />
-
+        android:id="@+id/fragment_price"
+        android:title="@string/price_title"
+        android:icon="@drawable/ic_price"
+        android:enabled="true" />
     <item
-        android:id="@+id/search"
-        android:icon="@drawable/real_card"
-        android:title="구독"
-        />
-
+        android:id="@+id/fragment_sub"
+        android:title="@string/sub_title"
+        android:icon="@drawable/ic_sub"
+        android:enabled="true" />
     <item
-        android:id="@+id/stack"
-        android:icon="@drawable/real_smile"
-        android:title="마이"
-        />
-
-
+        android:id="@+id/fragment_my"
+        android:title="@string/my_title"
+        android:icon="@drawable/ic_my"
+        android:enabled="true" />
 </menu>

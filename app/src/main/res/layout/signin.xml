@@ -27,7 +27,7 @@
             android:layout_height="24dp"
             android:layout_marginStart="202dp"
             android:layout_marginTop="100dp"
-            android:src="@drawable/union2"
+            android:src="@drawable/ic_union2_login"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -161,7 +161,6 @@
             android:layout_height="1.5dp"
             android:layout_marginTop="50dp"
             android:background="@color/Gray5"
-            android:text="  "
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/loginButton2" />
@@ -183,20 +182,20 @@
                 android:id="@+id/kakaologin"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:src="@drawable/kakako_44" />
+                android:src="@drawable/img_kakao_btn" />
 
             <ImageView
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:layout_marginStart="10dp"
-                android:src="@drawable/naver_44" />
+                android:src="@drawable/img_naver_btn" />
 
 
             <ImageView
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:layout_marginStart="10dp"
-                android:src="@drawable/google44" />
+                android:src="@drawable/img_google_btn" />
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 

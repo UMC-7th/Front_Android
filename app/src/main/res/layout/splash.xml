@@ -12,7 +12,7 @@
         android:layout_height="144dp"
         android:layout_marginStart="288dp"
         android:layout_marginTop="64dp"
-        android:src="@drawable/hat"
+        android:src="@drawable/img_hat3"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -21,7 +21,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
-        android:src="@drawable/sp_ic1"
+        android:src="@drawable/ic_plus"
         app:layout_constraintBottom_toTopOf="@+id/imageView2"
         app:layout_constraintStart_toStartOf="parent" />
 
@@ -30,7 +30,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="80dp"
         android:layout_marginTop="272dp"
-        android:src="@drawable/sp_ic2"
+        android:src="@drawable/ic_octagon"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -39,8 +39,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="112dp"
         android:layout_marginEnd="48dp"
-        android:elevation="@dimen/elevation_1"
-        android:src="@drawable/sp_ic3"
+        android:src="@drawable/ic_square"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView3" />
 
@@ -48,7 +47,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="240dp"
-        android:src="@drawable/sp_ic4"
+        android:src="@drawable/ic_ellipse"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView3" />
 
@@ -57,7 +56,8 @@
         android:layout_height="24dp"
         android:layout_marginStart="205dp"
         android:layout_marginBottom="0dp"
-        android:src="@drawable/union"
+        android:src="@drawable/ic_union2_login"
+        app:tint="@color/white"
         app:layout_constraintBottom_toTopOf="@+id/textView"
         app:layout_constraintStart_toStartOf="parent" />
 
@@ -70,7 +70,6 @@
         android:text="이거먹자"
         android:textColor="@color/white"
         android:textSize="45dp"
-        android:elevation="@dimen/elevation_4"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.506"
@@ -97,7 +96,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="536dp"
-        android:src="@drawable/group1"
+        android:src="@drawable/img_hat2"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
