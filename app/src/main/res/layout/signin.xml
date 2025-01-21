@@ -112,6 +112,15 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
+        <ImageView
+            android:id="@+id/signinvisible"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:layout_marginRight="16dp"
+            android:src="@drawable/sign_visible"
+            app:layout_constraintEnd_toEndOf="@+id/passwordLoginInputLayout"
+            app:layout_constraintTop_toTopOf="@+id/passwordLoginInputLayout" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/loginButton2"
