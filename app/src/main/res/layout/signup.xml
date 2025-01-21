@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <!--이거 stroke 다 고쳐야 됨-->
+
+    <ImageView
+        android:id="@+id/minilogo"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginStart="204dp"
+        android:layout_marginTop="100dp"
+        android:src="@drawable/union2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="72dp"
+        android:text="나만의 AI 영양사"
+        android:textColor="@color/Primary_Orange1"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/emialButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/loginTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="120dp"
+        android:fontFamily="@font/jalnan_2"
+        android:text="이거먹자"
+        android:textColor="@color/Primary_Orange1"
+        android:textSize="30dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/imageButton1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="70dp"
+        android:layout_marginTop="17dp"
+        android:elevation="3dp"
+        android:padding="0dp"
+        android:src="@drawable/email"
+        app:layout_constraintStart_toStartOf="@+id/emialButton"
+        app:layout_constraintTop_toTopOf="@+id/emialButton" />
+
+    <ImageButton
+        android:id="@+id/imageButton2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="17dp"
+        android:layout_marginLeft="70dp"
+        android:elevation="3dp"
+        android:padding="0dp"
+        android:src="@drawable/kakao"
+        app:layout_constraintStart_toStartOf="@+id/kakaoButton"
+        app:layout_constraintTop_toTopOf="@+id/kakaoButton" />
+
+
+    <ImageButton
+        android:id="@+id/imageButton3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="70dp"
+        android:layout_marginTop="17dp"
+        android:elevation="3dp"
+        android:padding="0dp"
+        android:src="@drawable/naver"
+        app:layout_constraintStart_toStartOf="@+id/naverButton"
+        app:layout_constraintTop_toTopOf="@+id/naverButton" />
+
+    <ImageButton
+        android:id="@+id/imageButton4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:elevation="3dp"
+        android:layout_marginTop="17dp"
+        android:layout_marginLeft="70dp"
+        android:padding="0dp"
+        android:src="@drawable/google"
+        app:layout_constraintStart_toStartOf="@+id/googleButton"
+        app:layout_constraintTop_toTopOf="@+id/googleButton" />
+
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/emialButton"
+        android:layout_width="326dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="95dp"
+        android:backgroundTint="@color/Gray9"
+        android:text="이메일로 시작하기"
+        android:textColor="@color/Gray3"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.504"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/loginTitle" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/kakaoButton"
+        android:layout_width="326dp"
+        android:layout_marginTop="10dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:backgroundTint="@color/Gray9"
+        android:text="카카오로 시작하기"
+        android:textColor="@color/Gray3"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.495"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/emialButton" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/naverButton"
+        android:layout_width="326dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="10dp"
+        android:backgroundTint="@color/Gray9"
+        android:text="네이버로 시작하기"
+        android:textColor="@color/Gray3"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/kakaoButton" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/googleButton"
+        android:layout_width="326dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="10dp"
+        android:backgroundTint="@color/Gray9"
+        android:text="구글로 시작하기"
+        android:textColor="@color/Gray3"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/naverButton" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
