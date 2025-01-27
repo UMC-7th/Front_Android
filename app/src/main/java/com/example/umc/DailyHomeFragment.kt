@@ -5,16 +5,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentTransaction
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.umc.databinding.FragmentDailyHomeBinding
-import com.example.umc.databinding.FragmentHomeBinding
 
 class DailyHomeFragment : Fragment() {
     private var _binding: FragmentDailyHomeBinding? = null
     private val binding get() = _binding!!
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
+        inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentDailyHomeBinding.inflate(inflater, container, false)
@@ -27,11 +27,25 @@ class DailyHomeFragment : Fragment() {
     }
 
     private fun setupRecyclerView() {
-        // RecyclerView 설정
-        val adapter = MenuItemAdapter()
+        val adapter = MenuItemAdapter { item -> onMenuItemClicked(item) }
+        binding.rvMenuItems.layoutManager = LinearLayoutManager(context)
         binding.rvMenuItems.adapter = adapter
-        // 더미 데이터 설정
         adapter.submitList(getDummyMenuItems())
+    }
+
+    private fun onMenuItemClicked(item: MenuItem) {
+        // DietDetailFragment로 전환
+        val dietDetailFragment = DietDetailFragment()
+        val transaction: FragmentTransaction = parentFragmentManager.beginTransaction()
+        transaction.replace(R.id.main_container, dietDetailFragment)
+        transaction.addToBackStack(null)
+        transaction.commit()
+
+        // 상단바 보이게 + 바텀네비게이션 숨기기 (나중에 MainActivity로 다시 작업할 예정)
+        val mainActivity = activity as? MainActivity
+        val title = getString(R.string.breakfast) // 아침, 점심, 저녁인지 확인하는 코드는 나중에
+        mainActivity?.showTitle(title, true)
+        mainActivity?.hideBottomBar()
     }
 
     private fun getDummyMenuItems(): List<MenuItem> {
@@ -46,4 +60,3 @@ class DailyHomeFragment : Fragment() {
         _binding = null
     }
 }
-

@@ -72,7 +72,7 @@
     <string name="sub_title">구독</string>
     <string name="my_title">마이</string>
 
-    <!--Home Fragment-->
+    <!--Diet Fragment-->
     <string name="today">오늘</string>
     <string name="month">월간</string>
     <string name="serve">%s님, 안녕하세요!</string>
@@ -80,5 +80,29 @@
     <string name="breakfast">아침</string>
     <string name="lunch">점심</string>
     <string name="dinner">저녁</string>
+
+    <string name="diet_title">요리 제목</string>
+    <string name="diet_sub_title">해당 음식을 섭취했다면 체크 해주세요.</string>
+    <string name="diet_complete">식단 완료</string>
+    <string name="diet_price">예샹 가격:</string>
+    <string name="diet_price_contents">약 %d원</string>
+    <string name="diet_calories">열량:</string>
+    <string name="diet_calories_contents"> %d Kcal</string>
+    <string name="ingredients">식재료</string>
+    <string name="calories">칼로리</string>
+    <string name="diet_level">조리 난이도</string>
+    <string name="diet_ingredients">필요 식재료</string>
+    <string name="diet_recipe">레시피</string>
+
+    <!--Calendar -->
+    <string-array name="custom_weekdays">
+        <item>월</item>
+        <item>화</item>
+        <item>수</item>
+        <item>목</item>
+        <item>금</item>
+        <item>토</item>
+        <item>일</item>
+    </string-array>
 
 </resources>

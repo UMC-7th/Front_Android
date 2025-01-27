@@ -66,6 +66,12 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
+    // Material Calendar
+    implementation(libs.material.calendarview)
+
+    // Threetenabp
+    implementation(libs.threetenabp)
+
     // DataStore
     implementation(libs.androidx.datastore.preferences)
     implementation(libs.androidx.datastore.preferences.core)
@@ -87,9 +93,6 @@ dependencies {
 
     // ViewPager2
     implementation(libs.androidx.viewpager2)
-
-    // Coil
-    // implementation(libs.coil.compose)
 
     // navigation
     implementation(libs.bundles.navigation)
