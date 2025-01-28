@@ -3,8 +3,10 @@ package com.example.umc
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
+import android.view.View
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import com.example.umc.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
@@ -64,5 +66,46 @@ class MainActivity : AppCompatActivity() {
                 else -> false
             }
         }
+    }
+
+    private fun handleBackPressed() {
+        val currentFragment = supportFragmentManager.findFragmentById(R.id.main_container)
+
+        if (currentFragment is DietDetailFragment) {
+            hideBottomBar()
+            supportFragmentManager.popBackStack()
+        } else if (supportFragmentManager.backStackEntryCount > 0) {
+            supportFragmentManager.popBackStack()
+        } else {
+            finish()
+        }
+        hideTitle()
+        showBottomBar()
+    }
+
+    // Title을 설정
+    fun showTitle(title: String, isBackBtn: Boolean) {
+        binding.flTitle.visibility = View.VISIBLE
+        binding.tvTitle.text = title
+        if (isBackBtn) {
+            binding.ibtnBack.visibility = View.VISIBLE
+            binding.ibtnBack.setOnClickListener {
+                handleBackPressed()
+            }
+        } else {
+            binding.ibtnBack.visibility = View.GONE
+        }
+    }
+
+    private fun hideTitle() {
+        binding.flTitle.visibility = View.GONE
+    }
+
+    fun hideBottomBar() {
+        binding.bottomNavigationView.visibility = View.GONE
+    }
+
+    private fun showBottomBar() {
+        binding.bottomNavigationView.visibility = View.VISIBLE
     }
 }
