@@ -1,5 +1,6 @@
 package com.example.cart
 
+import Subscribecredit
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,6 +9,7 @@ import androidx.fragment.app.Fragment
 import com.example.umc.R
 import com.example.umc.databinding.FragmentSubscribeCartBinding
 
+@Suppress("UNREACHABLE_CODE")
 class SubscribeCart : Fragment() {
 
     private var _binding: FragmentSubscribeCartBinding? = null
@@ -23,10 +25,18 @@ class SubscribeCart : Fragment() {
     ): View {
         _binding = FragmentSubscribeCartBinding.inflate(inflater, container, false)
         return binding.root
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        binding.creditbutton.setOnClickListener {
+            val transaction = requireActivity().supportFragmentManager.beginTransaction()
+            transaction.replace(R.id.fragmentContainer, Subscribecredit())
+            transaction.addToBackStack(null) // 뒤로 가기 지원
+            transaction.commit()
+        }
 
         // 전체 선택 버튼 클릭 이벤트
         binding.imageView7.setOnClickListener {
