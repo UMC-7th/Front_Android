@@ -6,18 +6,25 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.text.method.HideReturnsTransformationMethod
 import android.text.method.PasswordTransformationMethod
+import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.commit
 import com.example.umc.Main.MainActivity
 import com.example.umc.R
 import com.example.umc.SignUp.SignUpFragment
+import com.example.umc.UserApi.LoginResponse
+import com.example.umc.UserApi.UserRepository
 import com.example.umc.databinding.FragmentSigninBinding
+import retrofit2.Call
+import retrofit2.Response
+
 
 class LoginActivity : AppCompatActivity() {
 
     private lateinit var binding: FragmentSigninBinding
     private var isPasswordVisible = false // 비밀번호 표시 상태
+    private val userRepository = UserRepository() // UserRepository 인스턴스 생성
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,15 +58,11 @@ class LoginActivity : AppCompatActivity() {
 
         // 로그인 버튼 클릭 리스너
         binding.loginButton.setOnClickListener {
-            val email = binding.emailLoginEditText.text.toString()
-            val password = binding.passwordLoginEditText.text.toString()
+            val email = binding.emailLoginEditText.text.toString().trim()
+            val password = binding.passwordLoginEditText.text.toString().trim()
 
             if (email.isNotEmpty() && password.isNotEmpty()) {
-                Toast.makeText(this, "로그인 성공: $email", Toast.LENGTH_SHORT).show()
-
-                val intent = Intent(this, MainActivity::class.java)
-                startActivity(intent)
-                finish() // LoginActivity 종료 (뒤로 가기 방지)
+                performLogin(email, password)
             } else {
                 Toast.makeText(this, "이메일과 비밀번호를 입력하세요.", Toast.LENGTH_SHORT).show()
             }
@@ -72,13 +75,10 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun updateLoginButtonState() {
-        val email = binding.emailLoginEditText.text.toString()
-        val password = binding.passwordLoginEditText.text.toString()
+        val email = binding.emailLoginEditText.text.toString().trim()
+        val password = binding.passwordLoginEditText.text.toString().trim()
 
-        // 이메일과 비밀번호가 입력되었는지 확인
         val isInputValid = email.isNotEmpty() && password.isNotEmpty()
-
-        // 로그인 버튼 색상 변경
         binding.loginButton.isEnabled = isInputValid
         binding.loginButton.setBackgroundColor(
             if (isInputValid) {
@@ -111,4 +111,30 @@ class LoginActivity : AppCompatActivity() {
         isPasswordVisible = !isPasswordVisible
         binding.passwordLoginEditText.text?.let { binding.passwordLoginEditText.setSelection(it.length) } // 커서를 끝으로 이동
     }
+    private fun performLogin(email: String, password: String) {
+        // 로그인 요청 보내기
+        userRepository.login(email, password).enqueue(object : retrofit2.Callback<LoginResponse> {
+            override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
+
+                Log.d("Login", "Response Code: ${response.code()}")
+                Log.d("Login", "Response Body: ${response.body()}")
+                Log.d("Login", "Error Body: ${response.errorBody()?.string()}")
+                if (response.isSuccessful) {
+                    Toast.makeText(this@LoginActivity, "로그인 성공!", Toast.LENGTH_SHORT).show()
+                    val intent = Intent(this@LoginActivity, MainActivity::class.java)
+                    startActivity(intent)
+                    finish() // LoginActivity 종료 (뒤로 가기 방지)
+                } else {
+                    Toast.makeText(this@LoginActivity, "로그인 실패: ${response.errorBody()?.string()}", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
+                Log.e("Login", "Network Error", t)
+                Toast.makeText(this@LoginActivity, "네트워크 오류: ${t.message}", Toast.LENGTH_SHORT).show()
+            }
+        })
+    }
+
+
 }
