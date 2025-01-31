@@ -9,7 +9,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import com.example.umc.R
+import com.example.umc.UserApi.SignUpViewModel
 import com.example.umc.databinding.FragmentSigninPhoneBinding
 
 class SigninPhoneFragment : Fragment() {
@@ -18,6 +20,7 @@ class SigninPhoneFragment : Fragment() {
     private var isPhoneNumberValid = false
     private var isCodeValid = false
     private var timer: CountDownTimer? = null
+    private val signUpViewModel: SignUpViewModel by activityViewModels() // ViewModel 초기화
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -58,6 +61,9 @@ class SigninPhoneFragment : Fragment() {
                 startTimer()
             } else if (isCodeValid) {
                 // 2단계: 인증확인 후 다음 Fragment로 이동
+
+                signUpViewModel.phoneNum = binding.editText.text.toString()
+
                 val transaction = requireActivity().supportFragmentManager.beginTransaction()
                 transaction.replace(R.id.fragmentContainer, SigninInfoFragment())
                 transaction.addToBackStack(null) // 뒤로 가기 지원
