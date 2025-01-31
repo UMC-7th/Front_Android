@@ -1,4 +1,4 @@
-package com.example.umc
+package com.example.umc.Quote
 
 import android.graphics.PorterDuff
 import android.os.Build
@@ -10,8 +10,8 @@ import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.umc.R
 import com.example.umc.databinding.FragmentFoodPriceBinding
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.XAxis

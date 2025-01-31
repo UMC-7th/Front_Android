@@ -1,4 +1,4 @@
-package com.example.umc
+package com.example.umc.Diet
 
 import android.os.Bundle
 import android.view.LayoutInflater

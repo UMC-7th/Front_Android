@@ -1,4 +1,4 @@
-package com.example.umc
+package com.example.umc.Quote
 
 import androidx.lifecycle.ViewModel
 import java.time.LocalDate

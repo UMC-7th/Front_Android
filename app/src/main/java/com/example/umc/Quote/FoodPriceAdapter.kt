@@ -1,4 +1,4 @@
-package com.example.umc
+package com.example.umc.Quote
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
