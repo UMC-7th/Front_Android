@@ -44,7 +44,7 @@ class PriceFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Fragment의 레이아웃을 인플레이트
-        return inflater.inflate(R.layout.fragment_price, container, false)
+        return inflater.inflate(R.layout.fragment_quote_sub, container, false)
     }
 
     // View가 생성된 후 호출

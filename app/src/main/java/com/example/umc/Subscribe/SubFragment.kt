@@ -44,7 +44,7 @@ class SubFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Fragment의 레이아웃을 인플레이트
-        return inflater.inflate(R.layout.fragment_sub, container, false)
+        return inflater.inflate(R.layout.fragment_subscribe_cart, container, false)
     }
 
     // View가 생성된 후 호출
