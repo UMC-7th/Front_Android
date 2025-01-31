@@ -18,7 +18,7 @@ import com.example.umc.UserApi.UserRepository
 import com.example.umc.databinding.FragmentSigninBinding
 import retrofit2.Call
 import retrofit2.Response
-
+//login 로직 처리
 
 class LoginActivity : AppCompatActivity() {
 

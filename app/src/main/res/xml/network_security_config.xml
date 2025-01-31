@@ -6,3 +6,5 @@
         </trust-anchors>
     </base-config>
 </network-security-config>
+
+<!-- base url 연결시 안정성 필요-->

@@ -4,7 +4,7 @@ package com.example.umc.UserApi
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.POST
-
+//엔드포인트 연결
 interface UserApi {
     @POST("api/v1/users/signup")
     fun signUp(@Body request: SignUpRequest): Call<SignUpResponse>

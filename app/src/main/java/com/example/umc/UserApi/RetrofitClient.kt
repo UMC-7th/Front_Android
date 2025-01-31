@@ -2,7 +2,7 @@ package com.example.umc.UserApi
 
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-
+// swagger 연결 http
 object RetrofitClient {
     private const val BASE_URL = "http://3.38.39.238:3000/"  // 여기에 API 서버 주소 입력
 
