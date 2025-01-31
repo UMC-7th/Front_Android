@@ -106,4 +106,7 @@ dependencies {
     // Network
     implementation(platform(libs.okhttp.bom))
     implementation(libs.bundles.retrofit)
+
+    // Mp android chart
+    implementation(libs.mpandroidchart)
 }

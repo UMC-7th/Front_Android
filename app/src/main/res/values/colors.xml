@@ -44,4 +44,7 @@
 
     <!-- 결제 색상-->
     <color name="nacer_pay">#03C75A</color>
+
+    <!-- 그래프 색상-->
+    <color name="Blue">#FF1F78B4</color>
 </resources>

@@ -7,10 +7,10 @@
 
     <FrameLayout
         android:id="@+id/fl_title"
-        android:visibility="gone"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/Primary_Orange1"
+        android:layout_height="120dp"
+        android:visibility="gone"
+        android:background="@drawable/bg_appbar"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -19,10 +19,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/transparent"
+            android:layout_gravity="center_horizontal"
             android:paddingTop="70dp"
             android:paddingBottom="20dp">
 
             <ImageButton
+                android:layout_marginTop="8dp"
                 android:id="@+id/ibtn_back"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -30,8 +32,8 @@
                 android:background="@color/transparent"
                 android:layout_marginStart="16dp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toTopOf="@id/tv_title"
+                app:layout_constraintBottom_toBottomOf="@id/tv_title"
                 app:tint="@color/white" />
 
             <TextView
@@ -39,7 +41,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="식단"
-                android:textSize="20sp"
+                android:textSize="22sp"
                 android:textStyle="bold"
                 android:textColor="@color/white"
                 app:layout_constraintStart_toStartOf="parent"
