@@ -9,14 +9,17 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import com.example.umc.R
 import com.example.umc.Signin.LoginActivity
+import com.example.umc.UserApi.SignUpViewModel
 import com.example.umc.databinding.FragmentSigninNicknameBinding
 
 class SigninNicknameFragment : Fragment() {
 
     private var _binding: FragmentSigninNicknameBinding? = null
     private val binding get() = _binding!!
+    private val signUpViewModel: SignUpViewModel by activityViewModels() // ViewModel 초기화
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -34,6 +37,7 @@ class SigninNicknameFragment : Fragment() {
 
         // NextButton 클릭 시 Fragment 전환  -> 일단 다시 login쪽으로 넘어가게했습니다.
         binding.NextButton.setOnClickListener {
+            signUpViewModel.name = binding.editText.text.toString()
             Toast.makeText(requireContext(), "회원가입에 성공하셨습니다", Toast.LENGTH_SHORT).show()
             val intent = Intent(requireContext(), LoginActivity::class.java)
             startActivity(intent)
