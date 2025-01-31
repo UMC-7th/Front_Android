@@ -1,4 +1,4 @@
-package com.example.umc.Subscribe
+package com.example.umc.Onboarding
 
 import android.content.Intent
 import android.graphics.Color
@@ -12,8 +12,6 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.example.umc.R
-import com.example.umc.Onboarding.MyActivity
-import com.example.umc.Onboarding.PriceActivity
 
 class SubscribeActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

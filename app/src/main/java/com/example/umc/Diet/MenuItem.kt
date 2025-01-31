@@ -1,4 +1,4 @@
-package com.example.umc
+package com.example.umc.Diet
 
 data class MenuItem(
     val imageUrl: String,

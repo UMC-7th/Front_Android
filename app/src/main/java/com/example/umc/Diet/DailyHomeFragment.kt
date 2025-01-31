@@ -7,9 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.umc.MainActivity
-import com.example.umc.MenuItem
-import com.example.umc.MenuItemAdapter
+import com.example.umc.Main.MainActivity
 import com.example.umc.R
 import com.example.umc.databinding.FragmentDailyHomeBinding
 

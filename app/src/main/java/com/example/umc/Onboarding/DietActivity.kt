@@ -1,4 +1,4 @@
-package com.example.umc.Diet
+package com.example.umc.Onboarding
 
 import android.content.Intent
 import android.graphics.Color
@@ -11,9 +11,8 @@ import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import com.example.umc.MainActivity
+import com.example.umc.Main.MainActivity
 import com.example.umc.R
-import com.example.umc.Onboarding.PriceActivity
 
 class DietActivity : AppCompatActivity() {
 
