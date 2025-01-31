@@ -47,7 +47,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="16dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="32dp"
         android:elevation="@dimen/spacing_4"
         android:fontFamily="@font/pretendard_bold"
         android:text="담긴 상품"
@@ -111,7 +111,7 @@
         android:layout_width="match_parent"
         android:layout_height="240dp"
         android:layout_marginLeft="@dimen/spacing_16"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="@dimen/spacing_16"
         android:layout_marginRight="@dimen/spacing_16"
         android:src="@drawable/sub_card"
         app:layout_constraintEnd_toEndOf="parent"
@@ -386,6 +386,7 @@
 
 
     <TextView
+        android:id="@+id/textView44"
         android:layout_width="match_parent"
         android:layout_height="8dp"
         android:layout_marginTop="@dimen/spacing_16"
@@ -394,6 +395,7 @@
         app:layout_constraintTop_toBottomOf="@+id/imageView6" />
 
     <TextView
+        android:id="@+id/textView45"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -403,19 +405,21 @@
         android:textSize="12dp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView44" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginRight="8dp"
         android:layout_marginBottom="244dp"
         android:text="총 결제금액"
-        android:layout_marginRight="8dp"
         android:textColor="@color/Gray4"
         android:textSize="20dp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/textView11" />
+        app:layout_constraintEnd_toStartOf="@+id/textView11"
+        app:layout_constraintTop_toBottomOf="@+id/textView44" />
 
 
     <TextView
@@ -429,7 +433,8 @@
         android:textSize="20dp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView44" />
 
 
     <com.google.android.material.button.MaterialButton
@@ -438,13 +443,14 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="24dp"
         android:layout_marginStart="32dp"
-        android:layout_marginBottom="92dp"
+        android:layout_marginBottom="82dp"
         android:backgroundTint="@color/Gray7"
         android:text="선택취소"
         android:textColor="@android:color/white"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView45" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/creditbutton"
@@ -456,5 +462,6 @@
         android:text="결제하기"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView11" />
 </androidx.constraintlayout.widget.ConstraintLayout>
