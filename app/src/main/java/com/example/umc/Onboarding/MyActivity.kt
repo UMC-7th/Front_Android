@@ -3,14 +3,22 @@ package com.example.umc.Onboarding
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
+import android.view.View
+import android.widget.Button
 import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.fragment.app.Fragment
 import com.example.umc.R
+import com.example.umc.SignUp.SignUpFragment
+import com.example.umc.Signin.LoginActivity
 
 class MyActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -24,10 +32,27 @@ class MyActivity : AppCompatActivity() {
         val textView3 = findViewById<TextView>(R.id.textView3)
         setDietTextColor(textView3)
 
-        //뒤로가기 버튼
+        // 뒤로 가기 버튼
         val backButton = findViewById<ImageButton>(R.id.backButton)
         backButton.setOnClickListener {
             val intent = Intent(this, SubscribeActivity::class.java)
+            startActivity(intent)
+        }
+
+        val startButton = findViewById<Button>(R.id.start)
+        startButton.setOnClickListener {
+            val intent = Intent(this, LoginActivity::class.java)
+            startActivity(intent)
+        }
+
+
+
+
+
+        // "logintext" 텍스트 클릭 시 LoginActivity로 이동
+        val loginText = findViewById<TextView>(R.id.logintext)
+        loginText.setOnClickListener {
+            val intent = Intent(this, LoginActivity::class.java)
             startActivity(intent)
         }
     }
@@ -57,10 +82,18 @@ class MyActivity : AppCompatActivity() {
         // "마이"에 색상 적용 (#FF7300)
         spannableString.setSpan(
             ForegroundColorSpan(Color.parseColor("#FF7300")),
-            5, 7, // "식단"의 인덱스 범위
+            5, 7, // "마이"의 인덱스 범위
             Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
         )
 
         textView.text = spannableString
+    }
+
+    // Fragment 교체 함수
+    private fun replaceFragment(fragment: Fragment) {
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.fragmentContainer, fragment) // fragmentContainer에 SignUpFragment 추가
+            .addToBackStack(null) // 뒤로 가기 가능하도록 백스택에 추가
+            .commit()
     }
 }
