@@ -1,5 +1,6 @@
 package com.example.umc.UserApi
 
+//회원가입 requset body
 data class SignUpRequest(
     val email: String,
     val password: String,

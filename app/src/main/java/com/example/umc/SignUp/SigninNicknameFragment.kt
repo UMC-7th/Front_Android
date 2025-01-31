@@ -14,7 +14,7 @@ import com.example.umc.R
 import com.example.umc.Signin.LoginActivity
 import com.example.umc.UserApi.SignUpViewModel
 import com.example.umc.databinding.FragmentSigninNicknameBinding
-
+// nickname 처리
 class SigninNicknameFragment : Fragment() {
 
     private var _binding: FragmentSigninNicknameBinding? = null

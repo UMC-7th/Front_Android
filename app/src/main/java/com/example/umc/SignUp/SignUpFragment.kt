@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import androidx.fragment.app.Fragment
 import com.example.umc.R
-
+// 이건 아직 안함
 class SignUpFragment : Fragment() {
 
     override fun onCreateView(

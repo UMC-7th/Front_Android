@@ -2,6 +2,7 @@ package com.example.umc.UserApi
 
 import androidx.lifecycle.ViewModel
 
+//requestbody+viewmodel을 통해 일괄관리
 class SignUpViewModel : ViewModel() {
     var email: String? = null
     var password: String? = null

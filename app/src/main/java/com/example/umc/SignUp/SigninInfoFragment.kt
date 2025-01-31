@@ -18,7 +18,7 @@ import java.util.regex.Pattern
 
 // 1) clickevent 시 활성화 (background가 아니라 밑줄이되어야함)
 // 2) spinner도 색상바꾸기
-
+// 개인 정보 email,password,date 입력
 class SigninInfoFragment : Fragment() {
 
     private var _binding: FragmentSigninInfoBinding? = null

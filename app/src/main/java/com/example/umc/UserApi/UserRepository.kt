@@ -18,7 +18,7 @@ class UserRepository {
                     callback(false, "서버 오류")
                 }
             }
-
+    //로그인 처리
             override fun onFailure(call: Call<SignUpResponse>, t: Throwable) {
                 callback(false, "네트워크 오류: ${t.message}")
             }

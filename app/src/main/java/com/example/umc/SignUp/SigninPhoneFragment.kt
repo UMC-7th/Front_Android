@@ -13,7 +13,7 @@ import androidx.fragment.app.activityViewModels
 import com.example.umc.R
 import com.example.umc.UserApi.SignUpViewModel
 import com.example.umc.databinding.FragmentSigninPhoneBinding
-
+// phonenum 처리
 class SigninPhoneFragment : Fragment() {
 
     private lateinit var binding: FragmentSigninPhoneBinding  // ViewBinding 객체
