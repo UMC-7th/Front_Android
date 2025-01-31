@@ -7,7 +7,7 @@ import com.example.umc.Onboarding.DietActivity // DietActivity 패키지 확인
 import com.example.umc.Signin.LoginActivity
 import com.example.umc.databinding.ActivityOnboardingmainBinding
 
-class OnboardingMain : AppCompatActivity() {
+class OnboardingMainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityOnboardingmainBinding
 

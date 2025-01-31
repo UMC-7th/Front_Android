@@ -1,6 +1,7 @@
 package com.example.umc.Onboarding
 
 import android.content.Intent
+import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Bundle
 import android.text.Spannable
@@ -12,6 +13,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.example.umc.R
+import com.example.umcproject.SubscribeActivity
 
 class PriceActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -25,10 +27,12 @@ class PriceActivity : AppCompatActivity() {
         val textView3 = findViewById<TextView>(R.id.textView3)
         setDietTextColor(textView3)
 
-        //다음 버튼 클릭 이벤트
+        // 다음 버튼
         val nextButton = findViewById<Button>(R.id.nextButton)
         nextButton.setOnClickListener {
-            // SubscribeActivity로 이동
+            // 버튼 색상을 진회색(#9A9A9A)으로 변경
+            nextButton.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#9A9A9A")))
+
             val intent = Intent(this, SubscribeActivity::class.java)
             startActivity(intent)
         }
