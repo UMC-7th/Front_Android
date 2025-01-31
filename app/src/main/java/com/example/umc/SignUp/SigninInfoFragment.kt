@@ -10,7 +10,9 @@ import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
+import androidx.fragment.app.activityViewModels
 import com.example.umc.R
+import com.example.umc.UserApi.SignUpViewModel
 import com.example.umc.databinding.FragmentSigninInfoBinding
 import java.util.regex.Pattern
 
@@ -21,6 +23,8 @@ class SigninInfoFragment : Fragment() {
 
     private var _binding: FragmentSigninInfoBinding? = null
     private val binding get() = _binding!!
+    private val signUpViewModel: SignUpViewModel by activityViewModels() // ViewModel 초기화
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -45,6 +49,12 @@ class SigninInfoFragment : Fragment() {
         // 로그인 버튼 클릭 시 처리
         binding.NextButton.setOnClickListener {
             if (validateForm()) {
+
+                // ViewModel에 입력된 데이터 저장
+                signUpViewModel.email = binding.editText.text.toString()
+                signUpViewModel.password = binding.editText2.text.toString()
+                signUpViewModel.birth = "${binding.spinnerYear.selectedItem}-${binding.spinnerMonth.selectedItem}-${binding.spinnerDay.selectedItem}"
+
                 // 로그인 처리, Fragment 전환
                 val transaction: FragmentTransaction = requireActivity().supportFragmentManager.beginTransaction()
                 transaction.replace(R.id.fragmentContainer, SigninNicknameFragment())
