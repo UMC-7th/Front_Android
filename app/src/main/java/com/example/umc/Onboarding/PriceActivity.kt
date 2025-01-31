@@ -1,4 +1,4 @@
-package com.example.umcproject
+package com.example.umc.Onboarding
 
 import android.content.Intent
 import android.graphics.Color
@@ -11,7 +11,9 @@ import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import com.example.umc.Diet.DietActivity
 import com.example.umc.R
+import com.example.umc.Subscribe.SubscribeActivity
 
 class PriceActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

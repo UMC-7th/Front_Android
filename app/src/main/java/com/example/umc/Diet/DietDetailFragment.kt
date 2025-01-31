@@ -1,4 +1,4 @@
-package com.example.umc
+package com.example.umc.Diet
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,6 +8,8 @@ import android.widget.PopupWindow
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.umc.Nutrition
+import com.example.umc.R
 import com.example.umc.databinding.FragmentDietDetailBinding
 
 class DietDetailFragment : Fragment() {
@@ -78,7 +80,9 @@ class DietDetailFragment : Fragment() {
             binding.btLike.setColorFilter(ContextCompat.getColor(requireContext(), if (isLiked) R.color.Primary_Orange1 else R.color.Gray7))
             if (isLiked && isDisliked) {
                 isDisliked = false
-                binding.btDislike.setColorFilter(ContextCompat.getColor(requireContext(), R.color.Gray4))
+                binding.btDislike.setColorFilter(ContextCompat.getColor(requireContext(),
+                    R.color.Gray4
+                ))
             }
         }
         // 싫어요 버튼 설정
@@ -87,7 +91,9 @@ class DietDetailFragment : Fragment() {
             binding.btDislike.setColorFilter(ContextCompat.getColor(requireContext(), if (isDisliked) R.color.Primary_Orange1 else R.color.Gray7))
             if (isDisliked && isLiked) {
                 isLiked = false
-                binding.btLike.setColorFilter(ContextCompat.getColor(requireContext(), R.color.Gray7))
+                binding.btLike.setColorFilter(ContextCompat.getColor(requireContext(),
+                    R.color.Gray7
+                ))
             }
         }
 

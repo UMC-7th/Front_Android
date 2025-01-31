@@ -2,6 +2,10 @@
     <!-- Base application theme. -->
     <style name="Base.Theme.UMC" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
+        <!--상단 테마없애기(잠깐 없앰)-->
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowFullscreen">true</item>
+
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
     </style>
 

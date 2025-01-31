@@ -1,4 +1,4 @@
-package com.example.umc
+package com.example.umc.Diet
 
 import android.content.Context
 import android.os.Bundle
@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import com.example.umc.R
 import com.example.umc.databinding.FragmentMonthlyHomeBinding
 import com.prolificinteractive.materialcalendarview.CalendarDay
 import com.prolificinteractive.materialcalendarview.DayViewDecorator
