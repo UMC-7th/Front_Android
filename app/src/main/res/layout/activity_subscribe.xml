@@ -3,17 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#FFFFFF">
 
-    <ImageView
-        android:id="@+id/imageView8"
-        android:layout_width="33dp"
-        android:layout_height="33dp"
-        android:layout_marginStart="188dp"
-        android:layout_marginTop="82.19dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/subscribe" />
 
     <TextView
         android:id="@+id/textView3"
@@ -53,14 +45,25 @@
 
     <ImageButton
         android:id="@+id/backButton"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
-        android:layout_marginStart="36.5dp"
-        android:layout_marginTop="78.68dp"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="27.5dp"
+        android:layout_marginTop="76.68dp"
         android:background="@android:color/transparent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/back" />
+
+    <ImageView
+        android:id="@+id/subscribeImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/subscribeimage"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/nextButton"
+        android:layout_marginBottom="0dp"
+        android:contentDescription="구독이미지" />
 
     <Button
         android:id="@+id/nextButton"
@@ -69,6 +72,7 @@
         android:layout_marginTop="608.36dp"
         android:backgroundTint="#CDCDCD"
         android:text="다음"
+        android:textColor="#FFFFFF"
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
