@@ -109,4 +109,8 @@ dependencies {
 
     // Mp android chart
     implementation(libs.mpandroidchart)
+
+    // API + retrofit
+    implementation ("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation ("com.squareup.retrofit2:converter-gson:2.9.0") // JSON 변환 라이브러리 추가
 }
