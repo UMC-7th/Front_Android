@@ -1,5 +1,6 @@
 package com.example.umc.Signin
 
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -8,6 +9,7 @@ import android.text.method.PasswordTransformationMethod
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.commit
+import com.example.umc.Main.MainActivity
 import com.example.umc.R
 import com.example.umc.SignUp.SignUpFragment
 import com.example.umc.databinding.FragmentSigninBinding
@@ -54,7 +56,10 @@ class LoginActivity : AppCompatActivity() {
 
             if (email.isNotEmpty() && password.isNotEmpty()) {
                 Toast.makeText(this, "로그인 성공: $email", Toast.LENGTH_SHORT).show()
-                // 로그인 성공 후 동작 추가
+
+                val intent = Intent(this, MainActivity::class.java)
+                startActivity(intent)
+                finish() // LoginActivity 종료 (뒤로 가기 방지)
             } else {
                 Toast.makeText(this, "이메일과 비밀번호를 입력하세요.", Toast.LENGTH_SHORT).show()
             }

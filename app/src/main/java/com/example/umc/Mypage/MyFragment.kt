@@ -1,14 +1,14 @@
-package com.example.umc
+package com.example.umc.Mypage
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.example.umc.databinding.FragmentHomeBinding
+import com.example.umc.R
 
 
-class PriceFragment : Fragment() {
+class MyFragment : Fragment() {
 
     // Fragment 생성 시 초기화가 필요한 변수들
     private var param1: String? = null
@@ -20,7 +20,7 @@ class PriceFragment : Fragment() {
 
         @JvmStatic
         fun newInstance(param1: String, param2: String) =
-            PriceFragment().apply {
+            MyFragment().apply {
                 arguments = Bundle().apply {
                     putString(ARG_PARAM1, param1)
                     putString(ARG_PARAM2, param2)
@@ -44,7 +44,7 @@ class PriceFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Fragment의 레이아웃을 인플레이트
-        return inflater.inflate(R.layout.fragment_price, container, false)
+        return inflater.inflate(R.layout.fragment_my, container, false)
     }
 
     // View가 생성된 후 호출

@@ -1,4 +1,4 @@
-package com.example.umc
+package com.example.umc.Diet
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -7,7 +7,9 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.umc.databinding.ItemMenuBinding
 
-class MenuItemAdapter(private val itemClickListener: ((MenuItem) -> Unit)? = null) : ListAdapter<MenuItem, MenuItemAdapter.MenuViewHolder>(MenuDiffCallback()) {
+class MenuItemAdapter(private val itemClickListener: ((MenuItem) -> Unit)? = null) : ListAdapter<MenuItem, MenuItemAdapter.MenuViewHolder>(
+    MenuDiffCallback()
+) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MenuViewHolder {
         val binding = ItemMenuBinding.inflate(

@@ -1,4 +1,4 @@
-package com.example.umc
+package com.example.umc.Diet
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity

@@ -1,4 +1,4 @@
-package com.example.umcproject
+package com.example.umc.Onboarding
 
 import android.content.Intent
 import android.graphics.Color
@@ -13,30 +13,30 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.example.umc.R
 
-class PriceActivity : AppCompatActivity() {
+class SubscribeActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_price)
+        setContentView(R.layout.activity_subscribe)
 
         val dotsLayout = findViewById<LinearLayout>(R.id.dotsLayout)
-        updateDots(dotsLayout, 1) // 두 번째 점 활성화
+        updateDots(dotsLayout, 2) // 세 번째 점 활성화
 
-        // "이거먹자 시세" 텍스트뷰 색상 변경
+        // "이거먹자 구독" 텍스트뷰 색상 변경
         val textView3 = findViewById<TextView>(R.id.textView3)
         setDietTextColor(textView3)
 
-        //다음 버튼 클릭 이벤트
+        // 다음 버튼 클릭 이벤트 설정
         val nextButton = findViewById<Button>(R.id.nextButton)
         nextButton.setOnClickListener {
-            // SubscribeActivity로 이동
-            val intent = Intent(this, SubscribeActivity::class.java)
+            // MyActivity로 이동
+            val intent = Intent(this, MyActivity::class.java)
             startActivity(intent)
         }
 
         //뒤로가기 버튼
         val backButton = findViewById<ImageButton>(R.id.backButton)
         backButton.setOnClickListener {
-            val intent = Intent(this, DietActivity::class.java)
+            val intent = Intent(this, PriceActivity::class.java)
             startActivity(intent)
         }
     }
@@ -53,7 +53,7 @@ class PriceActivity : AppCompatActivity() {
     }
 
     private fun setDietTextColor(textView: TextView) {
-        val text = "이거먹자 시세"
+        val text = "이거먹자 구독"
         val spannableString = SpannableString(text)
 
         // "이거먹자"에 색상 적용 (#5C5C5C)
@@ -63,7 +63,7 @@ class PriceActivity : AppCompatActivity() {
             Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
         )
 
-        // "시세"에 색상 적용 (#FF7300)
+        // "구독"에 색상 적용 (#FF7300)
         spannableString.setSpan(
             ForegroundColorSpan(Color.parseColor("#FF7300")),
             5, 7, // "식단"의 인덱스 범위

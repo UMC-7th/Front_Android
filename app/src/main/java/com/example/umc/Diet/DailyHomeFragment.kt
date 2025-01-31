@@ -1,4 +1,4 @@
-package com.example.umc
+package com.example.umc.Diet
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,6 +7,8 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.umc.Main.MainActivity
+import com.example.umc.R
 import com.example.umc.databinding.FragmentDailyHomeBinding
 
 class DailyHomeFragment : Fragment() {
