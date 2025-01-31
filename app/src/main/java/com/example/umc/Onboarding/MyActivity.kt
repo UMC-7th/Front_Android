@@ -1,42 +1,58 @@
-package com.example.umcproject
+package com.example.umc.Onboarding
 
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
+import android.view.View
 import android.widget.Button
 import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.fragment.app.Fragment
 import com.example.umc.R
+import com.example.umc.SignUp.SignUpFragment
+import com.example.umc.Signin.LoginActivity
 
-class SubscribeActivity : AppCompatActivity() {
+class MyActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_subscribe)
+        setContentView(R.layout.activity_my)
 
         val dotsLayout = findViewById<LinearLayout>(R.id.dotsLayout)
-        updateDots(dotsLayout, 2) // 세 번째 점 활성화
+        updateDots(dotsLayout, 3) // 네 번째 점 활성화
 
-        // "이거먹자 구독" 텍스트뷰 색상 변경
+        // "이거먹자 마이" 텍스트뷰 색상 변경
         val textView3 = findViewById<TextView>(R.id.textView3)
         setDietTextColor(textView3)
 
-        // 다음 버튼 클릭 이벤트 설정
-        val nextButton = findViewById<Button>(R.id.nextButton)
-        nextButton.setOnClickListener {
-            // MyActivity로 이동
-            val intent = Intent(this, MyActivity::class.java)
+        // 뒤로 가기 버튼
+        val backButton = findViewById<ImageButton>(R.id.backButton)
+        backButton.setOnClickListener {
+            val intent = Intent(this, SubscribeActivity::class.java)
             startActivity(intent)
         }
 
-        //뒤로가기 버튼
-        val backButton = findViewById<ImageButton>(R.id.backButton)
-        backButton.setOnClickListener {
-            val intent = Intent(this, PriceActivity::class.java)
+        val startButton = findViewById<Button>(R.id.start)
+        startButton.setOnClickListener {
+            val intent = Intent(this, LoginActivity::class.java)
+            startActivity(intent)
+        }
+
+
+
+
+
+        // "logintext" 텍스트 클릭 시 LoginActivity로 이동
+        val loginText = findViewById<TextView>(R.id.logintext)
+        loginText.setOnClickListener {
+            val intent = Intent(this, LoginActivity::class.java)
             startActivity(intent)
         }
     }
@@ -53,7 +69,7 @@ class SubscribeActivity : AppCompatActivity() {
     }
 
     private fun setDietTextColor(textView: TextView) {
-        val text = "이거먹자 구독"
+        val text = "이거먹자 마이"
         val spannableString = SpannableString(text)
 
         // "이거먹자"에 색상 적용 (#5C5C5C)
@@ -63,13 +79,21 @@ class SubscribeActivity : AppCompatActivity() {
             Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
         )
 
-        // "구독"에 색상 적용 (#FF7300)
+        // "마이"에 색상 적용 (#FF7300)
         spannableString.setSpan(
             ForegroundColorSpan(Color.parseColor("#FF7300")),
-            5, 7, // "식단"의 인덱스 범위
+            5, 7, // "마이"의 인덱스 범위
             Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
         )
 
         textView.text = spannableString
+    }
+
+    // Fragment 교체 함수
+    private fun replaceFragment(fragment: Fragment) {
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.fragmentContainer, fragment) // fragmentContainer에 SignUpFragment 추가
+            .addToBackStack(null) // 뒤로 가기 가능하도록 백스택에 추가
+            .commit()
     }
 }

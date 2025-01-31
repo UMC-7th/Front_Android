@@ -1,8 +1,9 @@
-package com.example.umc
+package com.example.umc.Diet
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.example.umc.Nutrition
 import com.example.umc.databinding.ItemNutritionBinding
 
 class DietDetailAdapter(private val nutritionList: List<Nutrition>) :

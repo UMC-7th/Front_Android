@@ -26,7 +26,7 @@
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_marginStart="202dp"
-            android:layout_marginTop="100dp"
+            android:layout_marginTop="140dp"
             android:src="@drawable/ic_union2_login"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -200,11 +200,7 @@
                 android:src="@drawable/img_naver_btn" />
 
 
-            <ImageView
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_marginStart="10dp"
-                android:src="@drawable/img_google_btn" />
+
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 

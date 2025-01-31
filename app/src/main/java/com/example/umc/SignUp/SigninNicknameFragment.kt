@@ -1,13 +1,16 @@
 package com.example.umc.SignUp
 
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.example.umc.R
+import com.example.umc.Signin.LoginActivity
 import com.example.umc.databinding.FragmentSigninNicknameBinding
 
 class SigninNicknameFragment : Fragment() {
@@ -29,13 +32,14 @@ class SigninNicknameFragment : Fragment() {
         // 닉네임 입력값에 따라 버튼 활성화 및 색상 변경
         setupNicknameValidation()
 
-        // NextButton 클릭 시 Fragment 전환
+        // NextButton 클릭 시 Fragment 전환  -> 일단 다시 login쪽으로 넘어가게했습니다.
         binding.NextButton.setOnClickListener {
-            val transaction = requireActivity().supportFragmentManager.beginTransaction()
-            transaction.replace(R.id.fragmentContainer, SigninInfoFragment())
-            transaction.addToBackStack(null) // 뒤로 가기 지원
-            transaction.commit()
+            Toast.makeText(requireContext(), "회원가입에 성공하셨습니다", Toast.LENGTH_SHORT).show()
+            val intent = Intent(requireContext(), LoginActivity::class.java)
+            startActivity(intent)
+            requireActivity().finish() // 현재 Fragment가 포함된 Activity 종료 (필요에 따라 유지 가능)
         }
+
 
         return view
     }

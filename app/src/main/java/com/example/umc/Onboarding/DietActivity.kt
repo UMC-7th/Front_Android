@@ -1,4 +1,4 @@
-package com.example.umcproject
+package com.example.umc.Onboarding
 
 import android.content.Intent
 import android.graphics.Color
@@ -6,28 +6,39 @@ import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
+import android.widget.Button
 import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import com.example.umc.Main.MainActivity
 import com.example.umc.R
 
-class MyActivity : AppCompatActivity() {
+class DietActivity : AppCompatActivity() {
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_my)
+        setContentView(R.layout.activity_diet)
 
         val dotsLayout = findViewById<LinearLayout>(R.id.dotsLayout)
-        updateDots(dotsLayout, 3) // 네 번째 점 활성화
+        updateDots(dotsLayout, 0) // 첫 번째 점 활성화
 
-        // "이거먹자 마이" 텍스트뷰 색상 변경
+        // "이거먹자 식단" 텍스트뷰 색상 변경
         val textView3 = findViewById<TextView>(R.id.textView3)
         setDietTextColor(textView3)
+
+        //다음 버튼
+        val nextButton = findViewById<Button>(R.id.nextButton)
+        nextButton.setOnClickListener {
+            val intent = Intent(this, PriceActivity::class.java)
+            startActivity(intent)
+        }
 
         //뒤로가기 버튼
         val backButton = findViewById<ImageButton>(R.id.backButton)
         backButton.setOnClickListener {
-            val intent = Intent(this, SubscribeActivity::class.java)
+            val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
         }
     }
@@ -44,7 +55,7 @@ class MyActivity : AppCompatActivity() {
     }
 
     private fun setDietTextColor(textView: TextView) {
-        val text = "이거먹자 마이"
+        val text = "이거먹자 식단"
         val spannableString = SpannableString(text)
 
         // "이거먹자"에 색상 적용 (#5C5C5C)
@@ -54,7 +65,7 @@ class MyActivity : AppCompatActivity() {
             Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
         )
 
-        // "마이"에 색상 적용 (#FF7300)
+        // "식단"에 색상 적용 (#FF7300)
         spannableString.setSpan(
             ForegroundColorSpan(Color.parseColor("#FF7300")),
             5, 7, // "식단"의 인덱스 범위
