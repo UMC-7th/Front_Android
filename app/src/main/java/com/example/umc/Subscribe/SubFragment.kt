@@ -8,9 +8,10 @@ import androidx.fragment.app.Fragment
 import com.example.umc.R
 
 
-class SubFragment : Fragment() {
+// SubFragment.kt
 
-    // Fragment 생성 시 초기화가 필요한 변수들
+
+class SubFragment : Fragment() {
     private var param1: String? = null
     private var param2: String? = null
 
@@ -28,7 +29,6 @@ class SubFragment : Fragment() {
             }
     }
 
-    // Fragment가 생성될 때 호출
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -37,22 +37,24 @@ class SubFragment : Fragment() {
         }
     }
 
-    // Fragment의 UI를 그릴 때 호출
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Fragment의 레이아웃을 인플레이트
         return inflater.inflate(R.layout.fragment_subscribe_cart, container, false)
     }
 
-    // View가 생성된 후 호출
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        // View 초기화 및 이벤트 설정
         initializeViews()
         setupListeners()
+
+        // 구독관리 프래그먼트로 전환
+        parentFragmentManager.beginTransaction()
+            .replace(R.id.main_container, SubscriptionManageFragment())
+            .addToBackStack(null)
+            .commit()
     }
 
     private fun initializeViews() {
@@ -61,20 +63,5 @@ class SubFragment : Fragment() {
 
     private fun setupListeners() {
         // 이벤트 리스너 설정
-    }
-
-    // Fragment가 화면에 표시될 때 호출
-    override fun onResume() {
-        super.onResume()
-    }
-
-    // Fragment가 화면에서 사라질 때 호출
-    override fun onPause() {
-        super.onPause()
-    }
-
-    // Fragment가 제거될 때 호출
-    override fun onDestroy() {
-        super.onDestroy()
     }
 }

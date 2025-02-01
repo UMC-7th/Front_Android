@@ -101,7 +101,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun hideTitle() {
+    fun hideTitle() {
         binding.flTitle.visibility = View.GONE
     }
 
