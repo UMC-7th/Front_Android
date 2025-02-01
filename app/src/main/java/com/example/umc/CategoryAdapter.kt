@@ -11,7 +11,7 @@ import com.example.umc.databinding.ItemProductBinding
 // CategoryAdapter.kt
 class CategoryAdapter(
     private val categories: List<Category>,
-    private val onItemClick: (Category) -> Unit  // 클릭 이벤트 추가
+    private val onItemClick: (Category) -> Unit
 ) : RecyclerView.Adapter<CategoryAdapter.ViewHolder>() {
 
     inner class ViewHolder(private val binding: ItemCategoryBinding) :
@@ -20,8 +20,8 @@ class CategoryAdapter(
         fun bind(category: Category) {
             binding.apply {
                 categoryName.text = category.name
+                categoryIcon.setImageResource(category.iconResId)  // 이미지 설정 추가
 
-                // 카테고리 아이템 클릭 시 이벤트 실행
                 root.setOnClickListener {
                     onItemClick(category)
                 }
@@ -44,14 +44,13 @@ class CategoryAdapter(
 }
 
 
-// ProductAdapter.kt
 class ProductAdapter(private val products: List<Product>) :
     RecyclerView.Adapter<ProductAdapter.ViewHolder>() {
 
-    inner class ViewHolder(private val binding: ItemProductBinding) :
+    inner class ViewHolder(private val binding: ItemProductBinding) :  // ItemProductBinding으로 수정
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(product: Product) {
+        fun bind(product: Product) {  // Product로 수정
             binding.apply {
                 productName.text = product.name
                 productPrice.text = "${product.price}원/${product.unit}"

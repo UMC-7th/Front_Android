@@ -76,7 +76,7 @@ class PriceFragment : Fragment() {
         val categoryAdapter = CategoryAdapter(categories) { category ->
             if (category.id == 1) {  // "제철" 카테고리 클릭 시 Fragment 전환
                 val transaction = parentFragmentManager.beginTransaction()
-                transaction.replace(R.id.fragment_container, QuoteFragmentSub()) // 새로운 Fragment로 이동
+                transaction.replace(R.id.main_container, QuoteFragmentSub()) // 새로운 Fragment로 이동
                 transaction.addToBackStack(null)
                 transaction.commit()
             }
