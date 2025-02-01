@@ -69,6 +69,8 @@ dependencies {
     // Material Calendar
     implementation(libs.material.calendarview)
 
+    implementation("com.github.prolificinteractive:material-calendarview:2.0.1")
+
     // Threetenabp
     implementation(libs.threetenabp)
 
