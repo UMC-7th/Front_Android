@@ -1,16 +1,19 @@
-package com.example.umc.Quote
+package com.example.umc
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.example.umc.R
-
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.umc.databinding.FragmentPriceBinding
 
 class PriceFragment : Fragment() {
 
-    // Fragment 생성 시 초기화가 필요한 변수들
+    private var _binding: FragmentPriceBinding? = null
+    private val binding get() = _binding!!
+
     private var param1: String? = null
     private var param2: String? = null
 
@@ -28,7 +31,6 @@ class PriceFragment : Fragment() {
             }
     }
 
-    // Fragment가 생성될 때 호출
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -37,43 +39,89 @@ class PriceFragment : Fragment() {
         }
     }
 
-    // Fragment의 UI를 그릴 때 호출
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // Fragment의 레이아웃을 인플레이트
-        return inflater.inflate(R.layout.fragment_quote_sub, container, false)
+    ): View {
+        _binding = FragmentPriceBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
-    // View가 생성된 후 호출
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        // View 초기화 및 이벤트 설정
         initializeViews()
         setupListeners()
     }
 
     private fun initializeViews() {
-        // View 초기화 코드
+        setupCategoryRecyclerView()
+        setupBestRecyclerView()
+        setupHotRecyclerView()
+    }
+
+    private fun setupCategoryRecyclerView() {
+        val categories = listOf(
+            Category(1, "제철", R.drawable.ic_meta),
+            Category(2, "식량작물", R.drawable.ic_gluten),
+            Category(3, "특용작물", R.drawable.ic_mushroom),
+            Category(4, "과일류", R.drawable.ic_banana),
+            Category(5, "수산물", R.drawable.ic_crab),
+            Category(6, "축산물", R.drawable.ic_beef),
+            Category(7, "식품", R.drawable.ic_dobu),
+            Category(8, "즐겨찾기", R.drawable.ic_star)
+        )
+
+        val categoryAdapter = CategoryAdapter(categories)
+        binding.categoryRecyclerView.apply {
+            layoutManager = GridLayoutManager(context, 4)
+            adapter = categoryAdapter
+        }
+    }
+
+    private fun setupBestRecyclerView() {
+        val bestProducts = listOf(
+            Product(1, "공주시세", 31658, "kg", ""),
+            Product(2, "공주시세", 31658, "kg", "")
+        )
+
+        val bestAdapter = ProductAdapter(bestProducts)
+        binding.bestRecyclerView.apply {
+            layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+            adapter = bestAdapter
+        }
+    }
+
+    private fun setupHotRecyclerView() {
+        val hotProducts = listOf(
+            Product(1, "어묵류 김말이피", 0, "kg", ""),
+            Product(2, "급식재료 부세피", 0, "kg", "")
+        )
+
+        val hotAdapter = ProductAdapter(hotProducts)
+        binding.hotRecyclerView.apply {
+            layoutManager = LinearLayoutManager(context)
+            adapter = hotAdapter
+        }
     }
 
     private fun setupListeners() {
-        // 이벤트 리스너 설정
+        // 클릭 리스너 설정 등
     }
 
-    // Fragment가 화면에 표시될 때 호출
     override fun onResume() {
         super.onResume()
     }
 
-    // Fragment가 화면에서 사라질 때 호출
     override fun onPause() {
         super.onPause()
     }
 
-    // Fragment가 제거될 때 호출
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
     override fun onDestroy() {
         super.onDestroy()
     }

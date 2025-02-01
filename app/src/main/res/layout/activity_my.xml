@@ -58,13 +58,12 @@
         android:id="@+id/myImage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/myimage"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toTopOf="@id/join"
         android:layout_marginBottom="0dp"
         android:contentDescription="마이이미지" />
-
+<!--    android:src="@drawable/myimage"-->
     <Button
         android:id="@+id/join"
         android:layout_width="325.56dp"

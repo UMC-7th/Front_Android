@@ -57,13 +57,12 @@
         android:id="@+id/priceImage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/priceimage"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toTopOf="@id/nextButton"
         android:layout_marginBottom="0dp"
         android:contentDescription="시세이미지" />
-
+<!--    android:src="@drawable/priceimage"-->
     <Button
         android:id="@+id/nextButton"
         android:layout_width="325.56dp"
