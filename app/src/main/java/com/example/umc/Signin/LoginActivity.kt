@@ -106,7 +106,7 @@ class LoginActivity : AppCompatActivity() {
         } else {
             // 비밀번호 표시
             binding.passwordLoginEditText.transformationMethod = HideReturnsTransformationMethod.getInstance()
-            binding.signinvisible.setImageResource(R.drawable.ic_eye_visible) // 보이기 아이콘 설정
+            binding.signinvisible.setImageResource(R.drawable.ic_eye_invisible) // 보이기 아이콘 설정
         }
         isPasswordVisible = !isPasswordVisible
         binding.passwordLoginEditText.text?.let { binding.passwordLoginEditText.setSelection(it.length) } // 커서를 끝으로 이동
