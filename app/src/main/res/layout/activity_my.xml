@@ -62,6 +62,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toTopOf="@id/join"
         android:layout_marginBottom="0dp"
+        android:src="@drawable/myimage"
         android:contentDescription="마이이미지" />
 <!--    android:src="@drawable/myimage"-->
     <Button

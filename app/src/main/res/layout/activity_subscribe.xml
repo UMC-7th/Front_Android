@@ -62,6 +62,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toTopOf="@id/nextButton"
         android:layout_marginBottom="0dp"
+        android:src="@drawable/subscribeimage"
         android:contentDescription="구독이미지" />
 <!--    android:src="@drawable/subscribeimage"-->
     <Button
