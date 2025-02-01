@@ -8,6 +8,7 @@ import android.widget.ImageButton
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.umc.R
 
 class AddAddressActivity : AppCompatActivity() {
     private lateinit var adapter: AddressAdapter
