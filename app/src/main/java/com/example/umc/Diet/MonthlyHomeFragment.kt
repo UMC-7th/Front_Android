@@ -59,7 +59,7 @@ class MonthlyHomeFragment : Fragment() {
                 val selectedDateDecorator = SelectedDateDecorator(requireContext(), date)
                 binding.calendarView.addDecorator(selectedDateDecorator)
 
-                val month = date.month + 1 // CalendarDay의 month는 0부터 시작하므로 1을 더합니다.
+                val month = date.month
                 val day = date.day
                 val title = String.format("%d월 %d일 식단", month, day)
 
