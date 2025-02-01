@@ -13,6 +13,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.example.umc.R
+import com.example.umc.Signin.LoginActivity
 
 
 class MyActivity : AppCompatActivity() {
@@ -42,6 +43,13 @@ class MyActivity : AppCompatActivity() {
 
             val intent = Intent(this, OnboardingMainActivity::class.java) // 일딘 onboardingMainactivity로 설정해놨습니다.
             startActivity(intent)
+        }
+
+        val loginButton = findViewById<Button>(R.id.loginButton)
+        loginButton.setOnClickListener{
+            val intent = Intent(this, LoginActivity::class.java) // 일딘 onboardingMainactivity로 설정해놨습니다.
+            startActivity(intent)
+
         }
     }
 
