@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.umc.Quote.QuoteFragmentSub
 import com.example.umc.databinding.FragmentPriceBinding
 
 class PriceFragment : Fragment() {
@@ -72,12 +73,21 @@ class PriceFragment : Fragment() {
             Category(8, "즐겨찾기", R.drawable.ic_star)
         )
 
-        val categoryAdapter = CategoryAdapter(categories)
+        val categoryAdapter = CategoryAdapter(categories) { category ->
+            if (category.id == 1) {  // "제철" 카테고리 클릭 시 Fragment 전환
+                val transaction = parentFragmentManager.beginTransaction()
+                transaction.replace(R.id.fragment_container, QuoteFragmentSub()) // 새로운 Fragment로 이동
+                transaction.addToBackStack(null)
+                transaction.commit()
+            }
+        }
+
         binding.categoryRecyclerView.apply {
             layoutManager = GridLayoutManager(context, 4)
             adapter = categoryAdapter
         }
     }
+
 
     private fun setupBestRecyclerView() {
         val bestProducts = listOf(
@@ -106,6 +116,7 @@ class PriceFragment : Fragment() {
     }
 
     private fun setupListeners() {
+
         // 클릭 리스너 설정 등
     }
 

@@ -9,16 +9,22 @@ import com.example.umc.databinding.ItemProductBinding
 
 
 // CategoryAdapter.kt
-class CategoryAdapter(private val categories: List<Category>) :
-    RecyclerView.Adapter<CategoryAdapter.ViewHolder>() {
+class CategoryAdapter(
+    private val categories: List<Category>,
+    private val onItemClick: (Category) -> Unit  // 클릭 이벤트 추가
+) : RecyclerView.Adapter<CategoryAdapter.ViewHolder>() {
 
     inner class ViewHolder(private val binding: ItemCategoryBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(category: Category) {
             binding.apply {
-                //categoryIcon.setImageResource(category.iconResId)
                 categoryName.text = category.name
+
+                // 카테고리 아이템 클릭 시 이벤트 실행
+                root.setOnClickListener {
+                    onItemClick(category)
+                }
             }
         }
     }
@@ -36,6 +42,7 @@ class CategoryAdapter(private val categories: List<Category>) :
 
     override fun getItemCount() = categories.size
 }
+
 
 // ProductAdapter.kt
 class ProductAdapter(private val products: List<Product>) :
