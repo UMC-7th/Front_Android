@@ -1,4 +1,4 @@
-package com.example.umc
+package com.example.umc.model
 
 data class Nutrition(
     val name: String,

@@ -7,8 +7,12 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.umc.Main.MainActivity
+import com.example.umc.Quote.FoodPriceFragment
 import com.example.umc.Quote.QuoteFragmentSub
 import com.example.umc.databinding.FragmentPriceBinding
+import com.example.umc.model.Category
+import com.example.umc.model.Product
 
 class PriceFragment : Fragment() {
 
@@ -91,11 +95,31 @@ class PriceFragment : Fragment() {
 
     private fun setupBestRecyclerView() {
         val bestProducts = listOf(
-            Product(1, "공주시세", 31658, "kg", ""),
-            Product(2, "공주시세", 31658, "kg", "")
+            Product(1, "공식 시세", 31658, "kg", ""),
+            Product(2, "공식 시세", 32658, "kg", "")
         )
+        val bestAdapter = ProductAdapter(bestProducts) { product ->
+            val mainActivity = activity as? MainActivity
+            mainActivity?.showTitle(product.name, true) // 제목 보이게
+            mainActivity?.hideBottomBar() // 하단 네비게이션 바 숨기기
 
-        val bestAdapter = ProductAdapter(bestProducts)
+            // Create the FoodPriceFragment and pass the selected product data as arguments
+            val foodPriceFragment = FoodPriceFragment()
+            val bundle = Bundle().apply {
+                putString("food_name", product.name)
+                putString("food_price", product.price.toString())
+                putString("price_unit", product.unit)  // or any other additional data
+                putString("price_percent", "") // Example, change as needed
+            }
+            foodPriceFragment.arguments = bundle
+
+            // Replace the current fragment with FoodPriceFragment
+            val transaction = parentFragmentManager.beginTransaction()
+            transaction.replace(R.id.main_container, foodPriceFragment)
+            transaction.addToBackStack(null)
+            transaction.commit()
+        }
+
         binding.bestRecyclerView.apply {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
             adapter = bestAdapter
@@ -108,9 +132,30 @@ class PriceFragment : Fragment() {
             Product(2, "급식재료 부세피", 0, "kg", "")
         )
 
-        val hotAdapter = ProductAdapter(hotProducts)
+        val hotAdapter = ProductAdapter(hotProducts) { product ->
+            val mainActivity = activity as? MainActivity
+            mainActivity?.showTitle(product.name, true) // 제목 보이게
+            mainActivity?.hideBottomBar() // 하단 네비게이션 바 숨기기
+
+            // Create the FoodPriceFragment and pass the selected product data as arguments
+            val foodPriceFragment = FoodPriceFragment()
+            val bundle = Bundle().apply {
+                putString("food_name", product.name)
+                putString("food_price", product.price.toString())
+                putString("price_unit", product.unit)  // or any other additional data
+                putString("price_percent", "") // Example, change as needed
+            }
+            foodPriceFragment.arguments = bundle
+
+            // Replace the current fragment with FoodPriceFragment
+            val transaction = parentFragmentManager.beginTransaction()
+            transaction.replace(R.id.main_container, foodPriceFragment)
+            transaction.addToBackStack(null)
+            transaction.commit()
+        }
+
         binding.hotRecyclerView.apply {
-            layoutManager = LinearLayoutManager(context)
+            layoutManager = LinearLayoutManager(context,  LinearLayoutManager.HORIZONTAL, false)
             adapter = hotAdapter
         }
     }

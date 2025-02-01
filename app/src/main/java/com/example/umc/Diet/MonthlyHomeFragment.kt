@@ -8,6 +8,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentTransaction
+import com.example.umc.Main.MainActivity
 import com.example.umc.R
 import com.example.umc.databinding.FragmentMonthlyHomeBinding
 import com.prolificinteractive.materialcalendarview.CalendarDay
@@ -17,13 +19,10 @@ import com.prolificinteractive.materialcalendarview.DayViewFacade
 class MonthlyHomeFragment : Fragment() {
     private var _binding: FragmentMonthlyHomeBinding? = null
     private val binding get() = _binding!!
-
-    // 서버에서 받은 이벤트 날짜
-    private var eventDates: List<CalendarDay> = listOf()
+    private var selectedDate: CalendarDay? = null // 선택된 날짜를 저장할 변수
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
+        inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentMonthlyHomeBinding.inflate(inflater, container, false)
@@ -32,79 +31,74 @@ class MonthlyHomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        loadEventDatesFromServer()
-
         setupCalendar()
     }
 
-    private fun loadEventDatesFromServer() {
-        // 식단 만든 날짜 더미데이터
-        val serverResponseDates = listOf("2025-01-20", "2025-01-30", "2025-02-10")
-
-        // date가 어떤 형식으로 오는지 아직 몰라서 일단 이렇게 설정
-        eventDates = serverResponseDates.map {
-            val parts = it.split("-")
-            CalendarDay.from(parts[0].toInt(), parts[1].toInt(), parts[2].toInt())
-        }
-    }
-
     private fun setupCalendar() {
-        // eventDates를 EventDecorator 및 SelectedMonthDecorator에 전달
-        val selectedMonth = CalendarDay.today().month // 현재 보고 있는 달
-        val eventDecorator = EventDecorator(requireContext(), eventDates, selectedMonth)
-        val selectedMonthDecorator = SelectedMonthDecorator(requireContext(), selectedMonth, eventDates)
+        val selectedMonth = CalendarDay.today().month
 
-        binding.calendarView.addDecorators(eventDecorator, selectedMonthDecorator)
+        val selectedMonthDecorator = SelectedMonthDecorator(requireContext(), selectedMonth)
+        binding.calendarView.addDecorator(selectedMonthDecorator)
 
         // 상단 날짜 커스텀
         binding.calendarView.setTitleFormatter { day ->
             "${day.month}월"
         }
 
+        // 월이 바뀔 때 기존 데코레이터 제거하고 새로 추가
         binding.calendarView.setOnMonthChangedListener { _, date ->
-            // 월이 바뀌면 날짜들을 새롭게 추가하되, 기존 decorator는 지워진 상태
             binding.calendarView.removeDecorators()
-
-            // 새로운 달에 대한 데코레이터 적용
-            val eventDecorator = EventDecorator(requireContext(), eventDates, date.month)
-            val selectedMonthDecorator = SelectedMonthDecorator(requireContext(), date.month, eventDates)
-
-            binding.calendarView.addDecorators(eventDecorator, selectedMonthDecorator)
-        }
-    }
-
-    // 이벤트 데코레이터
-    private class EventDecorator(
-        private val context: Context,
-        private val dates: List<CalendarDay>,
-        private val selectedMonth: Int
-    ) : DayViewDecorator {
-
-        private val drawable = ContextCompat.getDrawable(context, R.drawable.ic_background)
-
-        override fun shouldDecorate(day: CalendarDay): Boolean {
-            // 날짜가 이벤트 날짜이고, 선택된 달에 해당할 때만 데코레이터 적용
-            return dates.contains(day) && day.month == selectedMonth
         }
 
-        override fun decorate(view: DayViewFacade) {
-            drawable?.let { view.setBackgroundDrawable(it) }
-            view.addSpan(ForegroundColorSpan(ContextCompat.getColor(context, R.color.white))) // 글씨 색 흰색
-            view.addSpan(android.text.style.StyleSpan(android.graphics.Typeface.BOLD)) // 볼드
+        // 날짜 클릭 이벤트 처리
+        binding.calendarView.setOnDateChangedListener { widget, date, selected ->
+            if (selected) {
+                selectedDate = date
+
+                // 선택한 날짜 데코레이터 추가
+                val selectedDateDecorator = SelectedDateDecorator(requireContext(), date)
+                binding.calendarView.addDecorator(selectedDateDecorator)
+
+                val month = date.month + 1 // CalendarDay의 month는 0부터 시작하므로 1을 더합니다.
+                val day = date.day
+                val title = String.format("%d월 %d일 식단", month, day)
+
+                requireActivity().runOnUiThread {
+                    val mainActivity = activity as? MainActivity
+                    mainActivity?.showTitle(title, true)
+                    mainActivity?.hideBottomBar()
+
+                    val dailyDietFragment = DailyDietFragment().apply {
+                        arguments = Bundle().apply {
+                            putInt("month", month) // month 값을 전달
+                            putInt("day", day)     // day 값을 전달
+                        }
+                    }
+
+                    val transaction: FragmentTransaction = parentFragmentManager.beginTransaction()
+                    transaction.replace(R.id.main_container, dailyDietFragment)
+                    transaction.addToBackStack(null)
+                    transaction.commit()
+
+                    parentFragmentManager.executePendingTransactions()
+
+                    // 프래그먼트 전환 후 선택한 날짜 데코레이터 제거
+                    parentFragmentManager.addOnBackStackChangedListener {
+                        binding.calendarView.removeDecorator(selectedDateDecorator)
+                    }
+                }
+            }
         }
     }
 
     // 선택된 월 데코레이터
     private class SelectedMonthDecorator(
         private val context: Context,
-        private val selectedMonth: Int,
-        private val eventDates: List<CalendarDay>
+        private val selectedMonth: Int
     ) : DayViewDecorator {
 
         override fun shouldDecorate(day: CalendarDay): Boolean {
-            // 선택된 달의 날짜이거나 이벤트 날짜가 아니면 데코레이터 적용
-            return day.month != selectedMonth
+            return day.month != selectedMonth // 선택된 달의 날짜가 아닌 경우 데코레이터 적용
         }
 
         override fun decorate(view: DayViewFacade) {
@@ -114,11 +108,17 @@ class MonthlyHomeFragment : Fragment() {
         }
     }
 
-    // 양 옆 화살표를 누를 때 색깔이 변하는 기능은 1월 30일 이후 처리할 예정
+    // 선택한 날짜 데코레이터
+    private class SelectedDateDecorator(private val context: Context, private val date: CalendarDay) :
+        DayViewDecorator {
 
-    private fun loadMenusForDate(date: String) {
-        // 해당 날짜의 메뉴 데이터를 로드하는 로직
-        // 메인 홈화면이 완성되면 그때 바꾸겠습니다.
+        override fun shouldDecorate(day: CalendarDay): Boolean {
+            return day == date // 선택한 날짜에만 데코레이터 적용
+        }
+
+        override fun decorate(view: DayViewFacade) {
+            view.setBackgroundDrawable(ContextCompat.getDrawable(context, R.drawable.ic_background)!!)
+        }
     }
 
     override fun onDestroyView() {

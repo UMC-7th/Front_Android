@@ -6,6 +6,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.umc.R
 import com.example.umc.databinding.ItemMenuBinding
 
@@ -23,9 +24,9 @@ class MenuItemAdapter(private val onClick: (MenuItem, Int) -> Unit) :
                 tvMenuCalories.text = menuItem.calories
 
                 // 이미지 로딩 (Glide 사용 시)
-                // Glide.with(ivMenuImage)
-                //     .load(menuItem.imageUrl)
-                //     .into(ivMenuImage)
+                Glide.with(ivMenuImage.context)
+                    .load(menuItem.imageUrl)
+                    .into(ivMenuImage)
 
                 // 선택 상태에 따른 테두리 설정
                 root.background = if (adapterPosition == selectedPosition) {

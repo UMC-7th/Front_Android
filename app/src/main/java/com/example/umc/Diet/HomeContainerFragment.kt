@@ -5,6 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentTransaction
+import com.example.umc.Diet.DietAddManualFragment
 import com.example.umc.R
 import com.example.umc.databinding.FragmentHomeContainerBinding
 import com.google.android.material.tabs.TabLayoutMediator
@@ -30,6 +32,14 @@ class HomeContainerFragment : Fragment() {
 
         // 사용자 이름 설정 (추후 데이터 연동)
         binding.tvServe.text = getString(R.string.serve).format("토미")
+
+        binding.btAddManual.setOnClickListener {
+            // Corrected the transaction to use an instance of DietAddConfirmFragment
+            val transaction: FragmentTransaction = parentFragmentManager.beginTransaction()
+            transaction.replace(R.id.main_container, DietAddManualFragment())
+            transaction.addToBackStack(null)
+            transaction.commit()
+        }
     }
 
     private fun setupViewPager() {

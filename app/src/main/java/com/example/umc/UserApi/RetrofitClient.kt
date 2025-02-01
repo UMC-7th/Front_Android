@@ -1,5 +1,6 @@
 package com.example.umc.UserApi
 
+import com.example.umc.model.service.MealApiService
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 // swagger 연결 http
@@ -12,5 +13,13 @@ object RetrofitClient {
             .addConverterFactory(GsonConverterFactory.create()) // JSON 변환
             .build()
             .create(UserApi::class.java)
+    }
+
+    val mealApiService : MealApiService by lazy {
+        Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(MealApiService::class.java)
     }
 }

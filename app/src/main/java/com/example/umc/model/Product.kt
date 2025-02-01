@@ -1,4 +1,4 @@
-package com.example.umc
+package com.example.umc.model
 
 // 상품 데이터 클래스
 data class Product(

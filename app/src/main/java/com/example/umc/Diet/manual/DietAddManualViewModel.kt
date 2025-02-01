@@ -1,0 +1,46 @@
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.launch
+import com.example.umc.UserApi.RetrofitClient
+import com.example.umc.model.ManualMeals
+import com.example.umc.model.request.PostManualMealsRequest
+
+class DietAddManualViewModel : ViewModel() {
+
+    private val _mealList = MutableLiveData<List<ManualMeals>>()
+    val mealList: LiveData<List<ManualMeals>> get() = _mealList
+
+    fun addManualMeal(request: PostManualMealsRequest, onSuccess: () -> Unit, onError: (String) -> Unit) {
+        viewModelScope.launch {
+            try {
+                val response = RetrofitClient.mealApiService.addManualMeal(request)
+                if (response.isSuccessful && response.body() != null) {
+                    val meal = response.body()!!.success
+                    val newMeal = meal?.let {
+                        ManualMeals(
+                            calorieTotal = it.calorieTotal,
+                            foods = meal.food.split(", ").map { it.trim() },
+                            time = "",
+                            mealDate = ""
+                        )
+                    }
+                    if (newMeal != null) {
+                        updateMealList(newMeal)
+                    }
+                    onSuccess()
+                } else {
+                    onError("API 요청 실패: ${response.errorBody()?.string()}")
+                }
+            } catch (e: Exception) {
+                onError("오류 발생: ${e.message}")
+            }
+        }
+    }
+
+    private fun updateMealList(newMeal: ManualMeals) {
+        val currentList = _mealList.value ?: emptyList()
+        _mealList.value = currentList + newMeal
+    }
+}
