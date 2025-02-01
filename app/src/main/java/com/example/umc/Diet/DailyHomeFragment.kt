@@ -15,6 +15,14 @@ class DailyHomeFragment : Fragment() {
     private var _binding: FragmentDailyHomeBinding? = null
     private val binding get() = _binding!!
 
+    private var selectedBreakfastPosition = -1
+    private var selectedLunchPosition = -1
+    private var selectedDinnerPosition = -1
+
+    private lateinit var breakfastAdapter: MenuItemAdapter
+    private lateinit var lunchAdapter: MenuItemAdapter
+    private lateinit var dinnerAdapter: MenuItemAdapter
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -25,35 +33,70 @@ class DailyHomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupRecyclerView()
+        initializeAdapters()
+        setupRecyclerViews()
     }
 
-    private fun setupRecyclerView() {
-        val adapter = MenuItemAdapter { item -> onMenuItemClicked(item) }
-        binding.rvMenuItems.layoutManager = LinearLayoutManager(context)
-        binding.rvMenuItems.adapter = adapter
-        adapter.submitList(getDummyMenuItems())
+    private fun initializeAdapters() {
+        breakfastAdapter = MenuItemAdapter { item: MenuItem, position: Int ->
+            selectedBreakfastPosition = position
+            breakfastAdapter.notifyDataSetChanged()
+            onMenuItemClicked(item, "아침")
+        }
+
+        lunchAdapter = MenuItemAdapter { item: MenuItem, position: Int ->
+            selectedLunchPosition = position
+            lunchAdapter.notifyDataSetChanged()
+            onMenuItemClicked(item, "점심")
+        }
+
+        dinnerAdapter = MenuItemAdapter { item: MenuItem, position: Int ->
+            selectedDinnerPosition = position
+            dinnerAdapter.notifyDataSetChanged()
+            onMenuItemClicked(item, "저녁")
+        }
     }
 
-    private fun onMenuItemClicked(item: MenuItem) {
-        // DietDetailFragment로 전환
+    private fun setupRecyclerViews() {
+        binding.apply {
+            rvBreakfast.apply {
+                layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+                adapter = breakfastAdapter
+            }
+            breakfastAdapter.submitList(getDummyMenuItems())
+
+            rvLunch.apply {
+                layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+                adapter = lunchAdapter
+            }
+            lunchAdapter.submitList(getDummyMenuItems())
+
+            rvDinner.apply {
+                layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+                adapter = dinnerAdapter
+            }
+            dinnerAdapter.submitList(getDummyMenuItems())
+        }
+    }
+
+    private fun onMenuItemClicked(item: MenuItem, mealTime: String) {
         val dietDetailFragment = DietDetailFragment()
         val transaction: FragmentTransaction = parentFragmentManager.beginTransaction()
         transaction.replace(R.id.main_container, dietDetailFragment)
         transaction.addToBackStack(null)
         transaction.commit()
 
-        // 상단바 보이게 + 바텀네비게이션 숨기기 (나중에 MainActivity로 다시 작업할 예정)
         val mainActivity = activity as? MainActivity
-        val title = getString(R.string.breakfast) // 아침, 점심, 저녁인지 확인하는 코드는 나중에
-        mainActivity?.showTitle(title, true)
+        mainActivity?.showTitle(mealTime, true)
         mainActivity?.hideBottomBar()
     }
 
     private fun getDummyMenuItems(): List<MenuItem> {
         return listOf(
-            MenuItem("image_url1", "메뉴1", "560Kcal"),
-            MenuItem("image_url2", "메뉴2", "450Kcal")
+            MenuItem("image_url1", "제육볶음 도시락", "560Kcal"),
+            MenuItem("image_url2", "샐러드 도시락", "450Kcal"),
+            MenuItem("image_url3", "볶음밥 도시락", "520Kcal"),
+            MenuItem("image_url4", "연어 도시락", "480Kcal")
         )
     }
 

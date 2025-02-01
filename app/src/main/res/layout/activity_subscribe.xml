@@ -58,13 +58,12 @@
         android:id="@+id/subscribeImage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/subscribeimage"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toTopOf="@id/nextButton"
         android:layout_marginBottom="0dp"
         android:contentDescription="구독이미지" />
-
+<!--    android:src="@drawable/subscribeimage"-->
     <Button
         android:id="@+id/nextButton"
         android:layout_width="325.56dp"

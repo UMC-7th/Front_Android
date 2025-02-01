@@ -8,7 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.umc.Diet.DietDetailFragment
 import com.example.umc.Diet.HomeContainerFragment
 import com.example.umc.Mypage.MyFragment
-import com.example.umc.Quote.PriceFragment
+import com.example.umc.PriceFragment
 import com.example.umc.R
 import com.example.umc.Subscribe.SubFragment
 import com.example.umc.databinding.ActivityMainBinding

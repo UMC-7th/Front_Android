@@ -2,48 +2,66 @@ package com.example.umc.Diet
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.example.umc.R
 import com.example.umc.databinding.ItemMenuBinding
 
-class MenuItemAdapter(private val itemClickListener: ((MenuItem) -> Unit)? = null) : ListAdapter<MenuItem, MenuItemAdapter.MenuViewHolder>(
-    MenuDiffCallback()
-) {
+class MenuItemAdapter(private val onClick: (MenuItem, Int) -> Unit) :
+    ListAdapter<MenuItem, MenuItemAdapter.ViewHolder>(DiffCallback()) {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MenuViewHolder {
-        val binding = ItemMenuBinding.inflate(
-            LayoutInflater.from(parent.context), parent, false
-        )
-        return MenuViewHolder(binding)
-    }
+    private var selectedPosition = -1
 
-    override fun onBindViewHolder(holder: MenuViewHolder, position: Int) {
-        holder.bind(getItem(position), itemClickListener)
-    }
+    inner class ViewHolder(private val binding: ItemMenuBinding) :
+        RecyclerView.ViewHolder(binding.root) {
 
-    class MenuViewHolder(
-        private val binding: ItemMenuBinding
-    ) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(item: MenuItem, clickListener: ((MenuItem) -> Unit)?) {
+        fun bind(menuItem: MenuItem) {
             binding.apply {
-                tvMenuName.text = item.name
-                tvMenuCalories.text = item.calories
-                // Glide나 Coil을 사용하여 이미지 로드
-                // Glide.with(ivMenuImage).load(item.imageUrl).into(ivMenuImage)
-                btnOrder.isSelected = item.isSelected
-                root.setOnClickListener { clickListener?.invoke(item) }
+                tvMenuName.text = menuItem.name
+                tvMenuCalories.text = menuItem.calories
+
+                // 이미지 로딩 (Glide 사용 시)
+                // Glide.with(ivMenuImage)
+                //     .load(menuItem.imageUrl)
+                //     .into(ivMenuImage)
+
+                // 선택 상태에 따른 테두리 설정
+                root.background = if (adapterPosition == selectedPosition) {
+                    ContextCompat.getDrawable(root.context, R.color.selector_home_menu_item)
+                } else {
+                    ContextCompat.getDrawable(root.context, R.color.selector_home_menu_item)
+                }
+
+                root.setOnClickListener {
+                    selectedPosition = adapterPosition
+                    notifyDataSetChanged()
+                    onClick(menuItem, adapterPosition)
+                }
             }
         }
     }
-}
 
-class MenuDiffCallback : DiffUtil.ItemCallback<MenuItem>() {
-    override fun areItemsTheSame(oldItem: MenuItem, newItem: MenuItem): Boolean {
-        return oldItem.name == newItem.name
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        return ViewHolder(
+            ItemMenuBinding.inflate(
+                LayoutInflater.from(parent.context),
+                parent,
+                false
+            )
+        )
     }
 
-    override fun areContentsTheSame(oldItem: MenuItem, newItem: MenuItem): Boolean {
-        return oldItem == newItem
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        holder.bind(getItem(position))
+    }
+
+    private class DiffCallback : DiffUtil.ItemCallback<MenuItem>() {
+        override fun areItemsTheSame(oldItem: MenuItem, newItem: MenuItem) =
+            oldItem.name == newItem.name
+
+        override fun areContentsTheSame(oldItem: MenuItem, newItem: MenuItem) =
+            oldItem == newItem
     }
 }
