@@ -14,6 +14,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.UMC"
         tools:targetApi="31">
+        <activity android:name="com.example.pricefruit.FruitPriceActivity"
+            android:exported="true"/>
+
         <activity
             android:name=".Splash.SplashActivity"
             android:exported="true">
