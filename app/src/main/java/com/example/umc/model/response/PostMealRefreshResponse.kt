@@ -1,18 +1,12 @@
 package com.example.umc.model.response
 
-data class GetManualMealsResponse(
+data class PostMealRefreshResponse(
+    val error: Any,
     val resultType: String,
-    val error: ErrorDetails?,
-    val success: List<Success>?
+    val success: MealRefreshSuccess
 )
 
-data class ErrorDetails(
-    val errorCode: String,
-    val reason: String,
-    val data: String
-)
-
-data class Success(
+data class MealRefreshSuccess(
     val addedByUser: Boolean,
     val calorieDetail: String,
     val calorieTotal: Int,
@@ -22,4 +16,10 @@ data class Success(
     val mealId: Int,
     val price: Int,
     val recipe: String
+)
+
+data class MealRefreshError(
+    val data: String,
+    val errorCode: String,
+    val reason: String
 )
