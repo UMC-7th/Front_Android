@@ -1,4 +1,4 @@
-package com.example.umc
+package com.example.umc.model
 
 // 카테고리 데이터 클래스
 data class Category(

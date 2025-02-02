@@ -17,7 +17,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:padding="1dp">
 
             <com.google.android.material.tabs.TabLayout
                 android:id="@+id/tabLayout"
@@ -34,8 +35,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="16dp">
+                android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/tv_serve"
@@ -58,6 +58,7 @@
         </LinearLayout>
 
     </androidx.appcompat.widget.Toolbar>
+
 
     <!-- ViewPager2 추가 -->
     <androidx.viewpager2.widget.ViewPager2

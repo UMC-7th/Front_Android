@@ -81,6 +81,10 @@
     <string name="lunch">점심</string>
     <string name="dinner">저녁</string>
 
+    <string name="daily_diet_day">%d월 %d일 식단</string>
+    <string name="daily_diet_title">을 추천받아 보세요!</string>
+    <string name="daily_diet_sub_title">좋아요를 눌러 AI에게 다양한 식단을 추천받아 볼 수 있어요</string>
+
     <string name="diet_title">요리 제목</string>
     <string name="diet_sub_title">해당 음식을 섭취했다면 체크 해주세요.</string>
     <string name="diet_complete">식단 완료</string>
