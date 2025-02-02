@@ -3,9 +3,11 @@ package com.example.umc.UserApi
 import com.google.gson.annotations.SerializedName
 
 data class UserProfileResponse(
+    val success: Boolean,          // 성공 여부
+    val resultType: String?,       // 결과 타입
     val status: Int,
     val message: String,
-    val data: UserProfileData
+    val user: UserProfileData
 )
 
 data class UserProfileData(
@@ -13,5 +15,5 @@ data class UserProfileData(
     @SerializedName("name") val name: String,
     @SerializedName("birth") val birth: String,
     @SerializedName("email") val email: String,
-    @SerializedName("phoneNum") val phone: String  // ✅ JSON의 "phoneNum"을 phone으로 매핑
+    @SerializedName("phoneNum") val phoneNum: String  // phone -> phoneNum으로 통일
 )

@@ -56,7 +56,7 @@ class MyFragmentInfo : Fragment() {
         binding.change.setOnClickListener {
             isEditMode = !isEditMode
             setEditableMode(isEditMode)
-            updateChangeButton()
+            //updateChangeButton()
 
             if (!isEditMode) {
                 // 수정이 완료된 후 변경된 정보를 서버로 전송
@@ -87,31 +87,54 @@ class MyFragmentInfo : Fragment() {
         }
     }
 
-    private fun updateChangeButton() {
-        val imageResource = if (isEditMode) {
-            R.drawable.my_info_done
-        } else {
-            R.drawable.my_info_change
-        }
-        binding.change.setImageResource(imageResource)
-    }
+//    private fun updateChangeButton() {
+//        val imageResource = if (isEditMode) {
+//            R.drawable.my_info_done
+//        } else {
+//            R.drawable.my_info_change
+//        }
+//        binding.change.setImageResource(imageResource)
+//    }
 
-    // 사용자 프로필을 로드하는 함수
     private fun loadUserProfile(token: String) {
         lifecycleScope.launch {
             try {
-                // suspend 함수 호출
-                val profileResponse = userRepository.getUserProfile(requireContext())  // context로 토큰 전달
+                Log.d("MyFragmentInfo", "프로필 로드 시작")
+                Log.d("MyFragmentInfo", "사용중인 토큰: $token")  // 토큰 값 확인
 
-                if (profileResponse != null && profileResponse.data != null) {
-                    updateUIWithProfile(profileResponse.data)  // 데이터가 null이 아닌 경우에만 UI 업데이트
-                } else {
-                    Toast.makeText(context, "프로필 정보를 불러오는데 실패했습니다.", Toast.LENGTH_SHORT).show()
-                    Log.e("MyFragmentInfo", "프로필 데이터가 null입니다.")
+                val profileResponse = try {
+                    userRepository.getUserProfile(requireContext()).also {
+                        Log.d("MyFragmentInfo", "서버 응답: $it")  // 전체 응답 로깅
+                    }
+                } catch (e: Exception) {
+                    Log.e("MyFragmentInfo", "API 호출 실패", e)
+                    Toast.makeText(context, "API 호출 중 오류: ${e.message}", Toast.LENGTH_SHORT).show()
+                    return@launch
+                }
+
+                // null 체크 및 데이터 구조 검증
+                when {
+                    profileResponse == null -> {
+                        Log.e("MyFragmentInfo", "응답이 null입니다")
+                        Toast.makeText(context, "서버 응답이 없습니다", Toast.LENGTH_SHORT).show()
+                    }
+                    profileResponse.user == null -> {
+                        Log.e("MyFragmentInfo", "사용자 데이터가 null입니다: $profileResponse")
+                        Toast.makeText(context, "사용자 데이터가 없습니다", Toast.LENGTH_SHORT).show()
+                    }
+                    else -> {
+                        try {
+                            updateUIWithProfile(profileResponse.user)
+                            Log.d("MyFragmentInfo", "UI 업데이트 성공: ${profileResponse.user}")
+                        } catch (e: Exception) {
+                            Log.e("MyFragmentInfo", "UI 업데이트 실패", e)
+                            Toast.makeText(context, "화면 업데이트 중 오류: ${e.message}", Toast.LENGTH_SHORT).show()
+                        }
+                    }
                 }
             } catch (e: Exception) {
-                Toast.makeText(context, "네트워크 오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
-                Log.e("MyFragmentInfo", "Error loading profile", e)
+                Log.e("MyFragmentInfo", "예상치 못한 오류", e)
+                Toast.makeText(context, "예상치 못한 오류가 발생했습니다: ${e.message}", Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -123,7 +146,17 @@ class MyFragmentInfo : Fragment() {
             nameEdit.setText(profileData.name)
             birthEdit.setText(profileData.birth)
             emailEdit.setText(profileData.email)
-            phoneEdit.setText(profileData.phone)
+            phoneEdit.setText(profileData.phoneNum)  // phone -> phoneNum으로 변경
+
+            // 데이터가 잘 들어갔는지 로그로 확인
+            Log.d("MyFragmentInfo", """
+            프로필 UI 업데이트:
+            닉네임: ${profileData.nickname}
+            이름: ${profileData.name}
+            생일: ${profileData.birth}
+            이메일: ${profileData.email}
+            전화번호: ${profileData.phoneNum}
+        """.trimIndent())
         }
     }
 

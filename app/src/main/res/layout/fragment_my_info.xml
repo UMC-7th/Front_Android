@@ -49,10 +49,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_16"
-        android:src="@drawable/my_info"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView5" />
+<!--    android:src="@drawable/my_info-->
 
     <TextView
         android:id="@+id/textView48"
@@ -71,10 +71,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_4"
-        android:src="@drawable/my_info_naver"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView48" />
+<!--    android:src="@drawable/my_info_naver-->
 
     <TextView
         android:id="@+id/textView44"
@@ -103,12 +103,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:src="@drawable/my_info_change"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.943"
         app:layout_constraintStart_toEndOf="@+id/textView49"
         app:layout_constraintTop_toBottomOf="@+id/textView44" />
-
+<!--    android:src="@drawable/my_info_change-->
     <TextView
         android:id="@+id/textView45"
         android:layout_marginLeft="@dimen/spacing_16"
@@ -259,8 +258,8 @@
                 android:text="자동 로그인 기기 설정"/>
             <ImageView
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/info_plus"/>
+                android:layout_height="wrap_content"/>
+<!--            android:src="@drawable/info_plus-->
 
         </LinearLayout>
 
@@ -278,9 +277,8 @@
                 android:text="알림 설정"/>
             <ImageView
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/info_plus"/>
-
+                android:layout_height="wrap_content"/>
+<!--            android:src="@drawable/info_plus-->
         </LinearLayout>
     </LinearLayout>
 
