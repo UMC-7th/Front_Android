@@ -15,11 +15,20 @@ object RetrofitClient {
             .create(UserApi::class.java)
     }
 
+
     val mealApiService : MealApiService by lazy {
         Retrofit.Builder()
             .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(MealApiService::class.java)
+    }
+
+    val getApiService : UserApi by lazy {
+        Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(UserApi::class.java)
     }
 }

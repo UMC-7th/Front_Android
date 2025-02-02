@@ -119,14 +119,30 @@ class LoginActivity : AppCompatActivity() {
                 Log.d("Login", "Response Code: ${response.code()}")
                 Log.d("Login", "Response Body: ${response.body()}")
                 Log.d("Login", "Error Body: ${response.errorBody()?.string()}")
+
                 if (response.isSuccessful) {
                     Toast.makeText(this@LoginActivity, "로그인 성공!", Toast.LENGTH_SHORT).show()
-                    val intent = Intent(this@LoginActivity, MainActivity::class.java)
-                    startActivity(intent)
-                    finish() // LoginActivity 종료 (뒤로 가기 방지)
+
+                    // 로그인 성공 시, accessToken을 SharedPreferences에 저장
+                    val accessToken = response.body()?.success?.accessToken
+
+                    if (accessToken != null) {
+                        // SharedPreferences에 토큰 저장
+                        UserRepository.saveAuthToken(this@LoginActivity, accessToken)
+
+                        // 로그인 후 MainActivity로 이동
+                        val intent = Intent(this@LoginActivity, MainActivity::class.java)
+                        intent.putExtra("ACCESS_TOKEN", accessToken) // accessToken을 Intent에 담아서 전달
+                        startActivity(intent)
+                        finish() // LoginActivity 종료 (뒤로 가기 방지)
+                    } else {
+                        // accessToken이 없으면 적절한 처리를 추가
+                        Toast.makeText(this@LoginActivity, "토큰이 없습니다.", Toast.LENGTH_SHORT).show()
+                    }
                 } else {
                     Toast.makeText(this@LoginActivity, "로그인 실패: ${response.errorBody()?.string()}", Toast.LENGTH_SHORT).show()
                 }
+
             }
 
             override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
@@ -135,6 +151,7 @@ class LoginActivity : AppCompatActivity() {
             }
         })
     }
+
 
 
 }
