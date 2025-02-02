@@ -1,5 +1,6 @@
 package com.example.umc.UserApi
 
+import com.example.umc.model.service.ImageApiService
 import com.example.umc.model.service.MealApiService
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -21,5 +22,13 @@ object RetrofitClient {
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(MealApiService::class.java)
+    }
+
+    val imageApiService: ImageApiService by lazy {
+        Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(ImageApiService::class.java)
     }
 }

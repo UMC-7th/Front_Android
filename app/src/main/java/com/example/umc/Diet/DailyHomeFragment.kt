@@ -81,6 +81,12 @@ class DailyHomeFragment : Fragment() {
 
     private fun onMenuItemClicked(item: MenuItem, mealTime: String) {
         val dietDetailFragment = DietDetailFragment()
+
+        val bundle = Bundle()
+        bundle.putString("name", item.name)
+        bundle.putString("calories", item.calories)
+        dietDetailFragment.arguments = bundle
+
         val transaction: FragmentTransaction = parentFragmentManager.beginTransaction()
         transaction.replace(R.id.main_container, dietDetailFragment)
         transaction.addToBackStack(null)

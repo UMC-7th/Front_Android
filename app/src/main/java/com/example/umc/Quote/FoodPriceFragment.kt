@@ -1,11 +1,17 @@
 package com.example.umc.Quote
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
+import com.bumptech.glide.Glide
 import com.example.umc.databinding.FragmentFoodPriceBinding
+import com.example.umc.UserApi.RetrofitClient
+import kotlinx.coroutines.launch
 
 class FoodPriceFragment : Fragment() {
 
@@ -70,6 +76,40 @@ class FoodPriceFragment : Fragment() {
         binding.tvFoodUnit.text = foodUnit
         binding.tvPriceRate.text = priceRate
         binding.tvPricePercent.text = pricePercent
+
+        // 이미지 로드 호출
+        if (!foodName.isNullOrEmpty()) {
+            loadMaterialImage(foodName!!)
+        }
+    }
+
+    private fun loadMaterialImage(foodName: String) {
+        binding.imgPriceFood.setImageDrawable(null)
+
+        lifecycleScope.launch {
+            try {
+                val response = RetrofitClient.imageApiService.getMaterialImage(foodName)
+
+                if (response.isSuccessful) {
+                    val imageUrl = response.body()?.success?.imageUrl
+                    if (!imageUrl.isNullOrEmpty()) {
+                        Glide.with(requireContext())
+                            .load(imageUrl)
+                            .into(binding.imgPriceFood) // 이미지 뷰에 적용
+                        Log.d("FoodImage", "이미지 로드 성공: $imageUrl")
+                    } else {
+                        Log.e("FoodImage", "이미지 URL이 비어 있음")
+                        Toast.makeText(context, "이미지 URL이 비어 있습니다.", Toast.LENGTH_SHORT).show()
+                    }
+                } else {
+                    Log.e("FoodImage", "API 호출 실패: ${response.message()}")
+                    Toast.makeText(context, "API 호출 실패: ${response.message()}", Toast.LENGTH_SHORT).show()
+                }
+            } catch (e: Exception) {
+                Log.e("FoodImage", "네트워크 오류: ${e.message}")
+                Toast.makeText(context, "네트워크 오류: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
     override fun onDestroyView() {
