@@ -1,5 +1,8 @@
 package com.example.umc.model.service
 
+
+import com.example.umc.model.CartRequest
+import com.example.umc.model.CartResponse
 import com.example.umc.model.request.PostManualMealsRequest
 import com.example.umc.model.response.GetManualMealsResponse
 import com.example.umc.model.response.ManualMealsResponse
@@ -19,4 +22,7 @@ interface MealApiService {
     suspend fun getManualMeals(
         @Query("userId") userId: Int
     ): Response<GetManualMealsResponse>
+
+    @POST("/api/v1/subscribes/meals/cart")
+    suspend fun addToCart(@Body request: CartRequest): Response<CartResponse>
 }

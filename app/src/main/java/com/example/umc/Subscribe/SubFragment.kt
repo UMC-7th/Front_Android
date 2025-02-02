@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.example.umc.R
+import com.example.umc.cart.SubscribeCart
 
 
 // SubFragment.kt
@@ -45,17 +46,29 @@ class SubFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_subscribe_cart, container, false)
     }
 
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initializeViews()
         setupListeners()
 
-        // 구독관리 프래그먼트로 전환
+        // 구독관리 페이지에서 바로 장바구니로 이동
         parentFragmentManager.beginTransaction()
-            .replace(R.id.main_container, SubscriptionManageFragment())
+            .replace(R.id.main_container, SubscribeCart())
             .addToBackStack(null)
             .commit()
     }
+//    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+//        super.onViewCreated(view, savedInstanceState)
+//        initializeViews()
+//        setupListeners()
+//
+//        // 구독관리 프래그먼트로 전환
+//        parentFragmentManager.beginTransaction()
+//            .replace(R.id.main_container, SubscriptionManageFragment())
+//            .addToBackStack(null)
+//            .commit()
+//    }
 
     private fun initializeViews() {
         // View 초기화 코드
