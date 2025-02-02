@@ -115,4 +115,6 @@ dependencies {
     // API + retrofit 의존성주입
     implementation ("com.squareup.retrofit2:retrofit:2.9.0")
     implementation ("com.squareup.retrofit2:converter-gson:2.9.0") // JSON 변환 라이브러리 추가
+
+    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4")
 }
