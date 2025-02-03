@@ -11,8 +11,13 @@
 
     <!-- Base.Theme.UMC를 상속받는 실제 사용될 테마 -->
     <style name="Theme.UMC" parent="Base.Theme.UMC">
-        <item name="android:statusBarColor">@android:color/transparent</item>
+        <!-- 상단 상태바 설정 -->
+        <item name="android:statusBarColor">@color/white</item>
         <item name="android:windowLightStatusBar">true</item>
+
+        <!-- 하단 네비게이션 바 설정 -->
+        <item name="android:navigationBarColor">@color/white</item>
+        <item name="android:windowLightNavigationBar">true</item>
     </style>
 
     <!-- 스플래시 스크린(시작 화면) 테마 -->
