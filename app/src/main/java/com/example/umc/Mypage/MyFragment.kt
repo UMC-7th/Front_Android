@@ -44,7 +44,10 @@ class MyFragment : Fragment() {
         binding.apply {
             // 프로필 관리 클릭 리스너
             tvProfileManage.setOnClickListener {
-                // TODO: 프로필 관리 화면으로 이동
+                parentFragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container, MyFragmentInfo()) // fragment_container는 MainActivity의 Fragment 배치 영역 ID
+                    .addToBackStack(null) // 뒤로 가기 가능하도록 추가
+                    .commit()
             }
 
             // 식단 카드 클릭 리스너

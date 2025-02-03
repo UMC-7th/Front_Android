@@ -2,7 +2,10 @@ package com.example.umc.UserApi
 
 
 import retrofit2.Call
+import retrofit2.Response
 import retrofit2.http.Body
+import retrofit2.http.GET
+import retrofit2.http.Header
 import retrofit2.http.POST
 //엔드포인트 연결
 interface UserApi {
@@ -11,4 +14,9 @@ interface UserApi {
 
     @POST("api/v1/users/login")
     fun login(@Body request: LoginRequest): Call<LoginResponse>
+
+    @GET("api/v1/users/mypage/profile")
+    suspend fun getUserProfile(
+        @Header("Authorization") token: String  // 헤더에 Authorization 추가
+    ): Response<UserProfileResponse>
 }
