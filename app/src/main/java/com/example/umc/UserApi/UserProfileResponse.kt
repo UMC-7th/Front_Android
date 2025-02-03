@@ -3,9 +3,10 @@ package com.example.umc.UserApi
 import com.google.gson.annotations.SerializedName
 
 data class UserProfileResponse(
-    val status: Int,
-    val message: String,
-    val data: UserProfileData
+    @SerializedName("reslutType")val status: String,
+    @SerializedName("error")val message: String,
+    @SerializedName("success") val data: UserProfileData
+
 )
 
 data class UserProfileData(
