@@ -1,13 +1,27 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
+    <!-- 기본 애플리케이션 테마 -->
     <style name="Base.Theme.UMC" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!--상단 테마없애기(잠깐 없앰)-->
-        <item name="windowNoTitle">true</item>
-        <item name="android:windowFullscreen">true</item>
-
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <!-- 상태 바의 색상을 하얀색으로 설정 -->
+        <item name="android:statusBarColor">@color/white</item>
+        <!-- 폰트 패딩을 제거하여 텍스트가 정확한 크기로 표시되도록 설정 -->
+        <item name="android:includeFontPadding">false</item>
+        <!-- 앱의 기본 배경색을 흰색으로 설정 -->
+        <item name="android:windowBackground">@color/white</item>
     </style>
 
-    <style name="Theme.UMC" parent="Base.Theme.UMC" />
+    <!-- Base.Theme.UMC를 상속받는 실제 사용될 테마 -->
+    <style name="Theme.UMC" parent="Base.Theme.UMC">
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowLightStatusBar">true</item>
+    </style>
+
+    <!-- 스플래시 스크린(시작 화면) 테마 -->
+    <style name="SplashTheme" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/Primary_Orange1</item>
+
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_transparent_layer_splash</item>
+
+        <!-- 스플래시 스크린 이후 전환될 테마 지정 -->
+        <item name="postSplashScreenTheme">@style/Theme.UMC</item>
+    </style>
 </resources>
