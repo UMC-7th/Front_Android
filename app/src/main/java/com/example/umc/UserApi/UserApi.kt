@@ -14,9 +14,4 @@ interface UserApi {
 
     @POST("api/v1/users/login")
     fun login(@Body request: LoginRequest): Call<LoginResponse>
-
-    @GET("api/v1/users/mypage/profile")
-    suspend fun getUserProfile(
-        @Header("Authorization") token: String  // 헤더에 Authorization 추가
-    ): Response<UserProfileResponse>
 }

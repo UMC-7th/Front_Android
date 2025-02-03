@@ -8,6 +8,7 @@ import retrofit2.Response
 
 class UserRepository {
     private val api = RetrofitClient.instance
+    private val getUserApi = RetrofitClient.getApiService
 
     // SharedPreferences에 accessToken 저장
     companion object {
@@ -51,7 +52,7 @@ class UserRepository {
 
 
     suspend fun getUserProfile(context: Context): UserProfileResponse? {
-        val accessToken = getAuthToken(context) // SharedPreferences에서 토큰 가져오기
+        val accessToken = getAuthToken(context)
         if (accessToken.isNullOrEmpty()) {
             Log.e("UserRepository", "액세스 토큰이 없습니다.")
             return null
@@ -60,11 +61,13 @@ class UserRepository {
         Log.d("UserRepository", "현재 전달된 토큰: $accessToken")
 
         return try {
-            val response = api.getUserProfile("Bearer $accessToken") // Authorization 헤더에 Bearer 토큰 추가
+            Log.d("UserRepository", "요청 헤더: Authorization = Bearer $accessToken")
+            val response = getUserApi.getUserProfile("Bearer $accessToken")
             if (response.isSuccessful && response.body() != null) {
                 response.body()
             } else {
-                Log.e("UserRepository", "서버 응답 실패: ${response.message()}")
+                Log.e("UserRepository", "서버 응답 실패: ${response.code()}")
+                Log.e("UserRepository", "에러 메시지: ${response.errorBody()?.string()}")
                 null
             }
         } catch (e: Exception) {

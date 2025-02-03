@@ -25,13 +25,14 @@ object RetrofitClient {
             .create(MealApiService::class.java)
     }
 
-    val getApiService : UserApi by lazy {
+    val getApiService: GetUserApi by lazy {  // 반환 타입을 GetUserApi로 변경
         Retrofit.Builder()
             .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
-            .create(UserApi::class.java)
+            .create(GetUserApi::class.java)  // GetUserApi로 변경
     }
+
     val imageApiService: ImageApiService by lazy {
         Retrofit.Builder()
             .baseUrl(BASE_URL)
