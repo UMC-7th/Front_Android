@@ -10,8 +10,10 @@ import android.util.Log
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.example.umc.R
+import com.example.umc.UserApi.UpdateUserRequest
 import com.example.umc.UserApi.UserRepository
-import com.example.umc.UserApi.UserProfileData
+import com.example.umc.UserApi.UserProfileData  // 프로필 조회용
+import com.example.umc.UserApi.UserUpdateData  // 프로필 업데이트 요청용
 import com.example.umc.databinding.FragmentMyInfoBinding
 import kotlinx.coroutines.launch
 
@@ -20,7 +22,7 @@ class MyFragmentInfo : Fragment() {
     private lateinit var binding: FragmentMyInfoBinding
     private var isEditMode = false
     private lateinit var editTextList: List<EditText>
-    private val userRepository = UserRepository()  // UserRepository 사용
+    private val userRepository = UserRepository()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -44,8 +46,7 @@ class MyFragmentInfo : Fragment() {
 
         setEditableMode(false)
 
-        // 로그인 후 받은 토큰을 SharedPreferences에 저장
-        val token = UserRepository.getAuthToken(requireContext())  // 수정된 부분
+        val token = UserRepository.getAuthToken(requireContext())
 
         if (token != null) {
             loadUserProfile(token)
@@ -59,17 +60,17 @@ class MyFragmentInfo : Fragment() {
             updateChangeButton()
 
             if (!isEditMode) {
-                // 수정이 완료된 후 변경된 정보를 서버로 전송
-                val updatedProfileData = UserProfileData(
-                    binding.nickNameEdit.text.toString(),
-                    binding.nameEdit.text.toString(),
-                    binding.birthEdit.text.toString(),
-                    binding.emailEdit.text.toString(),
-                    binding.phoneEdit.text.toString()
+                val updatedProfileData = UpdateUserRequest(  // ✅ UpdateUserRequest로 변경
+                    nickname = binding.nickNameEdit.text.toString(),
+                    email = binding.emailEdit.text.toString(),
+                    birth = binding.birthEdit.text.toString(),
+                    name = binding.nameEdit.text.toString(),
+                    phoneNum = binding.phoneEdit.text.toString()
                 )
-                updateUserProfile(updatedProfileData)
+                updateUserProfile(updatedProfileData)  // ✅ 올바른 타입으로 전달
             }
         }
+
 
         binding.backButton.setOnClickListener {
             requireActivity().onBackPressed()
@@ -96,15 +97,13 @@ class MyFragmentInfo : Fragment() {
         binding.change.setImageResource(imageResource)
     }
 
-    // 사용자 프로필을 로드하는 함수
     private fun loadUserProfile(token: String) {
         lifecycleScope.launch {
             try {
-                // suspend 함수 호출
-                val profileResponse = userRepository.getUserProfile(requireContext())  // context로 토큰 전달
+                val profileResponse = userRepository.getUserProfile(requireContext())
 
                 if (profileResponse != null && profileResponse.data != null) {
-                    updateUIWithProfile(profileResponse.data)  // 데이터가 null이 아닌 경우에만 UI 업데이트
+                    updateUIWithProfile(profileResponse.data)
                 } else {
                     Toast.makeText(context, "프로필 정보를 불러오는데 실패했습니다.", Toast.LENGTH_SHORT).show()
                     Log.e("MyFragmentInfo", "프로필 데이터가 null입니다.")
@@ -116,22 +115,28 @@ class MyFragmentInfo : Fragment() {
         }
     }
 
-
-    private fun updateUIWithProfile(profileData: UserProfileData) {
+    private fun updateUIWithProfile(profileData: UserProfileData) {  // ✅ 조회용 데이터 클래스 사용
         with(binding) {
             nickNameEdit.setText(profileData.nickname)
             nameEdit.setText(profileData.name)
             birthEdit.setText(profileData.birth)
             emailEdit.setText(profileData.email)
-            phoneEdit.setText(profileData.phone)
+            phoneEdit.setText(profileData.phone)  // ✅ UserProfileData는 phone을 사용
         }
     }
 
-    // 프로필 정보 업데이트
-    private fun updateUserProfile(updatedProfileData: UserProfileData) {
-        val token = UserRepository.getAuthToken(requireContext())  // 수정된 부분
+    private fun updateUserProfile(updatedProfileData: UpdateUserRequest) {  // ✅ 요청 객체 변경
+        val token = UserRepository.getAuthToken(requireContext())
         if (token != null) {
-            // 현재는 업데이트 기능을 구현하지 않음
+            lifecycleScope.launch {
+                Log.d("MyFragmentInfo", "업데이트 요청 데이터: $updatedProfileData")  // 추가
+                val success = userRepository.updateUserProfile(requireContext(), updatedProfileData)
+                if (success) {
+                    Toast.makeText(context, "프로필이 성공적으로 업데이트되었습니다.", Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(context, "프로필 업데이트에 실패했습니다.", Toast.LENGTH_SHORT).show()
+                }
+            }
         } else {
             Log.e("MyFragmentInfo", "토큰이 존재하지 않습니다.")
         }

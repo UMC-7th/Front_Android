@@ -76,6 +76,31 @@ class UserRepository {
         }
     }
 
+    suspend fun updateUserProfile(context: Context, updatedProfile: UpdateUserRequest): Boolean {
+        val token = getAuthToken(context)
+        if (token.isNullOrEmpty()) {
+            Log.e("UserRepository", "액세스 토큰이 없습니다.")
+            return false
+        }
+
+        return try {
+            val response = RetrofitClient.updateUserApi.updateUserProfile("Bearer $token", updatedProfile)
+            if (response.isSuccessful && response.body()?.user != null) {
+                Log.d("UserRepository", "프로필 업데이트 성공: ${response.body()?.user}")
+                true
+            } else {
+                Log.e("UserRepository", "프로필 업데이트 실패: ${response.errorBody()?.string()}")
+                false
+            }
+        } catch (e: Exception) {
+            Log.e("UserRepository", "네트워크 오류: ${e.message}")
+            false
+        }
+    }
+
+
+
+
 
 
 }
