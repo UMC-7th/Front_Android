@@ -33,6 +33,14 @@ object RetrofitClient {
             .create(GetUserApi::class.java)  // GetUserApi로 변경
     }
 
+    val updateUserApi: UpdateUserApi by lazy {
+        Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(UpdateUserApi::class.java)
+    }
+
     val imageApiService: ImageApiService by lazy {
         Retrofit.Builder()
             .baseUrl(BASE_URL)
