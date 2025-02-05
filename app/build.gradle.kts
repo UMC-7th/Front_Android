@@ -66,9 +66,13 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
+
+    // splash
+    implementation ("androidx.core:core-splashscreen:1.0.1")
+
+
     // Material Calendar
     implementation(libs.material.calendarview)
-
     implementation("com.github.prolificinteractive:material-calendarview:2.0.1")
 
     // Threetenabp

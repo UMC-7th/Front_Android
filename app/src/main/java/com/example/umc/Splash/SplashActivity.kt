@@ -3,23 +3,29 @@ package com.example.umc.Splash
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
-import androidx.appcompat.app.AppCompatActivity
+import android.os.Looper
+import androidx.activity.ComponentActivity
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.example.umc.Onboarding.OnboardingMainActivity
-import com.example.umc.Signin.LoginActivity
-import com.example.umc.R
 
-class SplashActivity : AppCompatActivity() {
+class SplashActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
+        // 스플래시 스크린 설치는 반드시 super.onCreate 전에
+        val splashScreen = installSplashScreen()
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.splash)
-        // 타이머가 끝나면 내부 실행
-        Handler().postDelayed(Runnable {
-            // 앱의 MainActivity로 넘어가기
-            val i = Intent(this@SplashActivity, OnboardingMainActivity::class.java)
-            startActivity(i)
-            // 현재 액티비티 닫기
+
+        // 스플래시 화면 유지를 위한 변수
+        var keepSplashOnScreen = true
+
+        // 스플래시 화면 유지 조건 설정
+        splashScreen.setKeepOnScreenCondition { keepSplashOnScreen }
+
+        // 로딩 작업을 시뮬레이션
+        Handler(Looper.getMainLooper()).postDelayed({
+            keepSplashOnScreen = false
+            startActivity(Intent(this, OnboardingMainActivity::class.java))
             finish()
-        }, 3000) // 3초
+        }, 3000) // 3초 딜레이
     }
 }
 

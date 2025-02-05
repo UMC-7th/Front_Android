@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">UMC</string>
+    <string name="app_name">이거먹자</string>
 
     <string-array name="years">
         <item>2025</item>
