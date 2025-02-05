@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF"
+    tools:context=".SurveyGoalFragment">
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="64dp"
+        android:layout_marginTop="16dp"
+        android:text="이루고 싶은 목표를 설정해주세요"
+        android:textColor="#484848"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/progressBar" />
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="298dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="56dp"
+        android:layout_marginTop="60dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="120dp"
+        android:layout_marginTop="10dp"
+        android:text="이거먹자 AI 추천에 필요해요!"
+        android:textColor="#B9B9B9"
+        android:textSize="14sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/weight_down_button"
+        android:layout_width="299dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="52dp"
+        android:backgroundTint="#F0F0F0"
+        android:text="체중 감량"
+        android:textColor="#9A9A9A"
+        android:textSize="16sp"
+        app:strokeWidth="2dp"
+        app:strokeColor="#F0F0F0"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView2" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/weight_up_button"
+        android:layout_width="299dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="5dp"
+        android:backgroundTint="#F0F0F0"
+        android:text="체중 증량"
+        android:textColor="#9A9A9A"
+        android:textSize="16sp"
+        app:strokeWidth="2dp"
+        app:strokeColor="#F0F0F0"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/weight_down_button" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/weight_less_down_button"
+        android:layout_width="299dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="5dp"
+        android:backgroundTint="#F0F0F0"
+        android:text="적은 감량 혹은 유지"
+        android:textColor="#9A9A9A"
+        android:textSize="16sp"
+        app:strokeWidth="2dp"
+        app:strokeColor="#F0F0F0"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/weight_up_button" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/weight_less_up_button"
+        android:layout_width="299dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="5dp"
+        android:backgroundTint="#F0F0F0"
+        android:text="적은 증량 혹은 유지"
+        android:textColor="#9A9A9A"
+        android:textSize="16sp"
+        app:strokeWidth="2dp"
+        app:strokeColor="#F0F0F0"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/weight_less_down_button" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/health_meal_button"
+        android:layout_width="299dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="5dp"
+        android:backgroundTint="#F0F0F0"
+        android:text="건강 식단 확인"
+        android:textColor="#9A9A9A"
+        android:textSize="16sp"
+        app:strokeWidth="2dp"
+        app:strokeColor="#F0F0F0"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/weight_less_up_button" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/normal_meal_button"
+        android:layout_width="299dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="5dp"
+        android:backgroundTint="#F0F0F0"
+        android:text="일반 식단 확인"
+        android:textColor="#9A9A9A"
+        android:textSize="16sp"
+        app:strokeWidth="2dp"
+        app:strokeColor="#F0F0F0"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/health_meal_button" />
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="194dp"
+        android:layout_height="243dp"
+        android:layout_marginStart="244dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@drawable/surveycircle"
+        tools:layout_editor_absoluteY="562dp" />
+
+    <Button
+        android:id="@+id/previous_button"
+        android:layout_width="145dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="36dp"
+        android:layout_marginTop="112dp"
+        android:backgroundTint="#F0F0F0"
+        android:text="이전"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/normal_meal_button" />
+
+    <Button
+        android:id="@+id/next_button"
+        android:layout_width="145dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="112dp"
+        android:layout_marginEnd="36dp"
+        android:backgroundTint="#CDCDCD"
+        android:text="다음"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/normal_meal_button" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -11,12 +11,13 @@ import com.example.umc.Mypage.MyFragment
 import com.example.umc.PriceFragment
 import com.example.umc.R
 import com.example.umc.Subscribe.SubFragment
+import com.example.umc.Survey.SurveyGoalFragment
 import com.example.umc.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
     private val binding: ActivityMainBinding by lazy {
         ActivityMainBinding.inflate(layoutInflater)
-    }//h
+    }//hgg
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,7 +46,7 @@ class MainActivity : AppCompatActivity() {
             when (item.itemId) {
                 R.id.fragment_home -> {
                     supportFragmentManager.beginTransaction()
-                        .replace(R.id.main_container, HomeContainerFragment())
+                        .replace(R.id.main_container, SurveyGoalFragment())
                         .commit()
                     true
                 }
