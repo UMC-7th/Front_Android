@@ -25,7 +25,7 @@
             android:id="@+id/imageView4"
             android:layout_width="24dp"
             android:layout_height="24dp"
-            android:layout_marginStart="202dp"
+            android:layout_marginStart="204dp"
             android:layout_marginTop="140dp"
             android:src="@drawable/ic_union2_login"
             app:layout_constraintStart_toStartOf="parent"
@@ -62,8 +62,9 @@
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/emailLoginInputLayout"
             android:layout_width="0dp"
+            android:textColorHint="@color/Gray7"
             android:layout_height="wrap_content"
-            android:hint="이메일"
+            android:hint="이메일을 입력해주세요"
             android:layout_marginTop="50dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -87,8 +88,9 @@
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/passwordLoginInputLayout"
             android:layout_width="0dp"
+            android:textColorHint="@color/Gray7"
             android:layout_height="wrap_content"
-            android:hint="비밀번호"
+            android:hint="비밀번호를 입력해주세요"
             android:layout_marginTop="10dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -99,7 +101,7 @@
             app:boxCornerRadiusTopEnd="@dimen/radius_button"
             app:boxCornerRadiusBottomStart="@dimen/radius_button"
             app:boxCornerRadiusBottomEnd="@dimen/radius_button"
-            app:boxStrokeColor="@color/white"
+            app:boxStrokeColor="@color/Gray7"
             app:boxBackgroundColor="@color/Gray8"
             >
 
@@ -122,6 +124,27 @@
             app:layout_constraintEnd_toEndOf="@+id/passwordLoginInputLayout"
             app:layout_constraintTop_toTopOf="@+id/passwordLoginInputLayout" />
 
+
+        <ImageView
+            android:id="@+id/imageView18"
+            android:layout_width="14sp"
+            android:layout_height="14sp"
+            android:layout_marginStart="300dp"
+            android:layout_marginTop="10dp"
+            android:src="@drawable/auto_login"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/passwordLoginInputLayout" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="2sp"
+            android:layout_marginTop="6sp"
+            android:text="자동 로그인"
+            android:textColor="@color/Gray4"
+            app:layout_constraintStart_toEndOf="@+id/imageView18"
+            app:layout_constraintTop_toBottomOf="@id/passwordLoginInputLayout" />
+
         <com.google.android.material.button.MaterialButton
             android:id="@+id/loginButton2"
             android:layout_width="300dp"
@@ -143,7 +166,7 @@
             android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="24dp"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="40dp"
             android:backgroundTint="@color/Gray6"
             android:text="로그인"
             android:textStyle="bold"
@@ -154,22 +177,24 @@
             app:layout_constraintTop_toBottomOf="@id/passwordLoginInputLayout" />
 
         <TextView
+            android:id="@+id/textView46"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_16"
             android:gravity="center"
             android:text="소셜 로그인"
-            app:layout_constraintBottom_toTopOf="@+id/linearLayout"
+            android:textColor="@color/Gray5"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/loginButton2"
-            app:layout_constraintVertical_bias="0.762" />
+            app:layout_constraintTop_toBottomOf="@+id/textView43" />
 
         <TextView
+            android:id="@+id/textView43"
             android:layout_width="100dp"
             android:layout_height="1.5dp"
-            android:layout_marginTop="50dp"
-            android:background="@color/Gray5"
+            android:layout_marginTop="120dp"
+            android:background="@color/Gray8"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/loginButton2" />
@@ -179,12 +204,12 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="24dp"
-            android:layout_marginBottom="112dp"
             android:gravity="center"
             android:orientation="horizontal"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginTop="@dimen/spacing_16"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent">
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView46">
 
 
             <ImageView
@@ -196,9 +221,8 @@
             <ImageView
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:layout_marginStart="10dp"
+                android:layout_marginStart="20dp"
                 android:src="@drawable/img_naver_btn" />
-
 
 
         </LinearLayout>

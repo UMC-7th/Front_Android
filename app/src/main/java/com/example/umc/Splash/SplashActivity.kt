@@ -31,7 +31,7 @@ class SplashActivity : ComponentActivity() {
 
 // 여기 위에 코드 원본 코드라 절대로 건들지 말아주세요 !!
 
-
+//
 //package com.example.umc.Splash
 //
 //import android.content.Intent

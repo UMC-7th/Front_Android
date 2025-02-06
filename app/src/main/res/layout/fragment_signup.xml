@@ -24,14 +24,14 @@
         android:id="@+id/textView4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="72dp"
         android:text="나만의 AI 영양사"
         android:textColor="@color/Primary_Orange1"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/emialButton"
+        android:layout_marginTop="2sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/loginTitle" />
 
     <TextView
         android:id="@+id/loginTitle"
@@ -40,7 +40,7 @@
         android:fontFamily="@font/jalnan_2"
         android:text="이거먹자"
         android:textColor="@color/Primary_Orange1"
-        android:textSize="30dp"
+        android:textSize="35dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
@@ -89,7 +89,7 @@
         android:layout_width="326dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginTop="100dp"
+        android:layout_marginTop="120dp"
         android:backgroundTint="@color/Gray9"
         android:text="이메일로 시작하기"
         android:textColor="@color/Gray3"
