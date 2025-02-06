@@ -18,6 +18,21 @@ class SigninEmailFragment : Fragment() {
     private var _binding: FragmentSigninEmailBinding? = null
     private val binding get() = _binding!!
 
+    private fun updateNextButtonState() {
+        val isAllRequiredChecked = binding.checkBox1.isChecked &&
+                binding.checkBox2.isChecked &&
+                binding.checkBox3.isChecked &&
+                binding.checkBox4.isChecked
+
+        if (isAllRequiredChecked) {
+            binding.NextButton.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.Primary_Orange1))
+            binding.NextButton.isEnabled = true
+        } else {
+            binding.NextButton.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.Gray7))
+            binding.NextButton.isEnabled = false
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -38,7 +53,7 @@ class SigninEmailFragment : Fragment() {
             val color = if (isChecked) {
                 ContextCompat.getColor(requireContext(), R.color.Primary_Orange1) // 선택 시 색상
             } else {
-                ContextCompat.getColor(requireContext(), R.color.black)
+                ContextCompat.getColor(requireContext(), R.color.Gray7)
             }
             checkBox.buttonTintList = ColorStateList.valueOf(color)
         }
@@ -56,6 +71,7 @@ class SigninEmailFragment : Fragment() {
         for (checkBox in checkBoxes) {
             checkBox.setOnCheckedChangeListener { buttonView, isChecked ->
                 setCheckBoxTint(buttonView, isChecked)
+                updateNextButtonState()
             }
         }
 
@@ -68,7 +84,10 @@ class SigninEmailFragment : Fragment() {
             binding.checkBox4.isChecked = isChecked
             binding.checkBox5.isChecked = isChecked
             binding.checkBox6.isChecked = isChecked
+            updateNextButtonState()
         }
+
+        updateNextButtonState()
 
         // NextButton 클릭 이벤트
         binding.NextButton.setOnClickListener {
