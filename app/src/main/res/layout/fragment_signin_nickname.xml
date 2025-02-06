@@ -11,12 +11,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="36dp"
+        android:layout_marginTop="48dp"
         android:src="@drawable/ic_back_btn"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
+        android:fontFamily="@font/pretendard_bold"
         android:id="@+id/textView6"
         android:layout_marginTop="100dp"
         android:layout_width="wrap_content"
@@ -30,6 +31,7 @@
 
     <TextView
         android:id="@+id/textView7"
+        android:fontFamily="@font/pretendard_bold"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/spacing_16"
@@ -72,11 +74,11 @@
         android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="24dp"
-        android:backgroundTint="@color/Gray5"
+        android:backgroundTint="@color/Gray7"
         android:text="회원가입 완료"
+        android:layout_marginTop="72sp"
         android:textColor="@android:color/white"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.495"
         app:layout_constraintStart_toStartOf="parent"
