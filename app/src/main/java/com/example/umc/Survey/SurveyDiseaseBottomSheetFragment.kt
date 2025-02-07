@@ -104,7 +104,7 @@ class SurveyDiseaseBottomSheetFragment(private val onSelectionDone: (Boolean) ->
     // SurveyPeopleFragment로 이동
     private fun goToSurveyPeopleFragment() {
         val fragmentTransaction = requireActivity().supportFragmentManager.beginTransaction()
-        fragmentTransaction.replace(R.id.main_container, SurveyPeopleFragment())
+        fragmentTransaction.replace(R.id.survey_container, SurveyPeopleFragment())
         fragmentTransaction.addToBackStack(null)
         fragmentTransaction.commit()
     }
@@ -112,7 +112,7 @@ class SurveyDiseaseBottomSheetFragment(private val onSelectionDone: (Boolean) ->
     // SurveyAllergyFragment로 이동
     private fun goToSurveyAllergyFragment() {
         val fragmentTransaction = requireActivity().supportFragmentManager.beginTransaction()
-        fragmentTransaction.replace(R.id.main_container, SurveyAllergyFragment())
+        fragmentTransaction.replace(R.id.survey_container, SurveyAllergyFragment())
         fragmentTransaction.addToBackStack(null)
         fragmentTransaction.commit()
     }
@@ -120,7 +120,7 @@ class SurveyDiseaseBottomSheetFragment(private val onSelectionDone: (Boolean) ->
     // SurveyDiseaseFragment로 이동 (X 버튼 클릭 시)
     private fun goToSurveyDiseaseFragment() {
         val fragmentTransaction = requireActivity().supportFragmentManager.beginTransaction()
-        fragmentTransaction.replace(R.id.main_container, SurveyDiseaseFragment())
+        fragmentTransaction.replace(R.id.survey_container, SurveyDiseaseFragment())
         fragmentTransaction.addToBackStack(null)
         fragmentTransaction.commit()
     }

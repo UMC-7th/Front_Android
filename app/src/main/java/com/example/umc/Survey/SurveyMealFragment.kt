@@ -1,6 +1,7 @@
 package com.example.umc.Survey
 
 import android.animation.ObjectAnimator
+import android.annotation.SuppressLint
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Bundle
@@ -126,16 +127,19 @@ class SurveyMealFragment : Fragment() {
         )
     }
 
+
+    // 이게 이전 버튼인가욤?
     private fun goToSurveyGoalFragment() {
         val fragmentTransaction = requireActivity().supportFragmentManager.beginTransaction()
-        fragmentTransaction.replace(R.id.main_container, SurveyGoalFragment())
+        fragmentTransaction.replace(R.id.survey_container, SurveyGoalFragment())
         fragmentTransaction.addToBackStack(null)
         fragmentTransaction.commit()
     }
 
     private fun goToSurveyAllergyFragment() {
+        // survey_container를 사용하도록 변경
         val fragmentTransaction = requireActivity().supportFragmentManager.beginTransaction()
-        fragmentTransaction.replace(R.id.main_container, SurveyAllergyFragment())
+        fragmentTransaction.replace(R.id.survey_container, SurveyAllergyFragment())
         fragmentTransaction.addToBackStack(null)
         fragmentTransaction.commit()
     }

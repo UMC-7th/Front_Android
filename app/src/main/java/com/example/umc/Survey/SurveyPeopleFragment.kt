@@ -129,7 +129,7 @@ class SurveyPeopleFragment : Fragment() {
     // SurveyYearFragment로 이동
     private fun goToSurveyYearFragment() {
         val fragmentTransaction = requireActivity().supportFragmentManager.beginTransaction()
-        fragmentTransaction.replace(R.id.main_container, SurveyYearFragment())
+        fragmentTransaction.replace(R.id.survey_container, SurveyYearFragment())
         fragmentTransaction.addToBackStack(null)
         fragmentTransaction.commit()
     }
@@ -137,7 +137,7 @@ class SurveyPeopleFragment : Fragment() {
     // SurveyDiseaseFragment로 이동
     private fun goToSurveyDiseaseFragment() {
         val fragmentTransaction = requireActivity().supportFragmentManager.beginTransaction()
-        fragmentTransaction.replace(R.id.main_container, SurveyDiseaseFragment())
+        fragmentTransaction.replace(R.id.survey_container, SurveyDiseaseFragment())
         fragmentTransaction.addToBackStack(null)
         fragmentTransaction.commit()
     }
