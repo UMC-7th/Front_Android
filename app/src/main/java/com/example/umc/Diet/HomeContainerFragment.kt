@@ -41,7 +41,10 @@ class HomeContainerFragment : Fragment() {
 
     private fun setupViewPager() {
         val pagerAdapter = HomePagerAdapter(requireActivity())
-        binding.viewPager.adapter = pagerAdapter
+        binding.viewPager.apply {
+            adapter = pagerAdapter
+            isUserInputEnabled = false  // 스와이프 비활성화
+        }
     }
 
     private fun setupTabLayout() {
