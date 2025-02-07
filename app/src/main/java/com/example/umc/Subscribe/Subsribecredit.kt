@@ -5,6 +5,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.example.umc.Main.MainActivity
+import com.example.umc.R
+import com.example.umc.Subscribe.SubAddressFragment
 import com.example.umc.databinding.FragmentSubscribePaymentBinding
 
 class Subscribecredit : Fragment() {
@@ -23,6 +26,16 @@ class Subscribecredit : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        binding.imgChangeAdd.setOnClickListener {
+            val mainActivity = activity as? MainActivity
+            mainActivity?.showTitle("배송지 변경", true)
+
+            val transaction = requireActivity().supportFragmentManager.beginTransaction()
+            transaction.replace(R.id.main_container, SubAddressFragment())
+            transaction.addToBackStack(null)
+            transaction.commit()
+        }
 
         setupUI()
         setupClickListeners()
@@ -55,11 +68,6 @@ class Subscribecredit : Fragment() {
 
     private fun setupClickListeners() {
         binding.apply {
-            // 뒤로가기 버튼
-            imageView10.setOnClickListener {
-                requireActivity().onBackPressed()
-            }
-
             // 결제 수단 버튼들
             NaverPay.setOnClickListener {
                 // 네이버페이 결제 처리
@@ -90,5 +98,11 @@ class Subscribecredit : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    override fun onResume() {
+        super.onResume()
+        (activity as? MainActivity)?.showTitle("결제", true)
+        (activity as? MainActivity)?.hideBottomBar()
     }
 }

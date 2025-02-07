@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
-import androidx.navigation.Navigation.findNavController
 import com.example.umc.Main.MainActivity
 import com.example.umc.R
 import com.prolificinteractive.materialcalendarview.CalendarDay
@@ -15,8 +14,7 @@ import com.prolificinteractive.materialcalendarview.MaterialCalendarView
 class SubscriptionManageFragment : Fragment() {
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
+        inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(R.layout.fragment_subscription_manage, container, false)
@@ -25,17 +23,26 @@ class SubscriptionManageFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // MainActivity의 타이틀 설정
         (activity as? MainActivity)?.showTitle("구독 관리", true)
+        (activity as? MainActivity)?.hideBottomBar()
 
         setupDetailButton(view)
         setupCalendar(view)
+        setupManageAddressButton(view)  // 주소 관리 버튼 설정
     }
 
     private fun setupDetailButton(view: View) {
         // 상세내역 버튼 클릭 리스너
         view.findViewById<TextView>(R.id.detailButton)?.setOnClickListener {
             navigateToHistory()
+        }
+    }
+
+    private fun setupManageAddressButton(view: View) {
+        // 주소 관리 레이아웃 클릭 리스너
+        view.findViewById<View>(R.id.ll_manage_address)?.setOnClickListener {
+            (activity as? MainActivity)?.showTitle("배송지 관라", true)
+            navigateToAddress()
         }
     }
 
@@ -70,9 +77,19 @@ class SubscriptionManageFragment : Fragment() {
             .commit()
     }
 
+    private fun navigateToAddress() {
+        parentFragmentManager.beginTransaction()
+            .replace(R.id.main_container, SubAddressFragment())
+            .addToBackStack(null)
+            .commit()
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
-        // MainActivity의 타이틀 숨기기
-        (activity as? MainActivity)?.hideTitle()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        (activity as? MainActivity)?.showBottomBar()
     }
 }

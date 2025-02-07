@@ -166,6 +166,7 @@ class PriceFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
+        (activity as? MainActivity)?.hideTitle()
     }
 
     override fun onPause() {

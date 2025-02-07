@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.example.umc.Main.MainActivity
 import com.example.umc.R
 import com.example.umc.databinding.FragmentMyBinding
 
@@ -65,5 +66,10 @@ class MyFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    override fun onResume() {
+        super.onResume()
+        (activity as? MainActivity)?.hideTitle()
     }
 }
