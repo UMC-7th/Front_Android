@@ -36,8 +36,10 @@
             android:name=".Signin.LoginActivity"
             android:exported="true">
         </activity>
-        <activity android:name=".Onboarding.OnboardingMainActivity"
-            android:exported="true"></activity>
+        <activity
+            android:name=".Onboarding.OnboardingMainActivity"
+            android:exported="true">
+        </activity>
         <activity
             android:name=".Main.MainActivity"
             android:exported="true">
