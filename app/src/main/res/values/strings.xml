@@ -75,7 +75,8 @@
     <!--Diet Fragment-->
     <string name="today">오늘</string>
     <string name="month">월간</string>
-    <string name="serve">%s님, 안녕하세요!</string>
+    <string name="serve">%s</string>
+    <string name ="serve1">님, 안녕하세요!</string>
     <string name="greeting">활기찬 아침 되세요!</string>
     <string name="breakfast">아침</string>
     <string name="lunch">점심</string>

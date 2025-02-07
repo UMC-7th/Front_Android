@@ -1,13 +1,19 @@
 package com.example.umc.Diet
 
+import com.example.umc.Diet.DietAddManualFragment
+import com.example.umc.Diet.HomePagerAdapter
+import android.app.Dialog
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
-import com.example.umc.Diet.DietAddManualFragment
-import com.example.umc.Main.MainActivity
+import com.example.umc.Mypage.MyFragment
 import com.example.umc.R
 import com.example.umc.databinding.FragmentHomeContainerBinding
 import com.google.android.material.tabs.TabLayoutMediator
@@ -27,30 +33,21 @@ class HomeContainerFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         setupViewPager()
         setupTabLayout()
-
-        // 사용자 이름 설정 (추후 데이터 연동)
-        binding.tvServe.text = getString(R.string.serve).format("토미")
-
-        binding.btAddManual.setOnClickListener {
-            // Corrected the transaction to use an instance of DietAddConfirmFragment
-            val transaction: FragmentTransaction = parentFragmentManager.beginTransaction()
-            transaction.replace(R.id.main_container, DietAddManualFragment())
-            transaction.addToBackStack(null)
-            transaction.commit()
-        }
+        setupButtons()
+        binding.tvServe.text = getString(R.string.serve).format("장태준")
     }
 
     private fun setupViewPager() {
-        // ViewPager2 어댑터 설정
         val pagerAdapter = HomePagerAdapter(requireActivity())
-        binding.viewPager.adapter = pagerAdapter
+        binding.viewPager.apply {
+            adapter = pagerAdapter
+            isUserInputEnabled = false  // 스와이프 비활성화
+        }
     }
 
     private fun setupTabLayout() {
-        // TabLayout과 ViewPager2 연결
         TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, position ->
             when (position) {
                 0 -> tab.text = "오늘"
@@ -59,13 +56,45 @@ class HomeContainerFragment : Fragment() {
         }.attach()
     }
 
+    private fun setupButtons() {
+        binding.btAddManual.setOnClickListener {
+            val transaction: FragmentTransaction = parentFragmentManager.beginTransaction()
+            transaction.replace(R.id.main_container, DietAddManualFragment())
+            transaction.addToBackStack(null)
+            transaction.commit()
+        }
+
+        binding.settingsButton.setOnClickListener {
+            val transaction = parentFragmentManager.beginTransaction()
+            transaction.replace(R.id.main_container, MyFragment())
+            transaction.addToBackStack(null)
+            transaction.commit()
+        }
+
+        binding.questionButton.setOnClickListener {
+            val dialog = Dialog(requireContext(), R.style.DialogTheme)
+            dialog.setContentView(R.layout.dialog_tooltip)
+
+            dialog.window?.apply {
+                setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+                setDimAmount(0.5f)
+
+
+                setLayout(
+                    WindowManager.LayoutParams.MATCH_PARENT,
+                    WindowManager.LayoutParams.MATCH_PARENT
+                )
+            }
+
+            dialog.findViewById<View>(android.R.id.content).setOnClickListener {
+                dialog.dismiss()
+            }
+            dialog.show()
+        }
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-    }
-
-    override fun onResume() {
-        super.onResume()
-        (activity as? MainActivity)?.hideTitle()
     }
 }

@@ -106,7 +106,7 @@ class SurveyWorkFragment : Fragment() {
         nextButton.setOnClickListener {
             if (selectedWorkButton != null && selectedExercise != null) {
                 updateProgressBar()
-                goToSurveyGoalFragment()
+                //goToSurveyGoalFragment()
             } else {
                 Toast.makeText(requireContext(), "하나의 항목을 선택해주세요.", Toast.LENGTH_SHORT).show()
             }
@@ -163,13 +163,13 @@ class SurveyWorkFragment : Fragment() {
         animator.start()
     }
 
-    // SurveyGoalFragment로 이동
-    private fun goToSurveyGoalFragment() {
-        val fragmentTransaction = requireActivity().supportFragmentManager.beginTransaction()
-        fragmentTransaction.replace(R.id.main_container, SurveyGoalFragment())
-        fragmentTransaction.addToBackStack(null)
-        fragmentTransaction.commit()
-    }
+//    // SurveyGoalFragment로 이동
+//    private fun goToSurveyGoalFragment() {
+//        val fragmentTransaction = requireActivity().supportFragmentManager.beginTransaction()
+//        fragmentTransaction.replace(R.id.main_container, SurveyGoalFragment())
+//        fragmentTransaction.addToBackStack(null)
+//        fragmentTransaction.commit()
+//    }
 
     // SurveyBmiFragment로 이동
     private fun goToSurveyBmiFragment() {

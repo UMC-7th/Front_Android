@@ -11,7 +11,6 @@ import com.example.umc.R
 import com.example.umc.databinding.FragmentDailyDietBinding
 
 class DailyDietFragment : Fragment() {
-
     private var _binding: FragmentDailyDietBinding? = null
     private val binding get() = _binding!!
 
@@ -34,27 +33,49 @@ class DailyDietFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initializeAdapters()
-        setupRecyclerViews()// 전달된 데이터 수신
+        setupRecyclerViews()
 
         val month = arguments?.getInt("month") ?: 1
         val day = arguments?.getInt("day") ?: 1
-
-        // TextView의 텍스트 설정
-        binding.tvDailyDietToday.text = getString(R.string.daily_diet_day, month, day) // 여기서 데이터 사용
+        binding.tvDailyDietToday.text = getString(R.string.daily_diet_day, month, day)
     }
 
     private fun initializeAdapters() {
-        breakfastAdapter = MenuItemAdapter { item: MenuItem, position: Int ->
-            selectedBreakfastPosition = position
-        }
+        breakfastAdapter = MenuItemAdapter(
+            onClick = { item, position ->
+                selectedBreakfastPosition = position
+            },
+            onFavoriteChanged = { item, isFavorite ->
+                // 즐겨찾기 상태 변경 처리
+            },
+            onDietCompleteChanged = { item, isCompleted ->
+                // 식단 완료 상태 변경 처리
+            }
+        )
 
-        lunchAdapter = MenuItemAdapter { item: MenuItem, position: Int ->
-            selectedLunchPosition = position
-        }
+        lunchAdapter = MenuItemAdapter(
+            onClick = { item, position ->
+                selectedLunchPosition = position
+            },
+            onFavoriteChanged = { item, isFavorite ->
+                // 즐겨찾기 상태 변경 처리
+            },
+            onDietCompleteChanged = { item, isCompleted ->
+                // 식단 완료 상태 변경 처리
+            }
+        )
 
-        dinnerAdapter = MenuItemAdapter { item: MenuItem, position: Int ->
-            selectedDinnerPosition = position
-        }
+        dinnerAdapter = MenuItemAdapter(
+            onClick = { item, position ->
+                selectedDinnerPosition = position
+            },
+            onFavoriteChanged = { item, isFavorite ->
+                // 즐겨찾기 상태 변경 처리
+            },
+            onDietCompleteChanged = { item, isCompleted ->
+                // 식단 완료 상태 변경 처리
+            }
+        )
     }
 
     private fun setupRecyclerViews() {
