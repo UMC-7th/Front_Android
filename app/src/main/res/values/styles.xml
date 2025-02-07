@@ -39,4 +39,10 @@
     <color name="arrow_default_color">@color/white</color>
     <color name="arrow_pressed_color">@color/Primary_Orange1</color>
 
+    <style name="Signin">
+        <item name="colorControlActivated">#FF7300</item>
+        <item name="backgroundTint">@color/Primary_Orange1</item>
+        <item name="android:textColor">@color/Primary_Orange1</item>
+    </style>
+
 </resources>
