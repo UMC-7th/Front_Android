@@ -1,5 +1,6 @@
 package com.example.umc.Diet
 
+import android.graphics.Color
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -16,36 +17,82 @@ import com.example.umc.UserApi.RetrofitClient
 import com.example.umc.databinding.ItemMenuBinding
 import kotlinx.coroutines.launch
 
-class MenuItemAdapter(private val onClick: (MenuItem, Int) -> Unit) :
-    ListAdapter<MenuItem, MenuItemAdapter.ViewHolder>(DiffCallback()) {
+class MenuItemAdapter(
+    private val onClick: (MenuItem, Int) -> Unit,
+    private val onFavoriteChanged: ((MenuItem, Boolean) -> Unit)? = null,
+    private val onDietCompleteChanged: ((MenuItem, Boolean) -> Unit)? = null
+) : ListAdapter<MenuItem, MenuItemAdapter.ViewHolder>(DiffCallback()) {
 
-    private var selectedPosition = -1
+    private var selectedPosition = RecyclerView.NO_POSITION
 
     inner class ViewHolder(private val binding: ItemMenuBinding) :
         RecyclerView.ViewHolder(binding.root) {
+
 
         fun bind(menuItem: MenuItem) {
             binding.apply {
                 tvMenuName.text = menuItem.name
                 tvMenuCalories.text = menuItem.calories
 
-                // 이미지 로딩 (Glide 사용 시)
+                // 이미지 로딩
                 loadMealImage(menuItem.name, ivMenuImage)
 
-                // 선택 상태에 따른 테두리 설정
-                root.background = if (adapterPosition == selectedPosition) {
-                    ContextCompat.getDrawable(root.context, R.color.selector_home_menu_item)
-                } else {
-                    ContextCompat.getDrawable(root.context, R.color.selector_home_menu_item)
+                // 선택 상태 설정
+                root.isSelected = adapterPosition == selectedPosition
+
+                // 즐겨찾기 상태 설정
+                ivStar.setImageResource(
+                    if (menuItem.isFavorite) R.drawable.ic_star_filled
+                    else R.drawable.ic_star
+                )
+
+                // 식단 완료 버튼 상태 설정
+                btnDietComplete.isSelected = menuItem.isDietCompleted
+                btnDietComplete.setTextColor(
+                    if (menuItem.isDietCompleted) Color.WHITE
+                    else Color.parseColor("#FFFFFF")
+                )
+
+                btnDietComplete.apply {
+                    isSelected = menuItem.isDietCompleted
+                }
+                // 카드 클릭 리스너
+                root.setOnClickListener {
+                    val oldPosition = selectedPosition
+                    selectedPosition = adapterPosition
+                    notifyItemChanged(oldPosition)
+                    notifyItemChanged(selectedPosition)
+                    onClick(menuItem, adapterPosition)
                 }
 
-                root.setOnClickListener {
-                    selectedPosition = adapterPosition
-                    notifyDataSetChanged()
-                    onClick(menuItem, adapterPosition)
+                // 즐겨찾기 클릭 리스너
+                ivStar.setOnClickListener {
+                    menuItem.isFavorite = !menuItem.isFavorite
+                    ivStar.setImageResource(
+                        if (menuItem.isFavorite) R.drawable.ic_star_filled
+                        else R.drawable.ic_star
+                    )
+                    onFavoriteChanged?.invoke(menuItem, menuItem.isFavorite)
+                }
+
+                // 식단 완료 버튼 클릭 리스너
+                btnDietComplete.setOnClickListener {
+                    menuItem.isDietCompleted = !menuItem.isDietCompleted
+                    it.isSelected = menuItem.isDietCompleted
+                    btnDietComplete.setTextColor(
+                        if (menuItem.isDietCompleted) Color.WHITE
+                        else Color.parseColor("#666666")
+                    )
+                    onDietCompleteChanged?.invoke(menuItem, menuItem.isDietCompleted)
                 }
             }
         }
+    }
+
+    fun clearSelection() {
+        val oldPosition = selectedPosition
+        selectedPosition = RecyclerView.NO_POSITION
+        notifyItemChanged(oldPosition)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -69,7 +116,7 @@ class MenuItemAdapter(private val onClick: (MenuItem, Int) -> Unit) :
                     if (!imageUrl.isNullOrEmpty()) {
                         Glide.with(context)
                             .load(imageUrl)
-                            .into(imageView) // 이미지 뷰에 적용
+                            .into(imageView)
                     } else {
                         Log.e("MenuItemAdapter", "이미지 URL이 비어 있음")
                     }

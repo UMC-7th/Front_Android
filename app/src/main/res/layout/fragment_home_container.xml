@@ -51,7 +51,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="30dp"
+                android:layout_marginTop="40dp"
                 android:gravity="center_horizontal"
                 android:orientation="horizontal">
 
@@ -59,6 +59,7 @@
                     android:id="@+id/questionButton"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
+                    android:layout_marginTop="7dp"
                     android:layout_marginEnd="60dp"
                     android:background="?attr/selectableItemBackgroundBorderless"
                     android:src="@drawable/ic_question" />
@@ -69,6 +70,7 @@
                     android:layout_height="40dp"
                     android:background="@android:color/transparent"
                     app:tabGravity="fill"
+                    android:layout_marginEnd="10dp"
                     app:tabIndicatorColor="@color/white"
                     app:tabMode="fixed"
                     app:tabSelectedTextColor="@color/white"
@@ -78,7 +80,8 @@
                     android:id="@+id/settingsButton"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
-                    android:layout_marginStart="60dp"
+                    android:layout_marginStart="50dp"
+                    android:layout_marginTop="7dp"
                     android:background="?attr/selectableItemBackgroundBorderless"
                     android:src="@drawable/ic_setting" />
             </LinearLayout>

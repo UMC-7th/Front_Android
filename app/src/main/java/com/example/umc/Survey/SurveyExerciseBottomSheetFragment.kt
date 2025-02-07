@@ -67,7 +67,7 @@ class SurveyExerciseBottomSheetFragment(private val onSelectionDone: (String?) -
             selectedExerciseButton?.text?.toString()?.let { selectedExercise ->
                 onSelectionDone(selectedExercise)
             }
-            goToSurveyGoalFragment()  // 여기도 나중에 고쳐야 됨..!
+            //goToSurveyGoalFragment()  // 여기도 나중에 고쳐야 됨..!
             dismiss()
         }
 
@@ -109,14 +109,14 @@ class SurveyExerciseBottomSheetFragment(private val onSelectionDone: (String?) -
             ColorStateList.valueOf(Color.parseColor("#CDCDCD"))
     }
 
-    // 다음 페잊 -> 여기도 나중에 고쳐야 됨..!
-    // SurveyGoalFragment로 이동
-    private fun goToSurveyGoalFragment() {
-        val fragmentTransaction = requireActivity().supportFragmentManager.beginTransaction()
-        fragmentTransaction.replace(R.id.main_container, SurveyGoalFragment())
-        fragmentTransaction.addToBackStack(null)
-        fragmentTransaction.commit()
-    }
+//    // 다음 페잊 -> 여기도 나중에 고쳐야 됨..!
+//    // SurveyGoalFragment로 이동
+//    private fun goToSurveyGoalFragment() {
+//        val fragmentTransaction = requireActivity().supportFragmentManager.beginTransaction()
+//        fragmentTransaction.replace(R.id.main_container, SurveyGoalFragment())
+//        fragmentTransaction.addToBackStack(null)
+//        fragmentTransaction.commit()
+//    }
 
     // 이전 페이지
     // SurveyBmiFragment로 이동

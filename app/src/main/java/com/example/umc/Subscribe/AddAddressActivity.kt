@@ -1,4 +1,4 @@
-package com.example.subscribe
+package com.example.umc.subscribe
 
 import android.content.Intent
 import android.os.Bundle
@@ -8,7 +8,10 @@ import android.widget.ImageButton
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.subscribe.AddressActivity
+import com.example.subscribe.AddressAdapter
 import com.example.umc.R
+import com.example.umc.model.Address
 
 class AddAddressActivity : AppCompatActivity() {
     private lateinit var adapter: AddressAdapter

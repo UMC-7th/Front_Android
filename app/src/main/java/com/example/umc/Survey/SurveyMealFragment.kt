@@ -78,7 +78,7 @@ class SurveyMealFragment : Fragment() {
 
         // "이전 버튼" 클릭 시 SurveyGoalFragment로 이동
         previousButton.setOnClickListener {
-            goToSurveyGoalFragment()
+            //goToSurveyGoalFragment()
         }
 
         return view
@@ -126,12 +126,12 @@ class SurveyMealFragment : Fragment() {
         )
     }
 
-    private fun goToSurveyGoalFragment() {
-        val fragmentTransaction = requireActivity().supportFragmentManager.beginTransaction()
-        fragmentTransaction.replace(R.id.main_container, SurveyGoalFragment())
-        fragmentTransaction.addToBackStack(null)
-        fragmentTransaction.commit()
-    }
+//    private fun goToSurveyGoalFragment() {
+//        val fragmentTransaction = requireActivity().supportFragmentManager.beginTransaction()
+//        fragmentTransaction.replace(R.id.main_container, SurveyGoalFragment())
+//        fragmentTransaction.addToBackStack(null)
+//        fragmentTransaction.commit()
+//    }
 
     private fun goToSurveyAllergyFragment() {
         val fragmentTransaction = requireActivity().supportFragmentManager.beginTransaction()

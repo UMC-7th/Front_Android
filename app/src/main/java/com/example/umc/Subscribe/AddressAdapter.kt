@@ -13,6 +13,7 @@ import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.umc.R
+import com.example.umc.model.Address
 
 class AddressAdapter(
     private val addressList: List<Address>,

@@ -14,8 +14,6 @@ import android.view.WindowManager
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import com.example.umc.Mypage.MyFragment
-import com.example.umc.Diet.DietAddManualFragment
-import com.example.umc.Main.MainActivity
 import com.example.umc.R
 import com.example.umc.databinding.FragmentHomeContainerBinding
 import com.google.android.material.tabs.TabLayoutMediator
@@ -72,11 +70,13 @@ class HomeContainerFragment : Fragment() {
 
         binding.questionButton.setOnClickListener {
             val dialog = Dialog(requireContext(), R.style.DialogTheme)
-            dialog.setContentView(R.layout.dialog_info)
+            dialog.setContentView(R.layout.dialog_tooltip)
 
             dialog.window?.apply {
                 setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
                 setDimAmount(0.5f)
+
+
                 setLayout(
                     WindowManager.LayoutParams.MATCH_PARENT,
                     WindowManager.LayoutParams.MATCH_PARENT
@@ -93,10 +93,5 @@ class HomeContainerFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-    }
-
-    override fun onResume() {
-        super.onResume()
-        (activity as? MainActivity)?.hideTitle()
     }
 }

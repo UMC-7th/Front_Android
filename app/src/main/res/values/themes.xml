@@ -29,4 +29,15 @@
         <!-- 스플래시 스크린 이후 전환될 테마 지정 -->
         <item name="postSplashScreenTheme">@style/Theme.UMC</item>
     </style>
+
+    <!-- 식단 완료 버튼 스타일 -->
+    <style name="Widget.App.Button.Diet" parent="Widget.Material3.Button">
+        <item name="materialThemeOverlay">@null</item>
+        <item name="android:background">@drawable/bt_selector_diet_complete_button</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:fontFamily">@font/pretendard_medium</item>
+        <item name="android:stateListAnimator">@null</item>
+        <item name="android:minHeight">36dp</item>
+        <item name="backgroundTint">@null</item>
+    </style>
 </resources>
