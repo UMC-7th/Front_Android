@@ -109,7 +109,7 @@ class MainActivity : AppCompatActivity() {
         binding.bottomNavigationView.visibility = View.GONE
     }
 
-    private fun showBottomBar() {
+    fun showBottomBar() {
         binding.bottomNavigationView.visibility = View.VISIBLE
     }
 }

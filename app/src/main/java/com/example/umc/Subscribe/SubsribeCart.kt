@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import com.example.umc.Main.MainActivity
 import com.example.umc.R
 import com.example.umc.model.CartRequest
 import com.example.umc.Subscribe.RetrofitClient
@@ -38,7 +39,7 @@ class SubscribeCart : Fragment() {
 
         binding.creditbutton.setOnClickListener {
             val transaction = requireActivity().supportFragmentManager.beginTransaction()
-            transaction.replace(R.id.fragmentContainer, Subscribecredit())
+            transaction.replace(R.id.main_container, Subscribecredit())
             transaction.addToBackStack(null)
             transaction.commit()
         }
@@ -141,5 +142,11 @@ class SubscribeCart : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    override fun onResume() {
+        super.onResume()
+        (activity as? MainActivity)?.showTitle("장바구니", true)
+        (activity as? MainActivity)?.showBottomBar()
     }
 }
