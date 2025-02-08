@@ -13,6 +13,7 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
+import com.example.umc.Main.MainActivity
 import com.example.umc.Mypage.MyFragment
 import com.example.umc.R
 import com.example.umc.databinding.FragmentHomeContainerBinding
@@ -96,5 +97,10 @@ class HomeContainerFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    override fun onResume() {
+        super.onResume()
+        (activity as? MainActivity)?.hideTitle()
     }
 }

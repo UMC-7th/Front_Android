@@ -58,11 +58,11 @@
  <com.prolificinteractive.materialcalendarview.MaterialCalendarView
      android:id="@+id/calendar_view"
      android:layout_width="match_parent"
-     android:layout_height="320dp"
+     android:layout_height="wrap_content"
      android:layout_marginHorizontal="@dimen/spacing_20"
      android:layout_marginTop="@dimen/spacing_20"
      android:background="@drawable/bg_calendar"
-     android:padding="15dp"
+     android:padding="30dp"
      android:theme="@style/CalendarViewCustom"
      app:mcv_showOtherDates="all"
      app:mcv_firstDayOfWeek="sunday"

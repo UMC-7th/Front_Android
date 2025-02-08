@@ -23,6 +23,8 @@
     <View
         android:layout_width="1dp"
         android:layout_height="match_parent"
+        android:layout_gravity="fill_vertical"
+        android:minHeight="40dp"
         android:background="@color/Primary_Orange1"
         android:layout_rowSpan="1" />
 
@@ -42,6 +44,8 @@
     <View
         android:layout_width="1dp"
         android:layout_height="match_parent"
+        android:minHeight="40dp"
+        android:layout_gravity="fill_vertical"
         android:background="@color/Primary_Orange1"
         android:layout_rowSpan="1" />
 
@@ -62,8 +66,10 @@
     <View
         android:layout_width="1dp"
         android:layout_height="match_parent"
+        android:minHeight="40dp"
+        android:layout_gravity="fill_vertical"
         android:background="@color/Primary_Orange1"
-        android:layout_rowSpan="1"/>
+        android:layout_rowSpan="1" />
 
     <!-- Right Text: Nutrient Value -->
     <TextView
@@ -81,9 +87,11 @@
 
     <View
         android:layout_width="1dp"
+        android:minHeight="40dp"
+        android:layout_gravity="fill_vertical"
         android:layout_height="match_parent"
         android:background="@color/Primary_Orange1"
-        android:layout_rowSpan="1"/>
+        android:layout_rowSpan="1" />
 
     <ImageButton
         android:id="@+id/ib_delete"
