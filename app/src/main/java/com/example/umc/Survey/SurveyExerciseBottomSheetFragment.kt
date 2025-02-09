@@ -1,6 +1,7 @@
 package com.example.umc.Survey
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Bundle
@@ -10,6 +11,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageButton
 import androidx.fragment.app.activityViewModels
+import com.example.umc.Main.MainActivity
 import com.example.umc.R
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.button.MaterialButton
@@ -67,7 +69,6 @@ class SurveyExerciseBottomSheetFragment(private val onSelectionDone: (String?) -
             selectedExerciseButton?.text?.toString()?.let { selectedExercise ->
                 onSelectionDone(selectedExercise)
             }
-            //goToSurveyGoalFragment()  // 여기도 나중에 고쳐야 됨..!
             dismiss()
         }
 
@@ -109,6 +110,16 @@ class SurveyExerciseBottomSheetFragment(private val onSelectionDone: (String?) -
             ColorStateList.valueOf(Color.parseColor("#CDCDCD"))
     }
 
+
+    // 다음 페이지는 일단 식단으로 넘어가게 하겠습니다
+    // SurveyGoalFragment로 이동
+    private fun goToSurveyGoalFragment() {
+        val fragmentTransaction = requireActivity().supportFragmentManager.beginTransaction()
+        fragmentTransaction.replace(R.id.main_container, SurveyGoalFragment())
+        fragmentTransaction.addToBackStack(null)
+        fragmentTransaction.commit()
+    }
+
 //    // 다음 페잊 -> 여기도 나중에 고쳐야 됨..!
 //    // SurveyGoalFragment로 이동
 //    private fun goToSurveyGoalFragment() {
@@ -118,11 +129,20 @@ class SurveyExerciseBottomSheetFragment(private val onSelectionDone: (String?) -
 //        fragmentTransaction.commit()
 //    }
 
+
+    // SurveyGoalFragment로 이동 대신 MainActivity로 이동하도록 변경
+    private fun goToMainActivity() {
+        val intent = Intent(requireContext(), MainActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        startActivity(intent)
+    }
+
+
     // 이전 페이지
     // SurveyBmiFragment로 이동
     private fun goToSurveyBmiFragment() {
         val fragmentTransaction = requireActivity().supportFragmentManager.beginTransaction()
-        fragmentTransaction.replace(R.id.main_container, SurveyBmiFragment())
+        fragmentTransaction.replace(R.id.survey_container, SurveyBmiFragment())
         fragmentTransaction.addToBackStack(null)
         fragmentTransaction.commit()
     }
@@ -130,7 +150,7 @@ class SurveyExerciseBottomSheetFragment(private val onSelectionDone: (String?) -
     // SurveyWorkFragment로 이동 (X 버튼 클릭 시)
     private fun goToSurveyWorkFragment() {
         val fragmentTransaction = requireActivity().supportFragmentManager.beginTransaction()
-        fragmentTransaction.replace(R.id.main_container, SurveyWorkFragment())
+        fragmentTransaction.replace(R.id.survey_container, SurveyWorkFragment())
         fragmentTransaction.addToBackStack(null)
         fragmentTransaction.commit()
     }

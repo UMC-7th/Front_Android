@@ -126,7 +126,7 @@ class SurveyBmiFragment : Fragment() {
     //다음 페이지
     private fun goToSurveyWorkFragment() {
         val fragmentTransaction = requireActivity().supportFragmentManager.beginTransaction()
-        fragmentTransaction.replace(R.id.main_container, SurveyWorkFragment()) // SurveyWorkFragment로 이동
+        fragmentTransaction.replace(R.id.survey_container, SurveyWorkFragment())
         fragmentTransaction.addToBackStack(null)
         fragmentTransaction.commit()
     }
@@ -134,7 +134,7 @@ class SurveyBmiFragment : Fragment() {
     //이전 페이지
     private fun goToSurveyGoalWeightFragment() {
         val fragmentTransaction = requireActivity().supportFragmentManager.beginTransaction()
-        fragmentTransaction.replace(R.id.main_container, SurveyGoalWeightFragment()) // SurveyGoalWeightFragment로 이동
+        fragmentTransaction.replace(R.id.survey_container, SurveyGoalWeightFragment())
         fragmentTransaction.addToBackStack(null)
         fragmentTransaction.commit()
     }

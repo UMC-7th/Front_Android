@@ -13,6 +13,7 @@ import androidx.fragment.app.commit
 import com.example.umc.Main.MainActivity
 import com.example.umc.R
 import com.example.umc.SignUp.SignUpFragment
+import com.example.umc.Survey.SurveyGoalFragment
 import com.example.umc.UserApi.LoginResponse
 import com.example.umc.UserApi.UserRepository
 import com.example.umc.databinding.FragmentSigninBinding
@@ -32,8 +33,17 @@ class LoginActivity : AppCompatActivity() {
         // ViewBinding 설정
         binding = FragmentSigninBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        if (savedInstanceState == null) {
+            clearBackStack()
+        }
 
         setupUI()
+    }
+    private fun clearBackStack() {
+        // 백스택에 있는 모든 프래그먼트 제거
+        for (i in 0 until supportFragmentManager.backStackEntryCount) {
+            supportFragmentManager.popBackStack()
+        }
     }
 
     private fun setupUI() {
@@ -111,38 +121,27 @@ class LoginActivity : AppCompatActivity() {
         isPasswordVisible = !isPasswordVisible
         binding.passwordLoginEditText.text?.let { binding.passwordLoginEditText.setSelection(it.length) } // 커서를 끝으로 이동
     }
+
+    // 설문조사 임시코드
     private fun performLogin(email: String, password: String) {
-        // 로그인 요청 보내기
         userRepository.login(email, password).enqueue(object : retrofit2.Callback<LoginResponse> {
             override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
-
                 Log.d("Login", "Response Code: ${response.code()}")
-                Log.d("Login", "Response Body: ${response.body()}")
-                Log.d("Login", "Error Body: ${response.errorBody()?.string()}")
 
                 if (response.isSuccessful) {
-                    Toast.makeText(this@LoginActivity, "로그인 성공!", Toast.LENGTH_SHORT).show()
-
-                    // 로그인 성공 시, accessToken을 SharedPreferences에 저장
                     val accessToken = response.body()?.success?.accessToken
 
                     if (accessToken != null) {
-                        // SharedPreferences에 토큰 저장
                         UserRepository.saveAuthToken(this@LoginActivity, accessToken)
 
-                        // 로그인 후 MainActivity로 이동
-                        val intent = Intent(this@LoginActivity, MainActivity::class.java)
-                        intent.putExtra("ACCESS_TOKEN", accessToken) // accessToken을 Intent에 담아서 전달
-                        startActivity(intent)
-                        finish() // LoginActivity 종료 (뒤로 가기 방지)
+                        // 사용자가 설문조사를 완료했는지 확인하는 로직
+                        checkSurveyStatus(accessToken)
                     } else {
-                        // accessToken이 없으면 적절한 처리를 추가
                         Toast.makeText(this@LoginActivity, "토큰이 없습니다.", Toast.LENGTH_SHORT).show()
                     }
                 } else {
                     Toast.makeText(this@LoginActivity, "로그인 실패: ${response.errorBody()?.string()}", Toast.LENGTH_SHORT).show()
                 }
-
             }
 
             override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
@@ -150,6 +149,83 @@ class LoginActivity : AppCompatActivity() {
                 Toast.makeText(this@LoginActivity, "네트워크 오류: ${t.message}", Toast.LENGTH_SHORT).show()
             }
         })
+    }
+
+
+    //원래 코드
+//    private fun performLogin(email: String, password: String) {
+//        // 로그인 요청 보내기
+//        userRepository.login(email, password).enqueue(object : retrofit2.Callback<LoginResponse> {
+//            override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
+//
+//                Log.d("Login", "Response Code: ${response.code()}")
+//                Log.d("Login", "Response Body: ${response.body()}")
+//                Log.d("Login", "Error Body: ${response.errorBody()?.string()}")
+//
+//                if (response.isSuccessful) {
+//                    Toast.makeText(this@LoginActivity, "로그인 성공!", Toast.LENGTH_SHORT).show()
+//
+//                    // 로그인 성공 시, accessToken을 SharedPreferences에 저장
+//                    val accessToken = response.body()?.success?.accessToken
+//
+//                    if (accessToken != null) {
+//                        // SharedPreferences에 토큰 저장
+//                        UserRepository.saveAuthToken(this@LoginActivity, accessToken)
+//
+//                        // 로그인 후 MainActivity로 이동
+//                        val intent = Intent(this@LoginActivity, MainActivity::class.java)
+//                        intent.putExtra("ACCESS_TOKEN", accessToken) // accessToken을 Intent에 담아서 전달
+//                        startActivity(intent)
+//                        finish() // LoginActivity 종료 (뒤로 가기 방지)
+//                    } else {
+//                        // accessToken이 없으면 적절한 처리를 추가
+//                        Toast.makeText(this@LoginActivity, "토큰이 없습니다.", Toast.LENGTH_SHORT).show()
+//                    }
+//                } else {
+//                    Toast.makeText(this@LoginActivity, "로그인 실패: ${response.errorBody()?.string()}", Toast.LENGTH_SHORT).show()
+//                }
+//
+//            }
+//
+//            override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
+//                Log.e("Login", "Network Error", t)
+//                Toast.makeText(this@LoginActivity, "네트워크 오류: ${t.message}", Toast.LENGTH_SHORT).show()
+//            }
+//        })
+//    }
+    private fun checkSurveyStatus(accessToken: String) {
+        // TODO: API를 통해 사용자의 설문조사 완료 여부를 확인
+        // 임시로 설문조사를 하지 않았다고 가정
+        val hasSurveyCompleted = false
+
+        if (!hasSurveyCompleted) {
+            navigateToSurvey()
+        } else {
+            navigateToMain(accessToken)
+        }
+    }
+
+    private fun navigateToSurvey() {
+        // 기존 프래그먼트들을 모두 제거
+        clearBackStack()
+
+        // 새로운 컨테이너 레이아웃으로 전환
+        setContentView(R.layout.activity_survey_container)
+
+        // SurveyGoalFragment 추가
+        supportFragmentManager.commit {
+            setReorderingAllowed(true)
+            replace(R.id.survey_container, SurveyGoalFragment())
+            // 설문 진행 중에는 백스택에 추가하지 않음
+        }
+    }
+
+    private fun navigateToMain(accessToken: String) {
+        val intent = Intent(this@LoginActivity, MainActivity::class.java)
+        intent.putExtra("ACCESS_TOKEN", accessToken)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        startActivity(intent)
+        finish()
     }
 
 

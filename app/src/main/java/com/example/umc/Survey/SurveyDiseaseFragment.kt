@@ -118,14 +118,14 @@ class SurveyDiseaseFragment : Fragment() {
 
     private fun goToSurveyAllergyFragment() {
         val fragmentTransaction = requireActivity().supportFragmentManager.beginTransaction()
-        fragmentTransaction.replace(R.id.main_container, SurveyAllergyFragment())
+        fragmentTransaction.replace(R.id.survey_container, SurveyAllergyFragment())
         fragmentTransaction.addToBackStack(null)
         fragmentTransaction.commit()
     }
 
     private fun goToSurveyPeopleFragment() {
         val fragmentTransaction = requireActivity().supportFragmentManager.beginTransaction()
-        fragmentTransaction.replace(R.id.main_container, SurveyPeopleFragment())
+        fragmentTransaction.replace(R.id.survey_container, SurveyPeopleFragment())
         fragmentTransaction.addToBackStack(null)
         fragmentTransaction.commit()
     }

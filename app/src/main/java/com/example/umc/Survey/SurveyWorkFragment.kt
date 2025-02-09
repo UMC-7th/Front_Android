@@ -1,6 +1,7 @@
 package com.example.umc.Survey
 
 import android.animation.ObjectAnimator
+import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Bundle
@@ -16,6 +17,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import com.example.umc.Main.MainActivity
 import com.example.umc.R
 import com.google.android.material.button.MaterialButton
 
@@ -106,7 +108,11 @@ class SurveyWorkFragment : Fragment() {
         nextButton.setOnClickListener {
             if (selectedWorkButton != null && selectedExercise != null) {
                 updateProgressBar()
+
+                goToMainActivity()
+
                 //goToSurveyGoalFragment()
+
             } else {
                 Toast.makeText(requireContext(), "하나의 항목을 선택해주세요.", Toast.LENGTH_SHORT).show()
             }
@@ -163,6 +169,14 @@ class SurveyWorkFragment : Fragment() {
         animator.start()
     }
 
+
+    // SurveyGoalFragment로 이동 대신 MainActivity로 이동하도록 변경
+    private fun goToMainActivity() {
+        val intent = Intent(requireContext(), MainActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        startActivity(intent)
+    }
+
 //    // SurveyGoalFragment로 이동
 //    private fun goToSurveyGoalFragment() {
 //        val fragmentTransaction = requireActivity().supportFragmentManager.beginTransaction()
@@ -171,10 +185,12 @@ class SurveyWorkFragment : Fragment() {
 //        fragmentTransaction.commit()
 //    }
 
+
+
     // SurveyBmiFragment로 이동
     private fun goToSurveyBmiFragment() {
         val fragmentTransaction = requireActivity().supportFragmentManager.beginTransaction()
-        fragmentTransaction.replace(R.id.main_container, SurveyBmiFragment())
+        fragmentTransaction.replace(R.id.survey_container, SurveyBmiFragment())
         fragmentTransaction.addToBackStack(null)
         fragmentTransaction.commit()
     }
