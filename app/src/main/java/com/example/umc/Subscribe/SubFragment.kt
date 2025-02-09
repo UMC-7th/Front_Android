@@ -12,6 +12,8 @@ import com.example.umc.R
 import com.example.umc.cart.SubscribeCart
 import com.example.umc.databinding.FragmentSubBinding
 import com.example.umc.model.SubItem
+import com.example.umc.Subscribe.SubAdapter
+import com.example.umc.Subscribe.SubscriptionManageFragment
 
 class SubFragment : Fragment() {
 

@@ -20,7 +20,7 @@ class DietSubFragment : Fragment(), OnDietCheckedChangeListener {
     private var _binding: FragmentDietSubBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var dailyDietAdapter: DietSubAdapter
+    private lateinit var dailyDietAdapter: SubscribeDietAdapter
     private lateinit var dietList: List<DietItem>
 
     override fun onCreateView(
@@ -43,7 +43,7 @@ class DietSubFragment : Fragment(), OnDietCheckedChangeListener {
             DietItem("01.06", "일", "콩나물 김치국, 제육볶음, 콩자반", "돈까스 냉모밀 세트, 새우튀김, 식혜", "제육볶음, 파래무침, 멸치볶음, 미역국")
         )
 
-        dailyDietAdapter = DietSubAdapter(dietList, this)
+        dailyDietAdapter = SubscribeDietAdapter(dietList, this)
         binding.recyclerDailyDiet.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerDailyDiet.adapter = dailyDietAdapter
 

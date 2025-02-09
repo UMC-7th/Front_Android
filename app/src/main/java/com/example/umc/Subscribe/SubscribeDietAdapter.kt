@@ -1,13 +1,14 @@
-package com.example.umc.Diet
+package com.example.umc.Subscribe
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.example.umc.Diet.DietItem
 import com.example.umc.R
 import com.example.umc.databinding.ItemDietSubBinding
 
-class DietSubAdapter(private val dietList: List<DietItem>) :
-    RecyclerView.Adapter<DietSubAdapter.DietViewHolder>() {
+class SubscribeDietAdapter(private val dietList: List<DietItem>, private val listener: OnDietCheckedChangeListener) :
+    RecyclerView.Adapter<SubscribeDietAdapter.DietViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DietViewHolder {
         val binding = ItemDietSubBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -18,6 +19,7 @@ class DietSubAdapter(private val dietList: List<DietItem>) :
         val dietItem = dietList[position]
         holder.bind(dietItem)
     }
+
 
     override fun getItemCount(): Int = dietList.size
 
@@ -65,6 +67,12 @@ class DietSubAdapter(private val dietList: List<DietItem>) :
             binding.root.setBackgroundResource(
                 if (isAnyChecked) R.drawable.bg_diet_sub_selected else R.drawable.bg_diet_sub_unselected
             )
+            listener.onDietCheckedChanged(isAnyChecked)
         }
     }
+
+}
+
+interface OnDietCheckedChangeListener {
+    fun onDietCheckedChanged(isAnyChecked: Boolean)
 }

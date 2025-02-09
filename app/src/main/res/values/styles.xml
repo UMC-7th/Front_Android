@@ -37,7 +37,6 @@
     <color name="arrow_default_color">@color/white</color>
     <color name="arrow_pressed_color">@color/Primary_Orange1</color>
 
-
     <style name="DialogTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="android:windowTranslucentStatus">true</item>
         <item name="android:windowTranslucentNavigation">true</item>
