@@ -32,8 +32,8 @@ class MyFragment : Fragment() {
     private fun initializeViews() {
         binding.apply {
             // 프로필 정보 설정
-            tvName.text = "토미"
-            tvProfileManage.text = "내 정보 관리"
+            binding.tvName.text = "토미"
+            binding.tvProfileManage.text = "내 정보 관리"
             //ivProfile.setImageResource(R.drawable.default_profile)
 
             // 건강 점수 설정
@@ -46,7 +46,7 @@ class MyFragment : Fragment() {
             // 프로필 관리 클릭 리스너
             tvProfileManage.setOnClickListener {
                 parentFragmentManager.beginTransaction()
-                    .replace(R.id.fragment_container, MyFragmentInfo()) // fragment_container는 MainActivity의 Fragment 배치 영역 ID
+                    .replace(R.id.fragment_my_container, MyFragmentInfo()) // fragment_container는 MainActivity의 Fragment 배치 영역 ID
                     .addToBackStack(null) // 뒤로 가기 가능하도록 추가
                     .commit()
             }

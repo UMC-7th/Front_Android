@@ -61,7 +61,6 @@
 
         <com.google.android.material.textfield.TextInputLayout
             app:hintTextColor="@color/Primary_Orange1"
-            style="@style/Signin"
             app:helperTextTextColor="@color/Primary_Orange1"
             android:backgroundTint="@color/Primary_Orange1"
             android:id="@+id/emailLoginInputLayout"
