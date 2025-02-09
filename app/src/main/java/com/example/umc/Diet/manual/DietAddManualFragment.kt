@@ -60,6 +60,7 @@ class DietAddManualFragment : Fragment(R.layout.fragment_diet_add_manual) {
                 val selectedDay = dateList[position].replace("일", "").toInt()
                 val dateStr = "$currentYear-${"%02d".format(currentMonth)}-${"%02d".format(selectedDay)}T00:00:00.000Z"
                 selectedDate = dateStr
+                dateSpinner.setBackgroundResource(R.drawable.bg_time_selected)
                 Log.d("MealLogging", "선택한 날짜: $selectedDate")
             }
 
@@ -81,7 +82,7 @@ class DietAddManualFragment : Fragment(R.layout.fragment_diet_add_manual) {
 
                 timeButtons.forEach { btn ->
                     btn.setBackgroundColor(
-                        if (btn == button) resources.getColor(R.color.Gray4, null)
+                        if (btn == button) resources.getColor(R.color.Primary_Orange1, null)
                         else resources.getColor(R.color.Gray7, null)
                     )
                 }
