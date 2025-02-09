@@ -1,6 +1,3 @@
-
-
-// SubscriptionHistoryFragment.kt
 package com.example.umc.Subscribe
 
 import android.os.Bundle
@@ -22,12 +19,14 @@ class SubscriptionHistoryFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        (activity as? MainActivity)?.showTitle("구독 내역", true)
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        // MainActivity에서 hideTitle 메서드가 있는지 확인하세요
-        (activity as? MainActivity)?.hideTitle()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        (activity as? MainActivity)?.showTitle("구독 내역", true)
     }
 }

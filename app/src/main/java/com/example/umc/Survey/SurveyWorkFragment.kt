@@ -108,7 +108,11 @@ class SurveyWorkFragment : Fragment() {
         nextButton.setOnClickListener {
             if (selectedWorkButton != null && selectedExercise != null) {
                 updateProgressBar()
+
                 goToMainActivity()
+
+                //goToSurveyGoalFragment()
+
             } else {
                 Toast.makeText(requireContext(), "하나의 항목을 선택해주세요.", Toast.LENGTH_SHORT).show()
             }
@@ -165,12 +169,22 @@ class SurveyWorkFragment : Fragment() {
         animator.start()
     }
 
+
     // SurveyGoalFragment로 이동 대신 MainActivity로 이동하도록 변경
     private fun goToMainActivity() {
         val intent = Intent(requireContext(), MainActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)
     }
+
+//    // SurveyGoalFragment로 이동
+//    private fun goToSurveyGoalFragment() {
+//        val fragmentTransaction = requireActivity().supportFragmentManager.beginTransaction()
+//        fragmentTransaction.replace(R.id.main_container, SurveyGoalFragment())
+//        fragmentTransaction.addToBackStack(null)
+//        fragmentTransaction.commit()
+//    }
+
 
 
     // SurveyBmiFragment로 이동

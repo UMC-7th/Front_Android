@@ -69,7 +69,6 @@ class SurveyExerciseBottomSheetFragment(private val onSelectionDone: (String?) -
             selectedExerciseButton?.text?.toString()?.let { selectedExercise ->
                 onSelectionDone(selectedExercise)
             }
-            goToMainActivity()
             dismiss()
         }
 
@@ -111,6 +110,7 @@ class SurveyExerciseBottomSheetFragment(private val onSelectionDone: (String?) -
             ColorStateList.valueOf(Color.parseColor("#CDCDCD"))
     }
 
+
     // 다음 페이지는 일단 식단으로 넘어가게 하겠습니다
     // SurveyGoalFragment로 이동
     private fun goToSurveyGoalFragment() {
@@ -119,6 +119,16 @@ class SurveyExerciseBottomSheetFragment(private val onSelectionDone: (String?) -
         fragmentTransaction.addToBackStack(null)
         fragmentTransaction.commit()
     }
+
+//    // 다음 페잊 -> 여기도 나중에 고쳐야 됨..!
+//    // SurveyGoalFragment로 이동
+//    private fun goToSurveyGoalFragment() {
+//        val fragmentTransaction = requireActivity().supportFragmentManager.beginTransaction()
+//        fragmentTransaction.replace(R.id.main_container, SurveyGoalFragment())
+//        fragmentTransaction.addToBackStack(null)
+//        fragmentTransaction.commit()
+//    }
+
 
     // SurveyGoalFragment로 이동 대신 MainActivity로 이동하도록 변경
     private fun goToMainActivity() {

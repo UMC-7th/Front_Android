@@ -5,13 +5,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.umc.Main.MainActivity
 import com.example.umc.R
 import com.example.umc.databinding.FragmentDailyDietBinding
 
 class DailyDietFragment : Fragment() {
-
     private var _binding: FragmentDailyDietBinding? = null
     private val binding get() = _binding!!
 
@@ -34,27 +35,52 @@ class DailyDietFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initializeAdapters()
-        setupRecyclerViews()// 전달된 데이터 수신
+        setupRecyclerViews()
 
         val month = arguments?.getInt("month") ?: 1
         val day = arguments?.getInt("day") ?: 1
-
-        // TextView의 텍스트 설정
-        binding.tvDailyDietToday.text = getString(R.string.daily_diet_day, month, day) // 여기서 데이터 사용
+        binding.tvDailyDietToday.text = getString(R.string.daily_diet_day, month, day)
     }
 
     private fun initializeAdapters() {
-        breakfastAdapter = MenuItemAdapter { item: MenuItem, position: Int ->
-            selectedBreakfastPosition = position
-        }
+        breakfastAdapter = MenuItemAdapter(
+            onClick = { item, position ->
+                selectedBreakfastPosition = position
+                onMenuItemClicked(item, "아침")
+            },
+            onFavoriteChanged = { item, isFavorite ->
+                // 즐겨찾기 상태 변경 처리
+            },
+            onDietCompleteChanged = { item, isCompleted ->
+                // 식단 완료 상태 변경 처리
+            }
+        )
 
-        lunchAdapter = MenuItemAdapter { item: MenuItem, position: Int ->
-            selectedLunchPosition = position
-        }
+        lunchAdapter = MenuItemAdapter(
+            onClick = { item, position ->
+                selectedLunchPosition = position
+                onMenuItemClicked(item, "점심")
+            },
+            onFavoriteChanged = { item, isFavorite ->
+                // 즐겨찾기 상태 변경 처리
+            },
+            onDietCompleteChanged = { item, isCompleted ->
+                // 식단 완료 상태 변경 처리
+            }
+        )
 
-        dinnerAdapter = MenuItemAdapter { item: MenuItem, position: Int ->
-            selectedDinnerPosition = position
-        }
+        dinnerAdapter = MenuItemAdapter(
+            onClick = { item, position ->
+                selectedDinnerPosition = position
+                onMenuItemClicked(item, "저녁")
+            },
+            onFavoriteChanged = { item, isFavorite ->
+                // 즐겨찾기 상태 변경 처리
+            },
+            onDietCompleteChanged = { item, isCompleted ->
+                // 식단 완료 상태 변경 처리
+            }
+        )
     }
 
     private fun setupRecyclerViews() {
@@ -82,6 +108,25 @@ class DailyDietFragment : Fragment() {
         }
     }
 
+    private fun onMenuItemClicked(item: MenuItem, mealTime: String) {
+        val dietDetailFragment = DietDetailFragment()
+
+        val bundle = Bundle()
+        bundle.putString("name", item.name)
+        bundle.putString("calories", item.calories)
+        dietDetailFragment.arguments = bundle
+
+        val mainActivity = activity as? MainActivity
+        mainActivity?.showTitle(mealTime, true)
+        mainActivity?.hideBottomBar()
+
+        val transaction: FragmentTransaction = parentFragmentManager.beginTransaction()
+        transaction.replace(R.id.main_container, dietDetailFragment)
+        transaction.addToBackStack(null)
+        transaction.commit()
+
+    }
+
     private fun getDummyMenuItems(): List<MenuItem> {
         return listOf(
             MenuItem("image_url1", "제육볶음 도시락", "560Kcal"),
@@ -94,5 +139,13 @@ class DailyDietFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    override fun onResume() {
+        super.onResume()
+        val month = arguments?.getInt("month") ?: 1
+        val day = arguments?.getInt("day") ?: 1
+        val mainActivity = activity as? MainActivity
+        mainActivity?.showTitle(getString(R.string.daily_diet_day, month, day), true)
     }
 }

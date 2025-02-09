@@ -5,76 +5,88 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentTransaction
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.umc.Main.MainActivity
 import com.example.umc.R
 import com.example.umc.cart.SubscribeCart
-
-
-// SubFragment.kt
-
+import com.example.umc.databinding.FragmentSubBinding
+import com.example.umc.model.SubItem
 
 class SubFragment : Fragment() {
-    private var param1: String? = null
-    private var param2: String? = null
 
-    companion object {
-        private const val ARG_PARAM1 = "param1"
-        private const val ARG_PARAM2 = "param2"
+    private var _binding: FragmentSubBinding? = null
+    private val binding get() = _binding!!
 
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            SubFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
+    private lateinit var subAdapter: SubAdapter
+    private lateinit var subList: List<SubItem>
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
+        inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_subscribe_cart, container, false)
+        _binding = FragmentSubBinding.inflate(inflater, container, false)
+        return binding.root
     }
-
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initializeViews()
-        setupListeners()
 
-        // 구독관리 페이지에서 바로 장바구니로 이동
-        parentFragmentManager.beginTransaction()
-            .replace(R.id.main_container, SubscribeCart())
-            .addToBackStack(null)
-            .commit()
+        subList = listOf(
+            SubItem("맛있는 일상 음식 구독", "누구나 좋아하는 맛있는 일상 음식을 구독해보세요!"),
+            SubItem("다이어트 식단 구독", "맛있는 다이어트 식단을 정기 배송받아 보세요!"),
+            SubItem("건강 음식 구독", "당뇨, 고혈압 등 지병이 있는 분들께 추천해요!")
+        )
+
+        subAdapter = SubAdapter(subList) { subItem ->
+
+            val fragmentDietSubFragment = DietSubFragment()
+            val bundle = Bundle()
+            bundle.putString("item1", subItem.item1)
+            bundle.putString("item2", subItem.item2)
+            fragmentDietSubFragment.arguments = bundle
+
+            val transaction: FragmentTransaction = parentFragmentManager.beginTransaction()
+            transaction.replace(R.id.main_container, fragmentDietSubFragment)
+            transaction.addToBackStack(null)
+            transaction.commit()
+        }
+
+        binding.rvSubItem.layoutManager = LinearLayoutManager(context)
+        binding.rvSubItem.adapter = subAdapter
+
+        // bt_manage_sub 클릭 리스너 설정
+        binding.llManageSubscription.setOnClickListener {
+            navigateToSubscriptionManage()
+        }
+
+        binding.llCart.setOnClickListener {
+            navigateToCart()
+        }
     }
-//    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-//        super.onViewCreated(view, savedInstanceState)
-//        initializeViews()
-//        setupListeners()
-//
-//        // 구독관리 프래그먼트로 전환
-//        parentFragmentManager.beginTransaction()
-//            .replace(R.id.main_container, SubscriptionManageFragment())
-//            .addToBackStack(null)
-//            .commit()
-//    }
 
-    private fun initializeViews() {
-        // View 초기화 코드
+    private fun navigateToSubscriptionManage() {
+        val transaction: FragmentTransaction = parentFragmentManager.beginTransaction()
+        transaction.replace(R.id.main_container, SubscriptionManageFragment())
+        transaction.addToBackStack(null)
+        transaction.commit()
     }
 
-    private fun setupListeners() {
-        // 이벤트 리스너 설정
+    private fun navigateToCart() {
+        val transaction: FragmentTransaction = parentFragmentManager.beginTransaction()
+        transaction.replace(R.id.main_container, SubscribeCart())
+        transaction.addToBackStack(null)
+        transaction.commit()
+    }
+
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null // Prevent memory leak
+    }
+
+    override fun onResume() {
+        super.onResume()
+        (activity as? MainActivity)?.hideTitle()
     }
 }

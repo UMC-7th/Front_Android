@@ -63,9 +63,6 @@ class DietDetailFragment : Fragment() {
         }
 
         // 더미 데이터
-        val dummyPrice = 4500 // 예상 가격
-
-        // 더미 데이터
         val nutritionList = listOf(
             Nutrition("계란", "70"),
             Nutrition("식빵", "80"),

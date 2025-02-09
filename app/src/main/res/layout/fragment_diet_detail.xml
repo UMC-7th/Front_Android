@@ -2,7 +2,8 @@
 <androidx.core.widget.NestedScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@android:color/white">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -79,6 +80,7 @@
 
             <!-- 제목 -->
             <TextView
+                android:id="@+id/tv_recipe_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/diet_title"
@@ -173,6 +175,7 @@
                     android:text="@string/diet_price_contents"
                     android:textSize="15sp"
                     android:layout_marginStart="5dp"/>
+
             </LinearLayout>
 
             <LinearLayout
@@ -270,11 +273,22 @@
                 app:layout_constraintTop_toBottomOf="@id/recyclerNutrition"
                 app:layout_constraintStart_toStartOf="parent" />
 
+            <RatingBar
+                android:id="@+id/rating_bar"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:isIndicator="true"
+                android:numStars="5"
+                android:rating="2"
+                android:stepSize="1"
+                style="@style/CustomRatingBar"/>
+
+
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_marginTop="16dp">
+                android:layout_marginTop="20dp">
 
                 <TextView
                     android:id="@+id/text_ingredients_title"
@@ -297,7 +311,7 @@
             </LinearLayout>
 
             <TextView
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="10dp"
                 android:id="@+id/tv_ingredients"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -305,7 +319,6 @@
                 android:textSize="14sp" />
 
             <TextView
-                android:id="@+id/tv_recipe_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/diet_recipe"

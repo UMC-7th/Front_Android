@@ -4,8 +4,6 @@
     <!-- 조리 난이도 스타일 설정 -->
     <style name="CustomRatingBar" parent="Widget.AppCompat.RatingBar">
         <item name="android:progressDrawable">@drawable/custom_ratingbar</item>
-        <item name="android:minHeight">30dp</item>
-        <item name="android:maxHeight">30dp</item>
     </style>
 
 
@@ -39,10 +37,22 @@
     <color name="arrow_default_color">@color/white</color>
     <color name="arrow_pressed_color">@color/Primary_Orange1</color>
 
+
     <style name="Signin">
         <item name="colorControlActivated">#FF7300</item>
         <item name="backgroundTint">@color/Primary_Orange1</item>
         <item name="android:textColor">@color/Primary_Orange1</item>
+
+    <style name="DialogTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowTranslucentNavigation">true</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+    </style>
+
+    <style name="DialogAnimation">
+        <item name="android:windowEnterAnimation">@android:anim/fade_in</item>
+        <item name="android:windowExitAnimation">@android:anim/fade_out</item>
+
     </style>
 
 </resources>

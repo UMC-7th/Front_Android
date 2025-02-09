@@ -77,7 +77,7 @@ class PriceFragment : Fragment() {
             Category(5, "수산물", R.drawable.ic_crab),
             Category(6, "축산물", R.drawable.ic_beef),
             Category(7, "식품", R.drawable.ic_dobu),
-            Category(8, "즐겨찾기", R.drawable.ic_star)
+            Category(8, "즐겨찾기", R.drawable.ic_star_filled)
         )
 
         val categoryAdapter = CategoryAdapter(categories) { category ->
@@ -166,6 +166,7 @@ class PriceFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
+        (activity as? MainActivity)?.hideTitle()
     }
 
     override fun onPause() {
