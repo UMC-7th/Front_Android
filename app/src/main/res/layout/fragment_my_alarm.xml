@@ -82,7 +82,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/spacing_16"
         android:orientation="vertical"
-        android:layout_marginRight="@dimen/spacing_32"
+        android:layout_marginRight="@dimen/spacing_48"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView44">
@@ -91,7 +91,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_8"
+            android:layout_marginTop="@dimen/spacing_16"
             android:textStyle="bold"
             android:textColor="@color/Gray3"
             android:text="기기알림설정"/>
@@ -101,14 +101,15 @@
             android:layout_height="wrap_content"
             android:textColor="@color/Gray4"
             android:layout_marginTop="@dimen/spacing_4"
-            android:text="기기 알림을 켜시면 식단 알림, AI 건강 진단 등 소식을 받아보실 수 있어요"/>
+            android:text="기기 알림을 켜시면 식단 알림, AI 건강 진단 등 소식을
+            받아보실 수 있어요"/>
 
     </LinearLayout>
 
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_32"
+        android:layout_marginTop="34sp"
         android:layout_marginRight="@dimen/spacing_12"
         android:src="@drawable/info_plus"
         app:layout_constraintEnd_toEndOf="parent"
@@ -135,7 +136,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/spacing_16"
         android:orientation="vertical"
-        android:layout_marginRight="@dimen/spacing_32"
+        android:layout_marginRight="@dimen/spacing_48"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView45">
@@ -257,6 +258,7 @@
         android:id="@+id/switch1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:thumbTint="@color/white"
         android:layout_marginTop="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/linear2" />
@@ -265,6 +267,7 @@
         android:id="@+id/switch2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:thumbTint="@color/white"
         android:layout_marginTop="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/linear3" />
@@ -273,6 +276,7 @@
         android:id="@+id/switch3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:thumbTint="@color/white"
         android:layout_marginTop="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/linear4" />
@@ -342,6 +346,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         app:layout_constraintEnd_toEndOf="parent"
+        android:thumbTint="@color/white"
         app:layout_constraintTop_toBottomOf="@+id/linear5" />
 
     <Switch
@@ -350,6 +355,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_24"
         app:layout_constraintEnd_toEndOf="parent"
+        android:thumbTint="@color/white"
         app:layout_constraintTop_toTopOf="@+id/switch4" />
 
 
