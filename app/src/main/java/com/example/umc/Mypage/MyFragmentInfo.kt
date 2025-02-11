@@ -10,6 +10,7 @@ import android.util.Log
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.example.umc.R
+import com.example.umc.Survey.SurveyGoalFragment
 import com.example.umc.UserApi.UpdateUserRequest
 import com.example.umc.UserApi.UserRepository
 import com.example.umc.UserApi.UserProfileData  // 프로필 조회용
@@ -69,6 +70,13 @@ class MyFragmentInfo : Fragment() {
                 )
                 updateUserProfile(updatedProfileData)  // ✅ 올바른 타입으로 전달
             }
+        }
+
+        binding.btnalarm.setOnClickListener{
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.fragment_my_container, MyFragmentalarm())  // fragment_container는 메인 액티비티의 프래그먼트 컨테이너 ID입니다
+                .addToBackStack(null)  // 뒤로 가기 동작을 위해 백스택에 추가
+                .commit()
         }
 
 
