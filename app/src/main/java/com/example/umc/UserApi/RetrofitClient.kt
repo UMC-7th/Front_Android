@@ -1,5 +1,10 @@
 package com.example.umc.UserApi
 
+import com.example.umc.UserApi.APi.GetUserApi
+import com.example.umc.UserApi.APi.OtpApi
+import com.example.umc.UserApi.APi.OtpValidationApi
+import com.example.umc.UserApi.APi.UpdateUserApi
+import com.example.umc.UserApi.APi.UserApi
 import com.example.umc.model.service.ImageApiService
 import com.example.umc.model.service.MealApiService
 import retrofit2.Retrofit
@@ -47,5 +52,20 @@ object RetrofitClient {
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(ImageApiService::class.java)
+    }
+
+    val otpApi: OtpApi by lazy {
+        Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(OtpApi::class.java)
+    }
+    val otpValidationApi: OtpValidationApi by lazy {
+        Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(OtpValidationApi::class.java)
     }
 }

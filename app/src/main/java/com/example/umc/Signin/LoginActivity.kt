@@ -14,7 +14,7 @@ import com.example.umc.Main.MainActivity
 import com.example.umc.R
 import com.example.umc.SignUp.SignUpFragment
 import com.example.umc.Survey.SurveyGoalFragment
-import com.example.umc.UserApi.LoginResponse
+import com.example.umc.UserApi.Response.LoginResponse
 import com.example.umc.UserApi.UserRepository
 import com.example.umc.databinding.FragmentSigninBinding
 import retrofit2.Call

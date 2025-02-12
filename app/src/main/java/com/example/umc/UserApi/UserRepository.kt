@@ -2,6 +2,17 @@ package com.example.umc.UserApi
 
 import android.content.Context
 import android.util.Log
+import com.example.umc.UserApi.APi.OtpApi
+import com.example.umc.UserApi.Request.LoginRequest
+import com.example.umc.UserApi.Request.OtpRequest
+import com.example.umc.UserApi.Request.OtpValidationRequest
+import com.example.umc.UserApi.Request.SignUpRequest
+import com.example.umc.UserApi.Request.UpdateUserRequest
+import com.example.umc.UserApi.Response.LoginResponse
+import com.example.umc.UserApi.Response.OtpResponse
+import com.example.umc.UserApi.Response.OtpValidationResponse
+import com.example.umc.UserApi.Response.SignUpResponse
+import com.example.umc.UserApi.Response.UserProfileResponse
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -9,6 +20,7 @@ import retrofit2.Response
 class UserRepository {
     private val api = RetrofitClient.instance
     private val getUserApi = RetrofitClient.getApiService
+    private val otpApi = RetrofitClient.otpApi
 
     // SharedPreferences에 accessToken 저장
     companion object {
@@ -98,6 +110,32 @@ class UserRepository {
         }
     }
 
+    suspend fun requestOtp(phoneNumber: String): Result<OtpResponse> {
+        return try {
+            val request = OtpRequest(phoneNumber)
+            val response = otpApi.requestOtp(request)
+
+            if (response.isSuccessful) {
+                response.body()?.let {
+                    Result.success(it)
+                } ?: Result.failure(Exception("응답이 비어있습니다."))
+            } else {
+                Result.failure(Exception("서버 오류: ${response.code()}"))
+            }
+        } catch (e: Exception) {
+            Log.e("UserRepository", "OTP 요청 실패: ${e.message}")
+            Result.failure(Exception("네트워크 오류: ${e.message}"))
+        }
+    }
+    suspend fun validateOtp(phoneNumber: String, code: String): Result<OtpValidationResponse> {
+        return try {
+            val request = OtpValidationRequest(phoneNumber, code)
+            val response = RetrofitClient.otpValidationApi.validateOtp(request)
+            Result.success(response)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
 
 
 
