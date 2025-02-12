@@ -1,4 +1,4 @@
-package com.example.umc.UserApi
+package com.example.umc.UserApi.Response
 
 data class LoginResponse(
     val success: SuccessResponse?,   // 로그인 성공 시의 데이터
