@@ -130,12 +130,14 @@ class UserRepository {
     suspend fun validateOtp(phoneNumber: String, code: String): Result<OtpValidationResponse> {
         return try {
             val request = OtpValidationRequest(phoneNumber, code)
-            val response = RetrofitClient.otpValidationApi.validateOtp(request)
+            val response: OtpValidationResponse = RetrofitClient.otpValidationApi.validateOtp(request) // 반환 타입 확인
             Result.success(response)
         } catch (e: Exception) {
             Result.failure(e)
         }
     }
+
+
 
 
 
