@@ -47,20 +47,20 @@
 
                         <TextView
                             android:id="@+id/textView16"
+                            android:layout_marginTop="@dimen/spacing_16"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="16dp"
-                            android:layout_marginTop="@dimen/spacing_16"
                             android:fontFamily="@font/pretendard_bold"
                             android:text="김태현"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/textView14" />
+                            app:layout_constraintTop_toBottomOf="@+id/textView15" />
 
                         <ImageView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="16dp"
-                            android:layout_marginTop="10dp"
+                            android:layout_marginTop="@dimen/spacing_12"
                             android:src="@drawable/juso"
                             app:layout_constraintStart_toEndOf="@+id/textView16"
                             app:layout_constraintTop_toBottomOf="@+id/textView15" />
@@ -69,7 +69,7 @@
                             android:id="@+id/img_change_add"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="10dp"
+                            android:layout_marginTop="@dimen/spacing_12"
                             android:layout_marginRight="@dimen/spacing_16"
                             android:src="@drawable/change"
                             app:layout_constraintEnd_toEndOf="parent"
@@ -142,7 +142,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="1dp"
                             android:layout_marginLeft="@dimen/spacing_16"
-                            android:layout_marginTop="@dimen/spacing_4"
+                            android:layout_marginTop="@dimen/spacing_16"
                             android:layout_marginRight="@dimen/spacing_16"
                             android:background="@color/Gray7"
                             app:layout_constraintStart_toStartOf="parent"
@@ -206,7 +206,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="@dimen/spacing_16"
-                            android:layout_marginTop="1dp"
+                            android:layout_marginTop="2dp"
                             android:text="01.01"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@+id/textView27" />
@@ -215,6 +215,7 @@
                             android:id="@+id/textView27"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/spacing_4"
                             android:layout_marginLeft="@dimen/spacing_16"
                             android:text="01.03"
                             app:layout_constraintStart_toStartOf="parent"
@@ -224,6 +225,7 @@
                             android:id="@+id/textView30"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginTop="2sp"
                             android:layout_marginLeft="@dimen/spacing_16"
                             android:text="01.04"
                             app:layout_constraintStart_toStartOf="parent"
@@ -260,6 +262,7 @@
                             android:id="@+id/textView35"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/spacing_4"
                             android:layout_marginLeft="@dimen/spacing_16"
                             android:text="합계"
                             app:layout_constraintStart_toStartOf="parent"
@@ -278,9 +281,8 @@
                             android:id="@+id/textView37"
                             android:layout_width="match_parent"
                             android:layout_height="4dp"
-                            android:layout_marginStart="16dp"
                             android:background="@color/Gray7"
-                            android:layout_marginTop="@dimen/spacing_16"
+                            android:layout_marginTop="@dimen/spacing_24"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@+id/textView35" />
 
@@ -291,7 +293,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="@dimen/spacing_16"
-                            android:layout_marginTop="@dimen/spacing_16"
+                            android:layout_marginTop="@dimen/spacing_24"
                             android:fontFamily="@font/pretendard_bold"
                             android:text="결제 금액"
                             app:layout_constraintStart_toStartOf="@+id/textView37"
@@ -303,7 +305,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="1dp"
                             android:layout_marginLeft="@dimen/spacing_16"
-                            android:layout_marginTop="@dimen/spacing_4"
+                            android:layout_marginTop="@dimen/spacing_12"
                             android:background="@color/Gray7"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@+id/textView38" />
