@@ -1,6 +1,7 @@
 package com.example.umc.UserApi
 
 import com.example.umc.UserApi.APi.GetUserApi
+import com.example.umc.UserApi.APi.KakaoLoginApi
 import com.example.umc.UserApi.APi.OtpApi
 import com.example.umc.UserApi.APi.OtpValidationApi
 import com.example.umc.UserApi.APi.UpdateUserApi
@@ -61,11 +62,20 @@ object RetrofitClient {
             .build()
             .create(OtpApi::class.java)
     }
+
     val otpValidationApi: OtpValidationApi by lazy {
         Retrofit.Builder()
             .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(OtpValidationApi::class.java)
+    }
+
+    val kakaoLoginApi: KakaoLoginApi by lazy {
+        Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(KakaoLoginApi::class.java)
     }
 }

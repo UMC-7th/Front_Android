@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.os.CountDownTimer
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -33,7 +34,7 @@ class SigninPhoneFragment : Fragment() {
     ): View {
         binding = FragmentSigninPhoneBinding.inflate(inflater, container, false)
 
-        // 전화번호 입력 형식 검사
+//         전화번호 입력 형식 검사
         binding.editText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(charSequence: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(charSequence: CharSequence?, start: Int, before: Int, count: Int) {}
@@ -43,6 +44,13 @@ class SigninPhoneFragment : Fragment() {
                 updateNextButtonState()
             }
         })
+
+
+//        binding.NextButton.setOnClickListener{
+//            signUpViewModel.phoneNum = binding.editText.text.toString()
+//            updateNextButtonState()
+//        }
+
 
         // editText 포커스 상태 변경에 따른 색상 업데이트
         binding.editText.setOnFocusChangeListener { _, hasFocus ->
@@ -111,7 +119,10 @@ class SigninPhoneFragment : Fragment() {
         binding.NextButton.isEnabled = false
         binding.NextButton.setBackgroundColor(resources.getColor(R.color.Gray2))
     }
+
     private fun sendOtpRequest(phoneNumber: String) {
+        Log.d("SendOtpRequest", "phoneNumber type: ${phoneNumber::class.simpleName}, value: $phoneNumber")
+
         lifecycleScope.launch {
             try {
                 val result = signUpViewModel.requestOtp(phoneNumber)
@@ -128,6 +139,7 @@ class SigninPhoneFragment : Fragment() {
             }
         }
     }
+
     private fun verifyOtpCode(phoneNumber: String, code: String) {
         lifecycleScope.launch {
             try {

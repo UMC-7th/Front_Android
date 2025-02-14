@@ -12,7 +12,11 @@ import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.FragmentTransaction
+import androidx.fragment.app.commit
 import com.example.umc.R
+import com.example.umc.SignUp.SignUpFragment
+import com.example.umc.SignUp.SigninNicknameFragment
 import com.example.umc.Signin.LoginActivity
 
 
@@ -41,8 +45,15 @@ class MyActivity : AppCompatActivity() {
             // 버튼 색상을 주황색(#FF7300)으로 변경
             startButton.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#FF7300"))
 
-            val intent = Intent(this, OnboardingMainActivity::class.java) // 일딘 onboardingMainactivity로 설정해놨습니다.
-            startActivity(intent)
+            val fragment = SignUpFragment()
+            supportFragmentManager.commit {
+                setReorderingAllowed(true)
+                replace(R.id.fragment_onboarding, fragment)
+                addToBackStack(null) // 뒤로가기 시 이전 화면으로 돌아가게 설정
+            }
+
+//            val intent = Intent(this, LoginActivity::class.java) // 일딘 onboardingMainactivity로 설정해놨습니다.
+//            startActivity(intent)
         }
 
         val loginButton = findViewById<Button>(R.id.loginButton)
