@@ -11,7 +11,7 @@
         android:layout_width="135dp"
         android:layout_height="30dp"
         android:layout_marginStart="138dp"
-        android:layout_marginTop="119.19dp"
+        android:layout_marginTop="106dp"
         android:text="이거먹자 시세"
         android:textSize="22sp"
         android:textStyle="bold"
@@ -23,12 +23,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="112dp"
-        android:layout_marginTop="162.76dp"
+        android:layout_marginTop="@dimen/spacing_16"
         android:text="공식 시세와 실제 판매 시세까지"
-        android:textSize="15sp"
         android:textColor="#9A9A9A"
+        android:textSize="15sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/textView3" />
 
     <TextView
         android:id="@+id/textView5"
@@ -46,8 +46,8 @@
         android:id="@+id/backButton"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginStart="27.5dp"
-        android:layout_marginTop="76.68dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="76dp"
         android:background="@android:color/transparent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -57,25 +57,25 @@
         android:id="@+id/priceImage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_24"
+        android:contentDescription="시세이미지"
+        android:src="@drawable/priceimage"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/nextButton"
-        android:layout_marginBottom="0dp"
-        android:src="@drawable/priceimage"
-        android:contentDescription="시세이미지" />
+        app:layout_constraintTop_toBottomOf="@+id/textView5" />
 <!--    android:src="@drawable/priceimage"-->
     <Button
         android:id="@+id/nextButton"
         android:layout_width="325.56dp"
         android:layout_height="49.64dp"
-        android:layout_marginTop="608.36dp"
+
         android:backgroundTint="#CDCDCD"
         android:text="다음"
         android:textColor="#FFFFFF"
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/priceImage" />
 
     <!-- 점 표시를 위한 LinearLayout -->
     <LinearLayout

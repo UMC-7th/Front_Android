@@ -5,17 +5,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.umc.Main.MainActivity
 import com.example.umc.Quote.FoodPriceFragment
 import com.example.umc.Quote.PriceAdapter
-import com.example.umc.Quote.QuoteFragmentSub
+import com.example.umc.Quote.Sub.QuoteFragmentSub
 import com.example.umc.databinding.FragmentPriceBinding
 import com.example.umc.model.Category
 import com.example.umc.model.Product
-import kotlinx.coroutines.launch
 
 class PriceFragment : Fragment() {
 

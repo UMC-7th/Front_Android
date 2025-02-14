@@ -10,11 +10,9 @@ import android.util.Log
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.example.umc.R
-import com.example.umc.Survey.SurveyGoalFragment
-import com.example.umc.UserApi.UpdateUserRequest
+import com.example.umc.UserApi.Request.UpdateUserRequest
 import com.example.umc.UserApi.UserRepository
-import com.example.umc.UserApi.UserProfileData  // 프로필 조회용
-import com.example.umc.UserApi.UserUpdateData  // 프로필 업데이트 요청용
+import com.example.umc.UserApi.Response.UserProfileData  // 프로필 조회용
 import com.example.umc.databinding.FragmentMyInfoBinding
 import kotlinx.coroutines.launch
 
