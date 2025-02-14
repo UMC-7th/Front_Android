@@ -1,13 +1,21 @@
-package com.example.umc.Subscribe
+package com.example.umc.subscribe
 
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.umc.Main.MainActivity
+import com.example.umc.R
+import com.example.umc.Subscribe.OrderGroup
+import com.example.umc.Subscribe.OrderHistoryAdapter
+import com.example.umc.Subscribe.OrderItem
 import com.example.umc.databinding.FragmentSubscriptionHistoryBinding
+import com.example.umc.Subscribe.OrderDetailFragment // 주의: 패키지 경로 확인
 
 class SubscriptionHistoryFragment : Fragment() {
     private var _binding: FragmentSubscriptionHistoryBinding? = null
@@ -31,13 +39,33 @@ class SubscriptionHistoryFragment : Fragment() {
     }
 
     private fun setupRecyclerView() {
-        adapter = OrderHistoryAdapter()
+        adapter = OrderHistoryAdapter { orderGroup ->
+            try {
+                // 상세보기 클릭 시 OrderDetailFragment로 이동
+                val fragment = OrderDetailFragment().apply {
+                    arguments = Bundle().apply {
+                        putString("ORDER_DATE", orderGroup.orderDate)
+                        // 필요한 추가 정보들 전달 가능
+                    }
+                }
+
+                // 프래그먼트 트랜잭션으로 교체
+                parentFragmentManager.beginTransaction()
+                    .replace(R.id.main_container, fragment)  // main_container로 변경
+                    .addToBackStack(null)
+                    .commit()
+            } catch (e: Exception) {
+                // 예외 발생 시 로그 출력
+                Log.e("SubscriptionHistoryFragment", "Fragment transaction error", e)
+                // 필요하다면 사용자에게 오류 메시지 표시
+                Toast.makeText(requireContext(), "화면 전환 중 오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
+            }
+        }
         binding.subscriptionHistoryRecyclerView.apply {
             adapter = this@SubscriptionHistoryFragment.adapter
             layoutManager = LinearLayoutManager(context)
         }
     }
-
     private fun setupSearchBar() {
         binding.searchBar.setOnSearchClickListener { searchText ->
             filterOrders(searchText)

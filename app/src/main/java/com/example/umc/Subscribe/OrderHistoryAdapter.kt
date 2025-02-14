@@ -8,7 +8,9 @@ import com.bumptech.glide.Glide
 import com.example.umc.R
 import com.example.umc.databinding.ItemOrderDateGroupBinding
 
-class OrderHistoryAdapter : RecyclerView.Adapter<OrderHistoryAdapter.OrderViewHolder>() {
+class OrderHistoryAdapter(
+    private val onDetailViewClickListener: (OrderGroup) -> Unit // 상세보기 클릭 리스너 추가
+) : RecyclerView.Adapter<OrderHistoryAdapter.OrderViewHolder>() {
     private var orderGroups = listOf<OrderGroup>()
 
     inner class OrderViewHolder(private val binding: ItemOrderDateGroupBinding) :
@@ -18,6 +20,11 @@ class OrderHistoryAdapter : RecyclerView.Adapter<OrderHistoryAdapter.OrderViewHo
             binding.apply {
                 // 주문 날짜 헤더 설정
                 tvOrderDate.text = orderGroup.orderDate
+
+                // 상세보기 클릭 리스너 설정
+                tvDetailView.setOnClickListener {
+                    onDetailViewClickListener(orderGroup)
+                }
 
                 // 기존 주문 아이템들 제거
                 orderItemsContainer.removeAllViews()
