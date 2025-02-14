@@ -9,7 +9,7 @@
     <style name="CalendarViewCustom" parent="Theme.AppCompat">
         <item name="android:textColor">@drawable/selector_calendar_textcolor</item>
         <item name="font">@font/pretendard_bold</item>
-        <item name="mcv_selectionColor">@drawable/calendar_arrow_selector</item>
+        <item name="mcv_selectionColor">#FF7300</item>
         <item name="mcv_leftArrow">@drawable/calendar_arrow_selector</item>
         <item name="mcv_rightArrow">@drawable/calendar_arrow_selector</item>
     </style>
@@ -46,3 +46,4 @@
         <item name="android:windowExitAnimation">@android:anim/fade_out</item>
     </style>
 </resources>
+

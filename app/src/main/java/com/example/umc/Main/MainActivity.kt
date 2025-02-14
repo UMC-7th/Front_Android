@@ -90,7 +90,7 @@ class MainActivity : AppCompatActivity() {
                 handleBackPressed()
             }
         } else {
-            binding.ibtnBack.visibility = View.GONE
+            binding.ibtnBack.visibility = View.VISIBLE
         }
     }
 

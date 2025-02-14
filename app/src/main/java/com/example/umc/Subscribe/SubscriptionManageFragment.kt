@@ -44,7 +44,7 @@ class SubscriptionManageFragment : Fragment() {
     private fun setupManageAddressButton(view: View) {
         // 주소 관리 레이아웃 클릭 리스너
         view.findViewById<View>(R.id.ll_manage_address)?.setOnClickListener {
-            (activity as? MainActivity)?.showTitle("배송지 관라", true)
+            (activity as? MainActivity)?.showTitle("주소록 관리", true)
             navigateToAddress()
         }
     }
