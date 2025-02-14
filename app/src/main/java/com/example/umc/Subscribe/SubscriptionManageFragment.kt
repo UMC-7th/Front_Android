@@ -10,6 +10,9 @@ import com.example.umc.Main.MainActivity
 import com.example.umc.R
 import com.prolificinteractive.materialcalendarview.CalendarDay
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView
+import android.view.MotionEvent
+import android.widget.ImageView
+import androidx.core.content.ContextCompat
 
 class SubscriptionManageFragment : Fragment() {
 
@@ -46,29 +49,50 @@ class SubscriptionManageFragment : Fragment() {
         }
     }
 
+    private lateinit var calendarView: MaterialCalendarView
+
     private fun setupCalendar(view: View) {
-        // 캘린더 설정
-        view.findViewById<MaterialCalendarView>(R.id.calendar_view)?.apply {
-            // 기본 설정
-            selectionMode = MaterialCalendarView.SELECTION_MODE_SINGLE
+        calendarView = view.findViewById(R.id.calendar_view)
 
-            // 데코레이터 설정 (배송일 표시)
-            val deliveryDates = listOf(3, 6, 8, 10, 15, 17, 22, 24, 31)
-            val decorator = DeliveryDateDecorator(requireContext())
-            deliveryDates.forEach { day ->
-                decorator.addDate(CalendarDay.from(2025, 1, day))
-            }
-            addDecorator(decorator)
+        // ID를 문자열로 찾기
+        val leftArrowId = resources.getIdentifier("mcv_arrow_previous", "id", requireContext().packageName)
+        val rightArrowId = resources.getIdentifier("mcv_arrow_next", "id", requireContext().packageName)
 
-            // 날짜 선택 리스너
-            setOnDateChangedListener { _, _, selected ->
-                if (selected) {
-                    navigateToHistory()
+        val leftArrow = view.findViewById<ImageView>(leftArrowId)
+        val rightArrow = view.findViewById<ImageView>(rightArrowId)
+
+        leftArrow?.setOnTouchListener { _, event ->
+            when (event.action) {
+                MotionEvent.ACTION_DOWN -> {
+                    leftArrow.setColorFilter(ContextCompat.getColor(requireContext(), R.color.Primary_Orange1))
+                    true
                 }
+                MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
+                    leftArrow.setColorFilter(ContextCompat.getColor(requireContext(), R.color.Gray5))
+                    true
+                }
+                else -> false
             }
         }
-    }
 
+        rightArrow?.setOnTouchListener { _, event ->
+            when (event.action) {
+                MotionEvent.ACTION_DOWN -> {
+                    rightArrow.setColorFilter(ContextCompat.getColor(requireContext(), R.color.Primary_Orange1))
+                    true
+                }
+                MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
+                    rightArrow.setColorFilter(ContextCompat.getColor(requireContext(), R.color.Gray5))
+                    true
+                }
+                else -> false
+            }
+        }
+
+        // Null 체크 후 기본 색상 설정
+        leftArrow?.setColorFilter(ContextCompat.getColor(requireContext(), R.color.Gray5))
+        rightArrow?.setColorFilter(ContextCompat.getColor(requireContext(), R.color.Gray5))
+    }
     private fun navigateToHistory() {
         // 구독 내역 프래그먼트로 전환
         parentFragmentManager.beginTransaction()

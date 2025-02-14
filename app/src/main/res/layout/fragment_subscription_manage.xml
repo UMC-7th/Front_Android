@@ -67,14 +67,14 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
                         android:text="010-1234-5678"
-                        android:textColor="#666666" />
+                        android:textColor="@color/Gray3" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
                         android:text="helloworld@naver.com"
-                        android:textColor="#666666" />
+                        android:textColor="@color/Gray3" />
                 </LinearLayout>
 
                 <!-- Profile Image Section -->
@@ -95,7 +95,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="수정"
-                        android:textColor="#777777"
+                        android:textColor="@color/white"
                         android:textSize="12sp"
                         android:paddingHorizontal="12dp"
                         android:paddingVertical="4dp"
@@ -135,7 +135,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="주소록 관리 >"
-                    android:textColor="#666666" />
+                    android:textColor="@color/Gray5" />
             </LinearLayout>
 
             <View
@@ -155,13 +155,14 @@
                     android:layout_width="80dp"
                     android:layout_height="wrap_content"
                     android:text="수령인"
-                    android:textColor="#666666" />
+                    android:textColor="@color/Gray2"
+                    android:fontFamily="@font/pretendard_medium"/>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="김태현"
-                    android:textColor="#000000" />
+                    android:textColor="@color/Gray3" />
             </LinearLayout>
 
             <LinearLayout
@@ -175,13 +176,14 @@
                     android:layout_width="80dp"
                     android:layout_height="wrap_content"
                     android:text="주소"
-                    android:textColor="#666666" />
+                    android:textColor="@color/Gray2"
+                    android:fontFamily="@font/pretendard_medium"/>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="서울시 가나구 다라동 아파트먼트 101동 101호"
-                    android:textColor="#000000" />
+                    android:textColor="@color/Gray3" />
             </LinearLayout>
 
             <LinearLayout
@@ -195,13 +197,14 @@
                     android:layout_width="80dp"
                     android:layout_height="wrap_content"
                     android:text="연락처"
-                    android:textColor="#666666" />
+                    android:textColor="@color/Gray2"
+                    android:fontFamily="@font/pretendard_medium"/>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="010-1234-5678"
-                    android:textColor="#000000" />
+                    android:textColor="@color/Gray3" />
             </LinearLayout>
 
             <LinearLayout
@@ -215,13 +218,14 @@
                     android:layout_width="80dp"
                     android:layout_height="wrap_content"
                     android:text="공동현관"
-                    android:textColor="#666666" />
+                    android:textColor="@color/Gray2"
+                    android:fontFamily="@font/pretendard_medium"/>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="1234"
-                    android:textColor="#000000" />
+                    android:textColor="@color/Gray3" />
             </LinearLayout>
         </LinearLayout>
 
@@ -254,7 +258,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="상세내역 >"
-                    android:textColor="#666666"
+                    android:textColor="@color/Gray5"
                     android:clickable="true"
                     android:focusable="true"
                     android:padding="4dp"
@@ -267,7 +271,8 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
                 android:text="신청 구독 캘린더"
-                android:textColor="#666666" />
+                android:textColor="@color/Gray2"
+                android:fontFamily="@font/pretendard_medium"/>
 
             <com.prolificinteractive.materialcalendarview.MaterialCalendarView
                 android:id="@+id/calendar_view"
@@ -283,6 +288,7 @@
                 app:mcv_headerTextAppearance="@style/CalendarWidgetHeader"
                 app:mcv_leftArrow="@drawable/ic_calendar_back"
                 app:mcv_rightArrow="@drawable/ic_calendar_next"
+                app:mcv_tileHeight="40dp"
                 app:mcv_showOtherDates="all"
                 app:mcv_weekDayLabels="@array/custom_weekdays"
                 app:mcv_weekDayTextAppearance="@style/CalenderViewWeekCustomText" />
