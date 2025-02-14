@@ -37,107 +37,108 @@
     </LinearLayout>
 
     <LinearLayout
-        app:layout_constraintStart_toEndOf="@id/ll_date"
-        app:layout_constraintTop_toTopOf="parent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="40dp"
-        android:orientation="vertical">
+        android:layout_marginStart="20dp"
+
+        android:orientation="vertical"
+        app:layout_constraintStart_toEndOf="@id/ll_date"
+        app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
-            android:layout_marginTop="20dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical">
+            android:layout_marginTop="20dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
 
             <ImageButton
                 android:id="@+id/ibtn_check_breakfast"
                 android:layout_width="16dp"
                 android:layout_height="16dp"
-                android:src="@drawable/ic_check"
-                android:backgroundTint="@color/transparent" />
+                android:backgroundTint="@color/transparent"
+                android:src="@drawable/ic_check" />
 
             <TextView
                 android:id="@+id/tv_time"
-                android:layout_marginStart="5dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
                 android:text="@string/breakfast"
-                android:textSize="15sp"/>
+                android:textSize="15sp" />
 
             <TextView
                 android:id="@+id/tv_food_breakfast"
-                android:layout_marginStart="14dp"
                 android:layout_width="250dp"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="14dp"
+                android:layout_weight="1"
                 android:text="콩나물 김치국, 제육볶음, 콩자반, 시금치 나물"
-                android:textSize="12sp"
                 android:textColor="@color/Gray4"
-                android:layout_weight="1" />
+                android:textSize="12sp" />
 
         </LinearLayout>
 
         <LinearLayout
-            android:layout_marginVertical="12dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical">
+            android:layout_marginVertical="12dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
 
             <ImageButton
                 android:id="@+id/ibtn_check_lunch"
                 android:layout_width="16dp"
                 android:layout_height="16dp"
-                android:src="@drawable/ic_check"
-                android:backgroundTint="@color/transparent" />
+                android:backgroundTint="@color/transparent"
+                android:src="@drawable/ic_check" />
 
             <TextView
-                android:layout_marginStart="5dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
                 android:text="@string/lunch"
-                android:textSize="15sp"/>
+                android:textSize="15sp" />
 
             <TextView
                 android:id="@+id/tv_food_lunch"
-                android:layout_marginStart="14dp"
                 android:layout_width="250dp"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="14dp"
                 android:text="돈까스 냉모밀 세트, 새우튀김, 식혜"
-                android:textSize="12sp"
-                android:textColor="@color/Gray4"/>
+                android:textColor="@color/Gray4"
+                android:textSize="12sp" />
         </LinearLayout>
 
         <LinearLayout
-            android:layout_marginBottom="20dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical">
+            android:layout_marginBottom="20dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
 
             <ImageButton
                 android:id="@+id/ibtn_check_dinner"
                 android:layout_width="16dp"
                 android:layout_height="16dp"
-                android:src="@drawable/ic_check"
-                android:backgroundTint="@color/transparent" />
+                android:backgroundTint="@color/transparent"
+                android:src="@drawable/ic_check" />
 
             <TextView
-                android:layout_marginStart="5dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
                 android:text="@string/dinner"
-                android:textSize="15sp"/>
+                android:textSize="15sp" />
 
             <TextView
                 android:id="@+id/tv_food_dinner"
-                android:layout_marginStart="14dp"
                 android:layout_width="250dp"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="14dp"
                 android:text="제육볶음, 파래무침, 멸치볶음, 미역국"
-                android:textSize="12sp"
-                android:textColor="@color/Gray4"/>
+                android:textColor="@color/Gray4"
+                android:textSize="12sp" />
 
         </LinearLayout>
 

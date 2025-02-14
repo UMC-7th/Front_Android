@@ -112,11 +112,11 @@ class AddressAdapter(private val addressList: List<Address>) : RecyclerView.Adap
 
         holder.ivCheck.setOnClickListener {
             if (holder.ivCheck.tag == "unchecked") {
-                holder.ivCheck.setImageResource(R.drawable.orangecheck)  // 이미지 변경
+                holder.ivCheck.setImageResource(R.drawable.ic_orange_check)  // 이미지 변경
                 holder.cardView.strokeColor = ContextCompat.getColor(holder.itemView.context, R.color.Primary_Orange1)
                 holder.ivCheck.tag = "checked"
             } else {
-                holder.ivCheck.setImageResource(R.drawable.graycheck)
+                holder.ivCheck.setImageResource(R.drawable.ic_gray_check)
                 holder.cardView.strokeColor = ContextCompat.getColor(holder.itemView.context, R.color.Gray7)
                 holder.ivCheck.tag = "unchecked"
             }

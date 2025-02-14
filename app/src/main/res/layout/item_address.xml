@@ -64,7 +64,7 @@
                 android:id="@+id/iv_check"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
-                android:src="@drawable/graycheck"
+                android:src="@drawable/selector_check_icon"
                 android:contentDescription="체크 아이콘"
                 android:padding="12dp"
                 android:background="@null"
