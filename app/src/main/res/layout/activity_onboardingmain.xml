@@ -17,13 +17,5 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
-    <!-- 첫 번째 이미지 -->
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="24.51dp"
-        android:layout_height="21.26dp"
-        app:srcCompat="@drawable/cap"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
