@@ -87,7 +87,8 @@
                 android:textSize="22sp"
                 android:textStyle="bold"
                 app:layout_constraintTop_toBottomOf="@id/img_sample"
-                app:layout_constraintStart_toStartOf="parent"/>
+                app:layout_constraintStart_toStartOf="parent"
+                android:fontFamily="@font/pretendard_bold"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -101,6 +102,8 @@
                     android:layout_height="wrap_content"
                     android:text="@string/diet_sub_title"
                     android:textSize="14sp"
+                    android:textColor="@color/Gray4"
+                    android:fontFamily="@font/pretendard_medium"
                     app:layout_constraintTop_toBottomOf="@id/tv_title"
                     app:layout_constraintStart_toStartOf="parent"/>
 
@@ -162,10 +165,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/diet_price"
+                    android:fontFamily="@font/pretendard_bold"
                     app:layout_constraintTop_toBottomOf="@id/divider_line"
                     app:layout_constraintStart_toStartOf="parent"
-                    android:textStyle="bold"
-                    android:textSize="16sp" />
+                    android:textSize="20sp" />
 
                 <TextView
                     android:id="@+id/tv_price"
@@ -173,8 +176,9 @@
                     android:layout_height="wrap_content"
                     android:textColor="@color/Gray3"
                     android:text="@string/diet_price_contents"
-                    android:textSize="15sp"
-                    android:layout_marginStart="5dp"/>
+                    android:textSize="16sp"
+                    android:layout_marginStart="5dp"
+                    android:fontFamily="@font/pretendard_medium"/>
 
             </LinearLayout>
 
@@ -190,8 +194,8 @@
                     android:text="@string/diet_calories"
                     app:layout_constraintTop_toBottomOf="@id/divider_line"
                     app:layout_constraintStart_toStartOf="parent"
-                    android:textStyle="bold"
-                    android:textSize="16sp" />
+                    android:fontFamily="@font/pretendard_bold"
+                    android:textSize="20sp" />
 
                 <TextView
                     android:id="@+id/tv_calories"
@@ -199,8 +203,9 @@
                     android:layout_height="wrap_content"
                     android:textColor="@color/Gray3"
                     android:text="@string/diet_calories_contents"
-                    android:textSize="15sp"
-                    android:layout_marginStart="5dp"/>
+                    android:textSize="16sp"
+                    android:layout_marginStart="5dp"
+                    android:fontFamily="@font/pretendard_medium"/>
             </LinearLayout>
 
             <!-- 칼로리 정보 -->
@@ -268,7 +273,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/diet_level"
                 android:textSize="20sp"
-                android:textStyle="bold"
+                android:fontFamily="@font/pretendard_bold"
                 android:layout_marginTop="15dp"
                 app:layout_constraintTop_toBottomOf="@id/recyclerNutrition"
                 app:layout_constraintStart_toStartOf="parent" />
@@ -276,11 +281,12 @@
             <RatingBar
                 android:id="@+id/rating_bar"
                 android:layout_width="wrap_content"
-                android:layout_height="30dp"
+                android:layout_height="29dp"
                 android:isIndicator="true"
                 android:numStars="5"
                 android:rating="2"
                 android:stepSize="1"
+                android:layout_marginTop="3dp"
                 style="@style/CustomRatingBar"/>
 
 
@@ -305,7 +311,7 @@
                     android:layout_height="wrap_content"
                     android:text="1인 기준"
                     android:textSize="16sp"
-                    android:textStyle="bold"
+                    android:fontFamily="@font/pretendard_semibold"
                     android:textColor="@color/Gray3"
                     android:layout_marginStart="4dp"/>
             </LinearLayout>
@@ -323,7 +329,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/diet_recipe"
                 android:textSize="20sp"
-                android:textStyle="bold"
+                android:fontFamily="@font/pretendard_bold"
                 android:layout_marginTop="15dp"
                 app:layout_constraintTop_toBottomOf="@id/text_ingredients_title"
                 app:layout_constraintStart_toStartOf="parent"/>

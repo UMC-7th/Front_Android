@@ -5,6 +5,5 @@ data class PostManualMealsRequest(
     val calorieTotal: Int,
     val foods: List<String>,
     val mealDate: String,
-    val time: String,
-    val userId: Int
+    val time: String
 )

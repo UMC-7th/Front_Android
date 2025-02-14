@@ -13,13 +13,19 @@ data class ErrorDetails(
 )
 
 data class Success(
+    val MealUser: List<MealUser>,
     val addedByUser: Boolean,
     val calorieDetail: String,
     val calorieTotal: Int,
-    val difficulty: String,
+    val difficulty: Int,
     val food: String,
     val material: String,
     val mealId: Int,
     val price: Int,
     val recipe: String
+)
+
+data class MealUser(
+    val mealDate: String,
+    val time: String
 )
