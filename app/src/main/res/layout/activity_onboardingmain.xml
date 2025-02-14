@@ -7,7 +7,7 @@
     android:background="#FFFFFF"
     tools:context=".Onboarding.OnboardingMainActivity">
 
-    <!-- 🟢 프래그먼트를 표시할 컨테이너 -->
+    <!-- 프래그먼트를 표시할 컨테이너 -->
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragment_container"
         android:layout_width="match_parent"
@@ -16,5 +16,14 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
+
+    <!-- 첫 번째 이미지 -->
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="24.51dp"
+        android:layout_height="21.26dp"
+        app:srcCompat="@drawable/cap"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

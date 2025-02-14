@@ -11,7 +11,7 @@
         android:id="@+id/textView3"
         android:layout_width="135dp"
         android:layout_height="30dp"
-        android:layout_marginTop="119.19dp"
+        android:layout_marginTop="106dp"
         android:text="이거먹자 시세"
         android:textColor="#5C5C5C"
         android:textSize="22sp"
@@ -24,13 +24,12 @@
         android:id="@+id/textView4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="162.76dp"
+        android:layout_marginTop="@dimen/spacing_16"
         android:text="공식 시세와 실제 판매 시세까지"
         android:textColor="#9A9A9A"
         android:textSize="15sp"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/textView3" />
 
     <TextView
         android:id="@+id/textView5"
@@ -39,27 +38,24 @@
         android:text="앱에서 한번에 확인해보세요!"
         android:textColor="#9A9A9A"
         android:textSize="15sp"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/textView4" />
+        app:layout_constraintTop_toBottomOf="@+id/textView4" />
 
     <ImageView
-        android:id="@+id/dietImage"
+        android:id="@+id/priceImage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="28dp"
-        android:contentDescription="식단 이미지"
+        android:layout_marginTop="@dimen/spacing_24"
+        android:contentDescription="시세 이미지"
         android:src="@drawable/priceimage"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/textView5" />
+        app:layout_constraintTop_toBottomOf="@+id/textView5" />
 
     <Button
         android:id="@+id/nextButton"
         android:layout_width="325.56dp"
         android:layout_height="49.64dp"
-        android:layout_marginBottom="8dp"
         android:backgroundTint="#CDCDCD"
         android:text="다음"
         android:textColor="#FFFFFF"
@@ -68,8 +64,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.494"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/dietImage"
-        app:layout_constraintVertical_bias="0.813" />
+        app:layout_constraintTop_toBottomOf="@+id/priceImage" />
 
     <LinearLayout
         android:id="@+id/dotsLayout"
@@ -115,8 +110,8 @@
         android:id="@+id/backButton"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginStart="27.5dp"
-        android:layout_marginTop="76.68dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="76dp"
         android:background="@android:color/transparent"
         android:contentDescription="뒤로 가기 버튼"
         app:layout_constraintStart_toStartOf="parent"

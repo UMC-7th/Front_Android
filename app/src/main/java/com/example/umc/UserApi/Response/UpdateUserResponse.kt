@@ -1,4 +1,4 @@
-package com.example.umc.UserApi
+package com.example.umc.UserApi.Response
 
 data class UpdateUserResponse(
     val user: UserUpdateData  // `user` 필드를 포함하여 Swagger 구조와 일치시킴

@@ -123,4 +123,8 @@ dependencies {
     implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4")
 
     implementation ("com.google.android.material:material:1.11.0")
+
+//    implementation ("com.kakao.sdk:v2-user:2.14.0")  // 카카오 로그인 SDK
+
+
 }
