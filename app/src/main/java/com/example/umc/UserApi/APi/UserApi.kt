@@ -1,11 +1,12 @@
-package com.example.umc.UserApi
+package com.example.umc.UserApi.APi
 
 
+import com.example.umc.UserApi.Request.LoginRequest
+import com.example.umc.UserApi.Response.LoginResponse
+import com.example.umc.UserApi.Request.SignUpRequest
+import com.example.umc.UserApi.Response.SignUpResponse
 import retrofit2.Call
-import retrofit2.Response
 import retrofit2.http.Body
-import retrofit2.http.GET
-import retrofit2.http.Header
 import retrofit2.http.POST
 //엔드포인트 연결
 interface UserApi {

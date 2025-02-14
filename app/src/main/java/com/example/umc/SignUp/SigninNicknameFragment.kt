@@ -12,7 +12,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.example.umc.R
 import com.example.umc.Signin.LoginActivity
-import com.example.umc.UserApi.SignUpViewModel
+import com.example.umc.UserApi.Viewmodel.SignUpViewModel
 import com.example.umc.databinding.FragmentSigninNicknameBinding
 // nickname 처리
 class SigninNicknameFragment : Fragment() {

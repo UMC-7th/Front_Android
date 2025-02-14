@@ -1,4 +1,4 @@
-package com.example.umc.UserApi
+package com.example.umc.UserApi.Request
 
 
 data class UpdateUserRequest(

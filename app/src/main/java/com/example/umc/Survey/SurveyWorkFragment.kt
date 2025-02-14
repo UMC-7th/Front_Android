@@ -1,10 +1,14 @@
 package com.example.umc.Survey
 
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
 import android.animation.ObjectAnimator
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
@@ -16,7 +20,7 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
+import com.example.umc.AnimationFragment
 import com.example.umc.Main.MainActivity
 import com.example.umc.R
 import com.google.android.material.button.MaterialButton
@@ -25,11 +29,15 @@ class SurveyWorkFragment : Fragment() {
     private lateinit var nextButton: Button
     private lateinit var previousButton: Button
     private lateinit var progressBar: ProgressBar
-    private var progressValue = 100  // SurveyBmiFragment에서 증가된 값 유지
-
+    private var progressValue = 100
     private var selectedWorkButton: MaterialButton? = null
-    private var selectedExercise: String? = null // 운동 횟수 선택값 저장
+    private var selectedExercise: String? = null
+    private var handler: Handler? = null
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        handler = Handler(Looper.getMainLooper())
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -37,38 +45,51 @@ class SurveyWorkFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_survey_work, container, false)
 
-        // "일, 운동 횟수" 부분만 주황색으로 변경
+        setupTextView(view)
+        setupProgressBar(view)
+        setupButtons(view)
+
+        return view
+    }
+
+    private fun setupTextView(view: View) {
         val textView: TextView = view.findViewById(R.id.textView)
         val fullText = "현재 하시는 일과 운동 횟수를 알려주세요!"
         val spannable = SpannableString(fullText)
 
-        val startIndex = fullText.indexOf("일")
-        if (startIndex >= 0) {
-            val endIndex = startIndex + "일".length
-            spannable.setSpan(
-                ForegroundColorSpan(Color.parseColor("#FF7300")),
-                startIndex, endIndex,
-                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-            )
+        // "일" 하이라이트
+        fullText.indexOf("일").let { startIndex ->
+            if (startIndex >= 0) {
+                spannable.setSpan(
+                    ForegroundColorSpan(Color.parseColor("#FF7300")),
+                    startIndex,
+                    startIndex + 1,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
+            }
         }
 
-        val startIndexWork = fullText.indexOf("운동 횟수")
-        if (startIndexWork >= 0) {
-            val endIndexWeight = startIndexWork + "운동 횟수".length
-            spannable.setSpan(
-                ForegroundColorSpan(Color.parseColor("#FF7300")),
-                startIndexWork, endIndexWeight,
-                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-            )
+        // "운동 횟수" 하이라이트
+        fullText.indexOf("운동 횟수").let { startIndex ->
+            if (startIndex >= 0) {
+                spannable.setSpan(
+                    ForegroundColorSpan(Color.parseColor("#FF7300")),
+                    startIndex,
+                    startIndex + "운동 횟수".length,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
+            }
         }
 
         textView.text = spannable
+    }
 
-        // ProgressBar 가져오기
+    private fun setupProgressBar(view: View) {
         progressBar = view.findViewById(R.id.progressBar)
         progressBar.progress = progressValue
+    }
 
-        // 버튼 목록
+    private fun setupButtons(view: View) {
         val workButtons = listOf(
             view.findViewById<MaterialButton>(R.id.no_work_button),
             view.findViewById<MaterialButton>(R.id.house_work_button),
@@ -81,81 +102,74 @@ class SurveyWorkFragment : Fragment() {
         nextButton = view.findViewById(R.id.next_button)
         previousButton = view.findViewById(R.id.previous_button)
 
-        // 초기 상태에서 "다음" 버튼 비활성화
+        initializeButtonStates(workButtons)
+    }
+
+    private fun initializeButtonStates(workButtons: List<MaterialButton>) {
         nextButton.isEnabled = false
         nextButton.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#CDCDCD"))
 
-
-        // 모든 버튼에 클릭 이벤트 추가 (하나만 선택 가능)
-        for (button in workButtons) {
+        workButtons.forEach { button ->
             button.setOnClickListener {
                 selectSingleWorkButton(button)
-
-                // 운동 횟수 선택 `BottomSheetDialogFragment` 띄우기
-                val exerciseBottomSheet = SurveyExerciseBottomSheetFragment { selected ->
-                    selectedExercise = selected  // 운동 횟수 선택 저장
-                    updateNextButtonState()
-                }
-                exerciseBottomSheet.show(parentFragmentManager, "exercise_bottom_sheet")
-
-                // "운동 횟수"를 선택하기 전까지 다음 버튼 비활성화
-                nextButton.isEnabled = false
-                nextButton.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#CDCDCD"))
+                showExerciseBottomSheet()
             }
         }
 
-        // "다음 버튼" 클릭 시 선택 여부 확인 후 이동
         nextButton.setOnClickListener {
             if (selectedWorkButton != null && selectedExercise != null) {
                 updateProgressBar()
-
-                goToMainActivity()
-
-                //goToSurveyGoalFragment()
-
+                showAnimationAndNavigateToMain()
             } else {
                 Toast.makeText(requireContext(), "하나의 항목을 선택해주세요.", Toast.LENGTH_SHORT).show()
             }
         }
 
-        // "이전 버튼" 클릭 시 SurveyBmiFragment로 이동
         previousButton.setOnClickListener {
             goToSurveyBmiFragment()
         }
-
-        return view
     }
 
-    // **하나의 버튼만 선택 가능하도록 설정**
+    private fun showExerciseBottomSheet() {
+        val exerciseBottomSheet = SurveyExerciseBottomSheetFragment { selected ->
+            selectedExercise = selected
+            updateNextButtonState()
+        }
+        exerciseBottomSheet.show(parentFragmentManager, "exercise_bottom_sheet")
+
+        nextButton.isEnabled = false
+        nextButton.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#CDCDCD"))
+    }
+
     private fun selectSingleWorkButton(button: MaterialButton) {
-        selectedWorkButton?.let {
-            it.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#F0F0F0")) // 기본 배경
-            it.setTextColor(Color.parseColor("#9A9A9A")) // 기본 글씨 색
-            it.strokeColor = ColorStateList.valueOf(Color.parseColor("#F0F0F0")) // 기본 테두리 색
+        selectedWorkButton?.apply {
+            backgroundTintList = ColorStateList.valueOf(Color.parseColor("#F0F0F0"))
+            setTextColor(Color.parseColor("#9A9A9A"))
+            strokeColor = ColorStateList.valueOf(Color.parseColor("#F0F0F0"))
         }
 
         if (selectedWorkButton == button) {
-            selectedWorkButton = null  // 동일한 버튼을 다시 클릭하면 해제
+            selectedWorkButton = null
         } else {
             selectedWorkButton = button
-            button.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#FFEAD9")) // 선택된 배경
-            button.setTextColor(Color.parseColor("#FF7300")) // 선택된 글씨 색
-            button.strokeColor = ColorStateList.valueOf(Color.parseColor("#FF7300")) // 선택된 테두리
+            button.apply {
+                backgroundTintList = ColorStateList.valueOf(Color.parseColor("#FFEAD9"))
+                setTextColor(Color.parseColor("#FF7300"))
+                strokeColor = ColorStateList.valueOf(Color.parseColor("#FF7300"))
+            }
         }
 
-        // "다음 버튼" 활성화/비활성화 업데이트
         updateNextButtonState()
     }
 
-    // "다음 버튼" 활성화 여부 설정
     private fun updateNextButtonState() {
-        nextButton.isEnabled = selectedWorkButton != null && selectedExercise != null
+        val isEnabled = selectedWorkButton != null && selectedExercise != null
+        nextButton.isEnabled = isEnabled
         nextButton.backgroundTintList = ColorStateList.valueOf(
-            if (selectedWorkButton != null && selectedExercise != null) Color.parseColor("#FF7300") else Color.parseColor("#CDCDCD")
+            if (isEnabled) Color.parseColor("#FF7300") else Color.parseColor("#CDCDCD")
         )
     }
 
-    // ProgressBar 증가 애니메이션 적용
     private fun updateProgressBar() {
         if (progressValue < 100) {
             progressValue += 10
@@ -164,34 +178,40 @@ class SurveyWorkFragment : Fragment() {
     }
 
     private fun setProgressWithAnimation(progressBar: ProgressBar, progress: Int) {
-        val animator = ObjectAnimator.ofInt(progressBar, "progress", progressBar.progress, progress)
-        animator.duration = 500
-        animator.start()
+        ObjectAnimator.ofInt(progressBar, "progress", progressBar.progress, progress).apply {
+            duration = 500
+            start()
+        }
     }
 
+    private fun showAnimationAndNavigateToMain() {
+        val animationFragment = AnimationFragment()
+        animationFragment.setAnimationCompleteListener(object : AnimationFragment.AnimationCompleteListener {
+            override fun onAnimationComplete() {
+                handler?.post {
+                    val intent = Intent(requireContext(), MainActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    startActivity(intent)
+                }
+            }
+        })
 
-    // SurveyGoalFragment로 이동 대신 MainActivity로 이동하도록 변경
-    private fun goToMainActivity() {
-        val intent = Intent(requireContext(), MainActivity::class.java)
-        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        startActivity(intent)
+        requireActivity().supportFragmentManager.beginTransaction()
+            .replace(R.id.survey_container, animationFragment)
+            .addToBackStack(null)
+            .commit()
     }
 
-//    // SurveyGoalFragment로 이동
-//    private fun goToSurveyGoalFragment() {
-//        val fragmentTransaction = requireActivity().supportFragmentManager.beginTransaction()
-//        fragmentTransaction.replace(R.id.main_container, SurveyGoalFragment())
-//        fragmentTransaction.addToBackStack(null)
-//        fragmentTransaction.commit()
-//    }
-
-
-
-    // SurveyBmiFragment로 이동
     private fun goToSurveyBmiFragment() {
-        val fragmentTransaction = requireActivity().supportFragmentManager.beginTransaction()
-        fragmentTransaction.replace(R.id.survey_container, SurveyBmiFragment())
-        fragmentTransaction.addToBackStack(null)
-        fragmentTransaction.commit()
+        requireActivity().supportFragmentManager.beginTransaction()
+            .replace(R.id.survey_container, SurveyBmiFragment())
+            .addToBackStack(null)
+            .commit()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        handler?.removeCallbacksAndMessages(null)
+        handler = null
     }
 }

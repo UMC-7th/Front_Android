@@ -8,6 +8,11 @@
     android:background="#FFFFFF"
     tools:context=".OnboardingMainActivity">
 
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/fragment_onboarding"/>
+
     <!-- 첫 번째 이미지 -->
     <ImageView
         android:id="@+id/imageView"

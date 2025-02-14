@@ -2,6 +2,17 @@ package com.example.umc.UserApi
 
 import android.content.Context
 import android.util.Log
+import com.example.umc.UserApi.APi.OtpApi
+import com.example.umc.UserApi.Request.LoginRequest
+import com.example.umc.UserApi.Request.OtpRequest
+import com.example.umc.UserApi.Request.OtpValidationRequest
+import com.example.umc.UserApi.Request.SignUpRequest
+import com.example.umc.UserApi.Request.UpdateUserRequest
+import com.example.umc.UserApi.Response.LoginResponse
+import com.example.umc.UserApi.Response.OtpResponse
+import com.example.umc.UserApi.Response.OtpValidationResponse
+import com.example.umc.UserApi.Response.SignUpResponse
+import com.example.umc.UserApi.Response.UserProfileResponse
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -9,6 +20,7 @@ import retrofit2.Response
 class UserRepository {
     private val api = RetrofitClient.instance
     private val getUserApi = RetrofitClient.getApiService
+    private val otpApi = RetrofitClient.otpApi
 
     // SharedPreferences에 accessToken 저장
     companion object {
@@ -97,6 +109,45 @@ class UserRepository {
             false
         }
     }
+
+    suspend fun requestOtp(phoneNumber: String): Result<OtpResponse> {
+        return try {
+            Log.d("UserRepository", "OTP 요청 시작: $phoneNumber") // 요청 시작 로그
+
+            val request = OtpRequest(phoneNumber)
+            val response = otpApi.requestOtp(request)
+
+            Log.d("UserRepository", "서버 응답 코드: ${response.code()}") // 응답 코드 로그
+
+            if (response.isSuccessful) {
+                response.body()?.let {
+                    Result.success(it)
+                } ?: run {
+                    Log.e("UserRepository", "응답이 비어 있습니다.") // 응답 바디 없음 로그
+                    Result.failure(Exception("응답이 비어있습니다."))
+                }
+            } else {
+                val errorMessage = response.errorBody()?.string()
+                Log.e("UserRepository", "서버 오류: ${response.code()} - $errorMessage") // 서버 오류 로그
+                Result.failure(Exception("서버 오류: ${response.code()} - $errorMessage"))
+            }
+        } catch (e: Exception) {
+            Log.e("UserRepository", "OTP 요청 실패: ${e.message}") // 예외 발생 로그
+            Result.failure(Exception("네트워크 오류: ${e.message}"))
+        }
+    }
+
+
+    suspend fun validateOtp(phoneNumber: String, code: String): Result<OtpValidationResponse> {
+        return try {
+            val request = OtpValidationRequest(phoneNumber, code)
+            val response: OtpValidationResponse = RetrofitClient.otpValidationApi.validateOtp(request) // 반환 타입 확인
+            Result.success(response)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
 
 
 
