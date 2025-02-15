@@ -13,7 +13,8 @@ import com.example.umc.databinding.FragmentSubscribePaymentBinding
 class Subscribecredit : Fragment() {
     private var _binding: FragmentSubscribePaymentBinding? = null
     private val binding get() = _binding!!
-    private val maxTextLength = 50  // 최대 글자 수
+    private val maxTextLength = 50
+    private var isDetailVisible = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -26,55 +27,67 @@ class Subscribecredit : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        binding.imgChangeAdd.setOnClickListener {
-            val mainActivity = activity as? MainActivity
-            mainActivity?.showTitle("배송지 변경", true)
-
-            val transaction = requireActivity().supportFragmentManager.beginTransaction()
-            transaction.replace(R.id.main_container, SubAddressFragment())
-            transaction.addToBackStack(null)
-            transaction.commit()
-        }
-
         setupUI()
         setupClickListeners()
-        setupTextWatcher() // 글자 수 세는 기능 추가
+        setupTextWatcher()
+        setupPriceDetailToggle()
     }
 
     private fun setupUI() {
-        // 주문자 정보 설정
         binding.apply {
-            textView16.text = "김태현" // 주문자 이름
-            textView17.text = "[00000]" // 우편번호
-            textView18.text = "서울시 송파구 송파동 송마아파트 101동 101호" // 주소
-            textView19.text = "010-1234-5678" // 전화번호
-            textView21.text = "문앞 (1234)" // 배송 요청사항
-        }
+            // 주문자 정보 설정
+            textView16.text = "김태현"
+            textView17.text = "[00000]"
+            textView18.text = "서울시 송파구 송파동 송마아파트 101동 101호"
+            textView19.text = "010-1234-5678"
+            textView21.text = "문앞 (1234)"
 
-        // 결제 금액 정보 설정
+            // 가격 상세 정보 초기 설정
+            priceDetailContainer.visibility = View.GONE
+        }
         setupPaymentInfo()
+    }
+
+    private fun setupPriceDetailToggle() {
+        binding.priceToggleButton.setOnClickListener {
+            isDetailVisible = !isDetailVisible
+            binding.apply {
+                priceDetailContainer.visibility = if (isDetailVisible) View.VISIBLE else View.GONE
+                priceToggleButton.isSelected = isDetailVisible
+            }
+        }
     }
 
     private fun setupPaymentInfo() {
         binding.apply {
-            // 결제 상세 정보 설정
             val totalAmount = "56,000원"
-
-            // 결제하기 버튼 텍스트 설정
             creditbutton.text = "${totalAmount}결제하기"
+
+            // 가격 상세 정보 설정
+            priceDetail1.text = "1인분 (12,000원) × 3"
+            priceDetail2.text = "2인분 (20,000원) × 1"
         }
     }
 
     private fun setupClickListeners() {
         binding.apply {
-            // 결제 수단 버튼들
+            imgChangeAdd.setOnClickListener {
+                val mainActivity = activity as? MainActivity
+                mainActivity?.showTitle("배송지 변경", true)
+                val transaction = requireActivity().supportFragmentManager.beginTransaction()
+                transaction.replace(R.id.main_container, SubAddressFragment())
+                transaction.addToBackStack(null)
+                transaction.commit()
+            }
+
             NaverPay.setOnClickListener {
-                // 네이버페이 결제 처리
+                it.isSelected = !it.isSelected
+                KakaoPay.isSelected = false
             }
 
             KakaoPay.setOnClickListener {
-                // 카카오페이 결제 처리
+                it.isSelected = !it.isSelected
+                NaverPay.isSelected = false
             }
 
             creditbutton.setOnClickListener {
@@ -82,15 +95,14 @@ class Subscribecredit : Fragment() {
             }
         }
     }
+
     private fun setupTextWatcher() {
         binding.editText4.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 val textLength = s?.length ?: 0
-                binding.textView22.text = "$textLength/$maxTextLength"  // 글자 수 업데이트
+                binding.textView22.text = "$textLength/$maxTextLength"
             }
-
             override fun afterTextChanged(s: Editable?) {}
         })
     }
