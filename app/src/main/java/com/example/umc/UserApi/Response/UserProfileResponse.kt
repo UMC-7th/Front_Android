@@ -1,4 +1,4 @@
-package com.example.umc.UserApi
+package com.example.umc.UserApi.Response
 
 import com.google.gson.annotations.SerializedName
 

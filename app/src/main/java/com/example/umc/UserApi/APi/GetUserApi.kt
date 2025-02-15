@@ -1,5 +1,6 @@
-package com.example.umc.UserApi
+package com.example.umc.UserApi.APi
 
+import com.example.umc.UserApi.Response.UserProfileResponse
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Header

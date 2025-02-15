@@ -1,4 +1,4 @@
-package com.example.umc.UserApi
+package com.example.umc.UserApi.Request
 
 //회원가입 requset body
 data class SignUpRequest(

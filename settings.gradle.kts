@@ -1,3 +1,5 @@
+import java.net.URI
+
 pluginManagement {
     repositories {
         google {
@@ -7,6 +9,7 @@ pluginManagement {
                 includeGroupByRegex("androidx.*")
             }
         }
+//        maven { url = URI.create("https://devrepo.kakao.com/nexus/content/groups/public/") }
         mavenCentral()
         gradlePluginPortal()
     }
@@ -17,6 +20,8 @@ dependencyResolutionManagement {
         google()
         mavenCentral()
         maven ( url = "https://jitpack.io" )
+
+
     }
 }
 
