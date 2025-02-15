@@ -44,6 +44,7 @@
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tabLayout"
+        app:tabTextColor="@color/Gray6"
         android:background="@color/white"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -52,6 +53,7 @@
         app:layout_constraintTop_toBottomOf="@+id/imageView5"
         app:tabSelectedTextColor="@color/Primary_Orange1"
         app:tabIndicatorColor="@color/Primary_Orange1"
+        android:elevation="@dimen/cardview_default_elevation"
         >
 
         <com.google.android.material.tabs.TabItem
@@ -103,7 +105,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/spacing_16"
-                    android:layout_marginTop="24dp"
+                    android:layout_marginTop="@dimen/spacing_48"
                     android:fontFamily="@font/pretendard_bold"
                     android:text="랭킹"
                     app:layout_constraintStart_toStartOf="parent"
@@ -114,11 +116,34 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/spacing_16"
+                    android:fontFamily="@font/pretendard_medium"
                     android:layout_marginTop="@dimen/spacing_16"
                     android:text="제철 중 과일의 시세를 순위로 확인하세요"
+                    android:textColor="@color/Gray4"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/textView33" />
 
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="121dp"
+                    android:layout_marginEnd="116dp"
+                    android:src="@drawable/ic_price_time"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="120dp"
+                    android:layout_marginRight="@dimen/spacing_16"
+                    android:fontFamily="@font/pretendard_regular"
+                    android:text="2025.01.02 업데이트"
+                    android:textColor="@color/Gray6"
+                    android:textSize="11sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <ImageView
                     android:id="@+id/imageView11"
@@ -371,7 +396,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="46sp"
-                    android:layout_marginTop="30sp"
+                    android:layout_marginTop="36sp"
                     android:textStyle="bold"
                     android:text="4"
                     android:textSize="24sp"
@@ -393,7 +418,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="46sp"
-                    android:layout_marginTop="30sp"
+                    android:layout_marginTop="36sp"
                     android:textStyle="bold"
                     android:text="5"
                     android:textSize="24sp"
