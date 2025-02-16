@@ -38,5 +38,6 @@
     <!-- Icon Corner Radius -->
     <dimen name="icon_corner_radius">3dp</dimen>
 
-
+    <dimen name="padding_horizontal">12dp</dimen>
+    <dimen name="padding_vertical">4dp</dimen>
 </resources>

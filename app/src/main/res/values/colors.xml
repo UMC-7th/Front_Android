@@ -50,4 +50,9 @@
 
 
     <color name="semi_transparent">#80000000</color>
+
+    <!-- Calendar Arrow Colors -->
+    <color name="arrow_default_color">@color/white</color>
+    <color name="arrow_pressed_color">@color/Primary_Orange1</color>
+
 </resources>

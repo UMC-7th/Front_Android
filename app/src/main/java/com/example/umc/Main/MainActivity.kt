@@ -4,9 +4,9 @@ import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.view.WindowManager
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-
 import com.example.umc.Diet.DietDetailFragment
 import com.example.umc.Diet.HomeContainerFragment
 import com.example.umc.Mypage.MyFragment
@@ -25,6 +25,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
+        window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
+
         enableEdgeToEdge()
         setBottomNavigationView()
 
@@ -33,15 +35,6 @@ class MainActivity : AppCompatActivity() {
             binding.bottomNavigationView.selectedItemId = R.id.fragment_home
         }
     }
-
-//    // 시작 버튼 클릭 이벤트 설정
-//    val startButton = findViewById<Button>(R.id.startButton)
-//    startButton.setOnClickListener {
-//        val intent = Intent(this, DietActivity::class.java)
-//        startActivity(intent) //DietActivity로 이동
-//    }
-//}
-
 
     private fun setBottomNavigationView() {
         binding.bottomNavigationView.setOnItemSelectedListener { item ->
@@ -100,7 +93,7 @@ class MainActivity : AppCompatActivity() {
                 handleBackPressed()
             }
         } else {
-            binding.ibtnBack.visibility = View.GONE
+            binding.ibtnBack.visibility = View.VISIBLE
         }
     }
 

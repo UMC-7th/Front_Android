@@ -124,7 +124,15 @@ dependencies {
 
     implementation ("com.google.android.material:material:1.11.0")
 
-//    implementation ("com.kakao.sdk:v2-user:2.14.0")  // 카카오 로그인 SDK
+
+    // Lottie
+    implementation ("com.airbnb.android:lottie:5.0.2")
+
+    //tooltip
+    implementation ("com.github.skydoves:balloon:1.4.6")
+
+    //implementation ("com.kakao.sdk:v2-user:2.14.0")  // 카카오 로그인 SDK
+
 
 
 }
