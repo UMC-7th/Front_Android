@@ -1,54 +1,62 @@
 package com.example.umc.Diet.manual
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.umc.R
 import com.example.umc.databinding.FragmentDietAddConfirmBinding
 import com.example.umc.model.ManualMeals
+import android.util.Log
 
 class DietAddConfirmFragment : Fragment(R.layout.fragment_diet_add_confirm) {
 
-    private lateinit var binding: FragmentDietAddConfirmBinding
+    private var _binding: FragmentDietAddConfirmBinding? = null
+    private val binding get() = _binding!!
+
     private lateinit var adapter: DietAddConfirmAdapter
-    private val viewModel: DietAddConfirmViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentDietAddConfirmBinding.inflate(inflater, container, false)
+        _binding = FragmentDietAddConfirmBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // 어댑터 설정
         adapter = DietAddConfirmAdapter(mutableListOf())
         binding.rvAddConfirm.layoutManager = LinearLayoutManager(requireContext())
         binding.rvAddConfirm.adapter = adapter
 
-        val mealList = arguments?.getSerializable("mealList") as? List<String> ?: emptyList()
-        Log.d("MealLogging", "Received meal list: $mealList")
+        val foods = arguments?.getString("foods")?.split(", ") ?: emptyList()
+        val date = arguments?.getString("date")
+        val time = arguments?.getString("time")
+        val calories = arguments?.getInt("calories")
 
-        adapter.updateMeals(mealList.map { food ->
+        Log.d("MealLogging", "전달된 foods: $foods")
+        Log.d("MealLogging", "전달된 date: $date")
+        Log.d("MealLogging", "전달된 time: $time")
+        Log.d("MealLogging", "전달된 calories: $calories")
+
+        val mealList = listOf(
             ManualMeals(
-                calorieTotal = 0,
-                foods = listOf(food),
-                time = "Unknown",
-                mealDate = "Unknown"
+                calorieTotal = calories ?: 0,
+                foods = foods,
+                time = time ?: "Unknown",  // 기본값 설정
+                mealDate = date ?: "Unknown"
             )
-        })
+        )
+        adapter.updateMeals(mealList)
+    }
 
-        viewModel.mealList.observe(viewLifecycleOwner) { meals ->
-            adapter.updateMeals(meals)
-        }
-
-        viewModel.fetchManualMeals(userId = 1)
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

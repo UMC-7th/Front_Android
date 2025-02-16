@@ -16,6 +16,7 @@ import com.example.umc.R
 import com.example.umc.UserApi.RetrofitClient
 import com.example.umc.databinding.ItemMenuBinding
 import kotlinx.coroutines.launch
+import kotlin.random.Random
 
 class MenuItemAdapter(
     private val onClick: (MenuItem, Int) -> Unit,
@@ -24,10 +25,10 @@ class MenuItemAdapter(
 ) : ListAdapter<MenuItem, MenuItemAdapter.ViewHolder>(DiffCallback()) {
 
     private var selectedPosition = RecyclerView.NO_POSITION
+    private var menuItems = mutableListOf<MenuItem>()
 
     inner class ViewHolder(private val binding: ItemMenuBinding) :
         RecyclerView.ViewHolder(binding.root) {
-
 
         fun bind(menuItem: MenuItem) {
             binding.apply {
@@ -56,6 +57,7 @@ class MenuItemAdapter(
                 btnDietComplete.apply {
                     isSelected = menuItem.isDietCompleted
                 }
+
                 // 카드 클릭 리스너
                 root.setOnClickListener {
                     val oldPosition = selectedPosition
@@ -79,14 +81,31 @@ class MenuItemAdapter(
                 btnDietComplete.setOnClickListener {
                     menuItem.isDietCompleted = !menuItem.isDietCompleted
                     it.isSelected = menuItem.isDietCompleted
-                    btnDietComplete.setTextColor(
-                        if (menuItem.isDietCompleted) Color.WHITE
-                        else Color.parseColor("#666666")
+                    btnDietComplete.setBackgroundColor(
+                        if (menuItem.isDietCompleted) ContextCompat.getColor(binding.root.context, R.color.Primary_Orange1)
+                        else ContextCompat.getColor(binding.root.context, R.color.Gray7)
                     )
                     onDietCompleteChanged?.invoke(menuItem, menuItem.isDietCompleted)
                 }
+
+                // 랜덤 변경 버튼 클릭 리스너
+                binding.btnRefresh.setOnClickListener {
+                    changeRandomFavoriteItem()
+                    notifyDataSetChanged()
+                }
             }
         }
+    }
+
+    private fun changeRandomFavoriteItem() {
+        val randomIndex = Random.nextInt(menuItems.size)
+        val randomItem = menuItems[Random.nextInt(menuItems.size)]
+        menuItems[randomIndex] = MenuItem(
+            randomItem.name,
+            randomItem.calories,
+            randomItem.isFavorite.toString(),
+            randomItem.isDietCompleted
+        )
     }
 
     fun clearSelection() {
@@ -139,5 +158,12 @@ class MenuItemAdapter(
 
         override fun areContentsTheSame(oldItem: MenuItem, newItem: MenuItem) =
             oldItem == newItem
+    }
+
+    override fun submitList(list: List<MenuItem>?) {
+        super.submitList(list)
+        list?.let {
+            menuItems = it.toMutableList()
+        }
     }
 }

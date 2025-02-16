@@ -9,7 +9,7 @@ import com.example.umc.model.request.PostCompleteMealRequest
 import com.example.umc.model.request.PostManualMealsRequest
 import com.example.umc.model.request.PostRefreshMealRequest
 import com.example.umc.model.response.GetManualMealsResponse
-import com.example.umc.model.response.ManualMealsResponse
+import com.example.umc.model.response.PostManualMealsResponse
 import com.example.umc.model.response.PatchFavoriteResponse
 import com.example.umc.model.response.PatchPreferenceResponse
 import com.example.umc.model.response.PostCompleteMealResponse
@@ -17,6 +17,7 @@ import com.example.umc.model.response.PostMealRefreshResponse
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.Header
 import retrofit2.http.PATCH
 import retrofit2.http.POST
 import retrofit2.http.Query
@@ -24,12 +25,14 @@ import retrofit2.http.Query
 interface MealApiService {
     @POST("api/v1/meals/manual")
     suspend fun addManualMeal(
-        @Body request: PostManualMealsRequest
-    ): Response<ManualMealsResponse>
+        @Body request: PostManualMealsRequest,
+        @Header("Authorization") token: String
+    ): Response<PostManualMealsResponse>
 
     @GET("api/v1/meals/manual/list")
     suspend fun getManualMeals(
-        @Query("userId") userId: Int
+        @Query("userId") userId: Int,
+        @Header("Authorization") token: String
     ): Response<GetManualMealsResponse>
 
     @POST("api/v1/meals/complete")

@@ -1,3 +1,6 @@
+package com.example.umc.Diet.manual
+
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -6,22 +9,23 @@ import kotlinx.coroutines.launch
 import com.example.umc.UserApi.RetrofitClient
 import com.example.umc.model.ManualMeals
 import com.example.umc.model.request.PostManualMealsRequest
+import android.util.Log
 
 class DietAddManualViewModel : ViewModel() {
 
     private val _mealList = MutableLiveData<List<ManualMeals>>()
     val mealList: LiveData<List<ManualMeals>> get() = _mealList
 
-    fun addManualMeal(request: PostManualMealsRequest, onSuccess: () -> Unit, onError: (String) -> Unit) {
+    fun addManualMeal(context: Context, request: PostManualMealsRequest, accessToken: String, onSuccess: () -> Unit, onError: (String) -> Unit) {
         viewModelScope.launch {
             try {
-                val response = RetrofitClient.mealApiService.addManualMeal(request)
+                val response = RetrofitClient.mealApiService.addManualMeal(request, "Bearer $accessToken")
                 if (response.isSuccessful && response.body() != null) {
                     val meal = response.body()!!.success
                     val newMeal = meal?.let {
                         ManualMeals(
                             calorieTotal = it.calorieTotal,
-                            foods = meal.food.split(", ").map { it.trim() },
+                            foods = it.food.split(", ").map { it.trim() },
                             time = "",
                             mealDate = ""
                         )
