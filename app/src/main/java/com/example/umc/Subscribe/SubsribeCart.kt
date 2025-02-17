@@ -12,7 +12,7 @@ import androidx.lifecycle.lifecycleScope
 import com.example.umc.Main.MainActivity
 import com.example.umc.R
 import com.example.umc.model.CartRequest
-import com.example.umc.Subscribe.RetrofitClient
+import com.example.umc.Subscribe.Retrofit.RetrofitClient
 import com.example.umc.databinding.FragmentSubscribeCartBinding
 import com.example.umc.model.KartSubRequest
 import kotlinx.coroutines.launch
@@ -20,7 +20,7 @@ import kotlinx.coroutines.launch
 class SubscribeCart : Fragment() {
     private var _binding: FragmentSubscribeCartBinding? = null
     private val binding get() = _binding!!
-    private val apiService = RetrofitClient.mealApiService
+    private val apiService = RetrofitClient.mealApiService()
 
     private var isAllSelected = false
     private val itemChecked = mutableListOf(false, false, false, false)

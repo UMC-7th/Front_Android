@@ -286,7 +286,6 @@
                 android:numStars="5"
                 android:rating="2"
                 android:stepSize="1"
-                android:layout_marginTop="3dp"
                 style="@style/CustomRatingBar"/>
 
 
