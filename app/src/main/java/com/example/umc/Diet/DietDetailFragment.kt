@@ -3,6 +3,7 @@ package com.example.umc.Diet
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupWindow
@@ -145,18 +146,30 @@ class DietDetailFragment : Fragment() {
             }
         }
 
-        // 물음표 버튼 설정
         binding.btQuestion.setOnClickListener {
             if (popupWindow == null) {
                 val tooltipView = layoutInflater.inflate(R.layout.dialog_tooltip, null)
-                popupWindow = PopupWindow(tooltipView, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+                popupWindow = PopupWindow(tooltipView, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT).apply {
+                    isOutsideTouchable = true // 다른 곳을 클릭하면 닫히도록 설정
+                    setBackgroundDrawable(ContextCompat.getDrawable(requireContext(), android.R.color.transparent)) // 배경 투명 설정
+                }
             }
             if (isTooltipVisible) {
                 popupWindow?.dismiss()
             } else {
-                popupWindow?.showAsDropDown(binding.btQuestion, -180, 0)
+                popupWindow?.showAsDropDown(binding.btQuestion, -80, 0)
             }
             isTooltipVisible = !isTooltipVisible
+        }
+        popupWindow?.setTouchInterceptor { v, event ->
+            if (event.action == MotionEvent.ACTION_OUTSIDE) {
+                popupWindow?.dismiss()
+                isTooltipVisible = false
+                v.performClick() // 클릭 이벤트 호출
+                true
+            } else {
+                false
+            }
         }
     }
 
