@@ -10,7 +10,10 @@ import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
 
-class DietAddConfirmAdapter(private var mealList: MutableList<ManualMeals>) : RecyclerView.Adapter<DietAddConfirmAdapter.MealViewHolder>() {
+class DietAddConfirmAdapter(
+    private var mealList: MutableList<ManualMeals>,
+    private val onDeleteClick: (Int) -> Unit // Lambda to handle delete action
+) : RecyclerView.Adapter<DietAddConfirmAdapter.MealViewHolder>() {
 
     inner class MealViewHolder(private val binding: ItemAddConfirmBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(mealData: ManualMeals) {
@@ -32,11 +35,11 @@ class DietAddConfirmAdapter(private var mealList: MutableList<ManualMeals>) : Re
 
             binding.tvMealDate.text = formattedDate
             binding.tvMealTime.text = mealData.time.ifBlank { "Unknown" }
-            binding.tvMealFoods.text = mealData.foods.joinToString(", ")
+            binding.tvMealFoods.text = if (mealData.foods.isEmpty()) "No food items" else mealData.foods.joinToString(", ")
             binding.tvMealCalorie.text = mealData.calorieTotal.toString()
 
             binding.ibDelete.setOnClickListener {
-                removeItem(adapterPosition)
+                onDeleteClick(adapterPosition)
             }
         }
     }

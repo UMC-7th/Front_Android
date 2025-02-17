@@ -28,13 +28,16 @@ class UserRepository {
         private const val KEY_ACCESS_TOKEN = "ACCESS_TOKEN"
 
         fun saveAuthToken(context: Context, token: String) {
-            val sharedPreferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
-            sharedPreferences.edit().putString(KEY_ACCESS_TOKEN, token).apply()
+            val sharedPreferences = context.getSharedPreferences("UserPreferences", Context.MODE_PRIVATE)
+            val editor = sharedPreferences.edit()
+            editor.putString("auth_token", token)
+            editor.apply()
         }
 
-        fun getAuthToken(context: Context): String? {
-            val sharedPreferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
-            return sharedPreferences.getString(KEY_ACCESS_TOKEN, null)
+        fun getAuthToken(context: Context): String {
+            val sharedPreferences = context.getSharedPreferences("UserPreferences", Context.MODE_PRIVATE)
+            val token = sharedPreferences.getString("auth_token", "") ?: ""
+            return token
         }
     }
 

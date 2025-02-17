@@ -16,18 +16,19 @@ class DietAddManualViewModel : ViewModel() {
     private val _mealList = MutableLiveData<List<ManualMeals>>()
     val mealList: LiveData<List<ManualMeals>> get() = _mealList
 
-    fun addManualMeal(context: Context, request: PostManualMealsRequest, accessToken: String, onSuccess: () -> Unit, onError: (String) -> Unit) {
+    fun postManualMeals(context: Context, request: PostManualMealsRequest, accessToken: String, onSuccess: () -> Unit, onError: (String) -> Unit) {
         viewModelScope.launch {
             try {
-                val response = RetrofitClient.mealApiService.addManualMeal(request, "Bearer $accessToken")
+                val response = RetrofitClient.mealApiService.postManualMeals(request, "Bearer $accessToken")
                 if (response.isSuccessful && response.body() != null) {
                     val meal = response.body()!!.success
                     val newMeal = meal?.let {
                         ManualMeals(
+                            mealId = 0,
                             calorieTotal = it.calorieTotal,
                             foods = it.food.split(", ").map { it.trim() },
                             time = "",
-                            mealDate = ""
+                            mealDate = "",
                         )
                     }
                     if (newMeal != null) {
