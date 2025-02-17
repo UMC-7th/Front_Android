@@ -48,6 +48,7 @@
     <!-- 그래프 색상-->
     <color name="Blue">#FF1F78B4</color>
 
+    <color name="card_sub">#37B529</color>
 
     <color name="semi_transparent">#80000000</color>
 

@@ -4,6 +4,9 @@ import android.app.Dialog
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.style.ForegroundColorSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -37,13 +40,34 @@ class MyFragment : Fragment() {
 
     private fun initializeViews() {
         binding.apply {
-            // 프로필 정보 설정
-            binding.tvName.text = "토미"
-            binding.tvProfileManage.text = "내 정보 관리"
-            //ivProfile.setImageResource(R.drawable.default_profile)
+            // 기존 코드
+            tvName.text = "토미"
+            tvProfileManage.text = "내 정보 관리"
 
-            // 건강 점수 설정
-            //tvScore.text = "82점"
+            // AI 텍스트 색상 변경을 위한 SpannableString 설정
+            val texts = listOf(
+                binding.tvAiDiagnosisDiet,
+                binding.tvAiDiagnosisHealth,
+                binding.tvAiDiagnosisSuggestion
+            )
+
+            texts.forEach { textView ->
+                val fullText = textView.text.toString()
+                val spannableString = SpannableString(fullText)
+
+                // "AI" 텍스트의 위치 찾기
+                val startIndex = fullText.indexOf("AI")
+                if (startIndex != -1) {
+                    spannableString.setSpan(
+                        ForegroundColorSpan(resources.getColor(R.color.Primary_Orange1, null)),
+                        startIndex,
+                        startIndex + 5,  // "AI"는 2글자
+                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                    )
+                }
+
+                textView.text = spannableString
+            }
         }
     }
 
