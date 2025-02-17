@@ -60,10 +60,7 @@
 
 <!--        &lt;!&ndash; DietActivity 등록 &ndash;&gt;-->
         <!-- activity로 만드셔서 전부 등록했습니다-->
-        <activity android:name=".Onboarding.DietActivity" />
-        <activity android:name=".Onboarding.MyActivity" />
-        <activity android:name=".Onboarding.PriceActivity" />
-        <activity android:name=".Onboarding.SubscribeActivity" />
+
     </application>
 
 </manifest>
