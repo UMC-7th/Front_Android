@@ -1,6 +1,6 @@
 package com.example.umc.model.response
 
-data class ManualMealsResponse(
+data class PostManualMealsResponse(
     val resultType: String,
     val error: ManualMealsError?,
     val success: ManualMealsSuccess?

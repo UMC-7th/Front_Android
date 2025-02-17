@@ -89,7 +89,7 @@
     <string name="diet_title">요리 제목</string>
     <string name="diet_sub_title">해당 음식을 섭취했다면 체크 해주세요.</string>
     <string name="diet_complete">식단 완료</string>
-    <string name="diet_price">예샹 가격:</string>
+    <string name="diet_price">예상 가격:</string>
     <string name="diet_price_contents">약 %d원</string>
     <string name="diet_calories">열량:</string>
     <string name="diet_calories_contents"> %d Kcal</string>

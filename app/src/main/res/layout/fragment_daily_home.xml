@@ -58,7 +58,8 @@
             android:layout_height="wrap_content"
             android:text="아침"
             android:textSize="20sp"
-            android:textColor="#333333"
+            android:textColor="@color/Gray2"
+            android:fontFamily="@font/pretendard_bold"
             android:layout_marginStart="20dp"
             android:layout_marginTop="24dp"
             app:layout_constraintStart_toStartOf="parent"
@@ -77,7 +78,7 @@
         <!-- 아침 인디케이터 -->
         <FrameLayout
             android:id="@+id/breakfast_indicator"
-            android:layout_width="270dp"
+            android:layout_width="240dp"
             android:layout_height="4dp"
             android:layout_marginTop="8dp"
             app:layout_constraintTop_toBottomOf="@id/rv_breakfast"
@@ -91,7 +92,7 @@
 
             <View
                 android:id="@+id/breakfast_indicator_bar"
-                android:layout_width="33dp"
+                android:layout_width="50dp"
                 android:layout_height="match_parent"
                 android:background="@drawable/bg_indicator_foreground"/>
         </FrameLayout>
@@ -103,7 +104,8 @@
             android:layout_height="wrap_content"
             android:text="점심"
             android:textSize="20sp"
-            android:textColor="#333333"
+            android:textColor="@color/Gray2"
+            android:fontFamily="@font/pretendard_bold"
             android:layout_marginStart="20dp"
             android:layout_marginTop="24dp"
             app:layout_constraintStart_toStartOf="parent"
@@ -112,8 +114,8 @@
         <!-- 점심 인디케이터 -->
         <FrameLayout
             android:id="@+id/lunch_indicator"
-            android:layout_width="270dp"
-            android:layout_height="4dp"
+            android:layout_width="240dp"
+            android:layout_height="5dp"
             android:layout_marginTop="8dp"
             app:layout_constraintTop_toBottomOf="@id/rv_lunch"
             app:layout_constraintStart_toStartOf="parent"
@@ -126,7 +128,7 @@
 
             <View
                 android:id="@+id/lunch_indicator_bar"
-                android:layout_width="33dp"
+                android:layout_width="50dp"
                 android:layout_height="match_parent"
                 android:background="@drawable/bg_indicator_foreground"/>
         </FrameLayout>
@@ -149,7 +151,8 @@
             android:layout_height="wrap_content"
             android:text="저녁"
             android:textSize="20sp"
-            android:textColor="#333333"
+            android:textColor="@color/Gray2"
+            android:fontFamily="@font/pretendard_bold"
             android:layout_marginStart="20dp"
             android:layout_marginTop="24dp"
             app:layout_constraintStart_toStartOf="parent"
@@ -158,7 +161,7 @@
         <!-- 저녁 인디케이터 -->
         <FrameLayout
             android:id="@+id/dinner_indicator"
-            android:layout_width="270dp"
+            android:layout_width="240dp"
             android:layout_height="4dp"
             android:layout_marginTop="8dp"
             app:layout_constraintTop_toBottomOf="@id/rv_dinner"
@@ -172,7 +175,7 @@
 
             <View
                 android:id="@+id/dinner_indicator_bar"
-                android:layout_width="33dp"
+                android:layout_width="50dp"
                 android:layout_height="match_parent"
                 android:background="@drawable/bg_indicator_foreground"/>
         </FrameLayout>

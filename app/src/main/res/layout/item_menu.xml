@@ -2,7 +2,7 @@
 <androidx.cardview.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="300dp"
+    android:layout_width="175dp"
     android:layout_height="wrap_content"
     android:foreground="@drawable/card_background_selector"
     android:clickable="true"
@@ -18,7 +18,7 @@
 
         <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="200dp">
+            android:layout_height="130dp">
 
             <ImageView
                 android:id="@+id/iv_menu_image"
@@ -27,14 +27,15 @@
                 android:layout_height="match_parent"
                 android:scaleType="centerCrop"/>
 
-            <ImageView
+            <ImageButton
                 android:id="@+id/btn_refresh"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
                 android:layout_gravity="top|end"
-                android:layout_margin="12dp"
+                android:layout_margin="3dp"
                 android:padding="6dp"
-                android:src="@drawable/ic_refresh"/>
+                android:src="@drawable/ic_refresh"
+                android:backgroundTint="@color/transparent"/>
 
         </FrameLayout>
 
@@ -42,42 +43,38 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="16dp"
+            android:padding="10dp"
             android:background="@android:color/white">
 
-            <LinearLayout
-                android:layout_width="match_parent"
+            <TextView
+                android:id="@+id/tv_menu_name"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:textSize="11sp"
+                android:text="계란후라이, 토스트, 바나나"
+                android:fontFamily="@font/pretendard_regular"
+                android:textColor="@color/Gray3"/>
 
-                <TextView
-                    android:id="@+id/tv_menu_name"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:textSize="16sp"
-                    android:fontFamily="@font/pretendard_medium"
-                    android:textColor="#333333"/>
-
-                <TextView
-                    android:id="@+id/tv_menu_calories"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="16sp"
-                    android:fontFamily="@font/pretendard_bold"
-                    android:textColor="#333333"/>
-            </LinearLayout>
+            <TextView
+                android:id="@+id/tv_menu_calories"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="15sp"
+                android:text="560Kcal"
+                android:fontFamily="@font/pretendard_semibold"
+                android:textColor="@color/Gray2"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_marginTop="12dp">
+                android:gravity="bottom"
+                android:layout_marginTop="5dp">
 
                 <ImageView
                     android:id="@+id/iv_star"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
                     android:src="@drawable/ic_star_filled"
                     android:clickable="true"
                     android:focusable="true"
@@ -90,11 +87,14 @@
 
                 <Button
                     android:id="@+id/btn_diet_complete"
-                    android:layout_width="wrap_content"
-                    android:layout_height="36dp"
+                    android:layout_width="60dp"
+                    android:layout_height="28dp"
+                    android:backgroundTint="@color/Gray7"
+                    android:fontFamily="@font/pretendard_semibold"
+                    android:padding="1dp"
                     android:text="식단 완료"
                     android:textColor="#FFFFFF"
-                    style="@style/Widget.App.Button.Diet"/>
+                    android:textSize="11sp" />
             </LinearLayout>
 
         </LinearLayout>

@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <!-- 조리 난이도 스타일 설정 -->
     <style name="CustomRatingBar" parent="Widget.AppCompat.RatingBar">
         <item name="android:progressDrawable">@drawable/custom_ratingbar</item>
     </style>
 
-
     <!-- 캘린더의 날짜(Day)의 스타일 설정 -->
     <style name="CalendarViewCustom" parent="Theme.AppCompat">
         <item name="android:textColor">@drawable/selector_calendar_textcolor</item>
         <item name="font">@font/pretendard_bold</item>
+        <item name="mcv_selectionColor">#FF7300</item>
+        <item name="mcv_leftArrow">@drawable/calendar_arrow_selector</item>
+        <item name="mcv_rightArrow">@drawable/calendar_arrow_selector</item>
     </style>
 
     <!-- 캘린더의 날짜(Day)의 스타일 설정 -->
@@ -29,14 +30,11 @@
     <style name="CalendarWidgetHeader">
         <item name="android:textSize">20sp</item>
         <item name="android:textColor">#FF7300</item>
-        <item name="font" >@font/pretendard_bold</item>
+        <item name="font">@font/pretendard_bold</item>
         <item name="android:textStyle">bold</item>
     </style>
 
-    <!-- 달력 넘기는 버튼 스타일 -->
-    <color name="arrow_default_color">@color/white</color>
-    <color name="arrow_pressed_color">@color/Primary_Orange1</color>
-
+    <!-- Dialog 관련 스타일 -->
     <style name="DialogTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="android:windowTranslucentStatus">true</item>
         <item name="android:windowTranslucentNavigation">true</item>
@@ -46,7 +44,6 @@
     <style name="DialogAnimation">
         <item name="android:windowEnterAnimation">@android:anim/fade_in</item>
         <item name="android:windowExitAnimation">@android:anim/fade_out</item>
-
     </style>
-
 </resources>
+

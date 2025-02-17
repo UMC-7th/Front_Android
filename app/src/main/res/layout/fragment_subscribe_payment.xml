@@ -81,6 +81,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="@dimen/spacing_16"
                             android:layout_marginTop="@dimen/spacing_4"
+                            android:textColor="@color/Gray4"
                             android:text="[00000]"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@+id/textView16" />
@@ -88,6 +89,7 @@
 
                         <TextView
                             android:id="@+id/textView18"
+                            android:textColor="@color/Gray4"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="@dimen/spacing_16"
@@ -97,6 +99,7 @@
 
                         <TextView
                             android:id="@+id/textView19"
+                            android:textColor="@color/Gray4"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="@dimen/spacing_16"
@@ -106,6 +109,7 @@
 
                         <TextView
                             android:id="@+id/textView21"
+                            android:textColor="@color/Gray4"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="@dimen/spacing_16"
@@ -113,18 +117,44 @@
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@+id/textView19" />
 
-                        <ImageView
+                        <androidx.constraintlayout.widget.ConstraintLayout
                             android:id="@+id/imageView9"
                             android:layout_width="match_parent"
-                            android:layout_height="40dp"
+                            android:layout_height="wrap_content"
                             android:layout_marginLeft="@dimen/spacing_16"
                             android:layout_marginTop="@dimen/spacing_16"
                             android:layout_marginRight="@dimen/spacing_16"
-                            android:src="@drawable/sub_card"
+                            android:background="@drawable/sub_card"
+                            android:padding="8dp"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/textView21" />
+                            app:layout_constraintTop_toBottomOf="@+id/textView21">
 
+                            <EditText
+                                android:id="@+id/et_search_input"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:background="@null"
+                                android:hint="직접 입력"
+                                android:textColorHint="#9E9E9E"
+                                android:textSize="14sp"
+                                android:layout_marginEnd="8dp"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintEnd_toStartOf="@id/iv_search_button"
+                                app:layout_constraintTop_toTopOf="parent"
+                                app:layout_constraintBottom_toBottomOf="parent"/>
+
+                            <ImageView
+                                android:id="@+id/iv_search_button"
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:src="@drawable/ic_arrow_down"
+                                app:tint="@color/Gray7"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintTop_toTopOf="parent"
+                                app:layout_constraintBottom_toBottomOf="parent"/>
+
+                        </androidx.constraintlayout.widget.ConstraintLayout>
                         <EditText
                             android:id="@+id/editText4"
                             android:layout_width="match_parent"
@@ -233,6 +263,7 @@
 
                         <TextView
                             android:id="@+id/textView29"
+                            android:textColor="@color/Gray4"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="@dimen/spacing_16"
@@ -242,6 +273,7 @@
 
                         <TextView
                             android:id="@+id/textView34"
+                            android:textColor="@color/Gray4"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="@dimen/spacing_16"
@@ -251,6 +283,7 @@
 
                         <TextView
                             android:id="@+id/textView31"
+                            android:textColor="@color/Gray4"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="@dimen/spacing_16"
@@ -270,6 +303,7 @@
 
                         <TextView
                             android:id="@+id/texViewl"
+                            android:textColor="@color/Gray4"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="@dimen/spacing_16"
@@ -322,27 +356,57 @@
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@+id/textView39">
 
-
+                            <!-- 상품 금액 행 -->
                             <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:orientation="horizontal"
-                                tools:layout_editor_absoluteX="16dp"
-                                tools:layout_editor_absoluteY="294dp">
+                                android:orientation="horizontal">
 
                                 <TextView
-                                    android:layout_width="wrap_content"
+                                    android:layout_width="0dp"
                                     android:layout_height="wrap_content"
                                     android:textStyle="bold"
-                                    android:layout_weight="8"
+                                    android:layout_weight="1"
                                     android:text="상품 금액" />
 
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_weight="1"
                                     android:fontFamily="@font/pretendard_bold"
                                     android:text="56,000원" />
+
+                                <ImageButton
+                                    android:id="@+id/priceToggleButton"
+                                    android:layout_width="24dp"
+                                    android:layout_height="24dp"
+                                    app:tint="@color/Gray4"
+                                    android:background="@drawable/arrow_toggle_background"
+                                    android:src="@drawable/ic_arrow_down"/>
+                            </LinearLayout>
+
+                            <!-- 가격 상세 정보 컨테이너 -->
+                            <LinearLayout
+                                android:id="@+id/priceDetailContainer"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:visibility="gone"
+                                android:padding="8dp">
+
+                                <TextView
+                                    android:id="@+id/priceDetail1"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:textColor="@color/Gray4"
+                                    android:text="1인분 (12,000원) × 3"/>
+
+                                <TextView
+                                    android:id="@+id/priceDetail2"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="4dp"
+                                    android:textColor="@color/Gray4"
+                                    android:text="2인분 (20,000원) × 1"/>
                             </LinearLayout>
 
                             <LinearLayout

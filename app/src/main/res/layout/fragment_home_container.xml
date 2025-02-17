@@ -10,7 +10,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/Primary_Orange1"
-        app:layout_constraintHeight_percent="0.35"
         app:layout_constraintTop_toTopOf="parent">
 
         <FrameLayout
@@ -52,38 +51,45 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="40dp"
-                android:gravity="center_horizontal"
+                android:gravity="center_vertical"
                 android:orientation="horizontal">
 
                 <ImageButton
                     android:id="@+id/questionButton"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
-                    android:layout_marginTop="7dp"
-                    android:layout_marginEnd="60dp"
                     android:background="?attr/selectableItemBackgroundBorderless"
                     android:src="@drawable/ic_question" />
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="1" />
 
                 <com.google.android.material.tabs.TabLayout
                     android:id="@+id/tabLayout"
                     android:layout_width="150dp"
                     android:layout_height="40dp"
+                    android:layout_marginEnd="10dp"
                     android:background="@android:color/transparent"
                     app:tabGravity="fill"
-                    android:layout_marginEnd="10dp"
                     app:tabIndicatorColor="@color/white"
                     app:tabMode="fixed"
                     app:tabSelectedTextColor="@color/white"
                     app:tabTextColor="@color/white" />
 
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="1" />
+
                 <ImageButton
                     android:id="@+id/settingsButton"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:layout_marginStart="50dp"
-                    android:layout_marginTop="7dp"
-                    android:background="?attr/selectableItemBackgroundBorderless"
-                    android:src="@drawable/ic_setting" />
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:backgroundTint="@color/transparent"
+                    android:src="@drawable/ic_setting"
+                    android:layout_marginEnd="10dp"/>
             </LinearLayout>
 
             <LinearLayout

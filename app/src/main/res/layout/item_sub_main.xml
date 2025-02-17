@@ -2,17 +2,18 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="20dp"
+    android:layout_marginBottom="7dp"
+    android:layout_marginHorizontal="16dp"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <ImageView
-        android:id="@+id/img_sub_main"
-        android:layout_width="match_parent"
-        android:layout_height="90dp"
-        android:src="@drawable/bg_sub_main"
-        android:scaleType="centerCrop"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"/>
+<ImageView
+    android:id="@+id/img_sub_main"
+    android:layout_width="match_parent"
+    android:layout_height="80dp"
+    android:src="@drawable/bg_sub_main"
+    android:scaleType="centerCrop"
+    app:layout_constraintTop_toTopOf="parent"
+    app:layout_constraintStart_toStartOf="parent"/>
 
     <LinearLayout
         android:layout_width="wrap_content"

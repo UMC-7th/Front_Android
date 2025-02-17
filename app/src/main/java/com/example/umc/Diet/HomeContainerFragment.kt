@@ -1,6 +1,6 @@
 package com.example.umc.Diet
 
-import com.example.umc.Diet.DietAddManualFragment
+import com.example.umc.Diet.manual.DietAddManualViewModel
 import com.example.umc.Diet.HomePagerAdapter
 import android.app.Dialog
 import android.graphics.Color
@@ -13,6 +13,7 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
+import com.example.umc.Diet.manual.DietAddManualFragment
 import com.example.umc.Main.MainActivity
 import com.example.umc.Mypage.MyFragment
 import com.example.umc.R
@@ -91,6 +92,14 @@ class HomeContainerFragment : Fragment() {
                 dialog.dismiss()
             }
             dialog.show()
+        }
+
+        binding.markButton.setOnClickListener {
+            val transaction = parentFragmentManager.beginTransaction()
+            transaction.replace(R.id.main_container, DietFavoriteFragment())
+            transaction.addToBackStack(null)
+            transaction.commit()
+
         }
     }
 
