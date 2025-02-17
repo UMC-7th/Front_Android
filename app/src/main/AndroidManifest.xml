@@ -55,8 +55,8 @@
 <!--            </intent-filter>  -->
         </activity>
 
-        <activity android:name="com.example.pricefruit.FruitPriceActivity"
-            android:exported="true"/>
+<!--        <activity android:name="com.example.pricefruit.FruitPriceActivity"-->
+<!--            android:exported="true"/>-->
 
 <!--        &lt;!&ndash; DietActivity 등록 &ndash;&gt;-->
         <!-- activity로 만드셔서 전부 등록했습니다-->
