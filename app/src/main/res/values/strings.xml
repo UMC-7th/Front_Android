@@ -1,4 +1,4 @@
-    <resources>
+<resources>
     <string name="app_name">이거먹자</string>
 
     <string-array name="years">
@@ -28,8 +28,6 @@
         <item>2002</item>
         <item>2001</item>
         <item>2000</item>
-
-
         <!-- 더 많은 년도 추가 -->
     </string-array>
 
@@ -98,6 +96,10 @@
     <string name="diet_level">조리 난이도</string>
     <string name="diet_ingredients">필요 식재료</string>
     <string name="diet_recipe">레시피</string>
+
+    <!-- Sub Fragment -->
+    <string name="sub_price_policy"><u>가격정책</u></string>
+
 
     <!--Calendar -->
     <string-array name="custom_weekdays">

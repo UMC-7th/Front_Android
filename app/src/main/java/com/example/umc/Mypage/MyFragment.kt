@@ -7,21 +7,28 @@ import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import android.widget.Button
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import com.example.umc.Main.MainActivity
 import com.example.umc.R
 import com.example.umc.Survey.SurveyGoalFragment
+import com.example.umc.UserApi.Response.HealthScoreData
+import com.example.umc.UserApi.Response.SuccessData
+import com.example.umc.UserApi.UserRepository
 import com.example.umc.databinding.FragmentMyBinding
+import kotlinx.coroutines.launch
 
 
 class MyFragment : Fragment() {
     private var _binding: FragmentMyBinding? = null
     private val binding get() = _binding!!
+    private val userRepository = UserRepository()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -36,7 +43,87 @@ class MyFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         initializeViews()
         setupListeners()
+        fetchHealthScore()
+        fetchAiDiagnosis() // AI 진단 데이터 조회
+        fetchMypageGoal() // 목표 정보 조회
+
     }
+    private fun fetchAiDiagnosis() {
+        lifecycleScope.launch {
+            try {
+                val response = userRepository.getDiagnosisResult(requireContext())
+                response?.let { diagnosisResponse ->
+                    updateAiDiagnosisInfo(diagnosisResponse.success)
+                }
+            } catch (e: Exception) {
+                Log.e("MyFragment", "AI 진단 조회 실패: ${e.message}")
+                // 에러 처리 필요시 여기에 추가
+            }
+        }
+    }
+    private fun fetchMypageGoal() {
+        lifecycleScope.launch {
+            try {
+                // 목표 정보를 가져오는 API 호출
+                val response = userRepository.getMypageGoal(requireContext())
+                response?.let { mypageGoalResponse ->
+                    // goal 값 화면에 업데이트
+                    updateGoalInfo(mypageGoalResponse.user.goal)
+                }
+            } catch (e: Exception) {
+                Log.e("MyFragment", "목표 정보 조회 실패: ${e.message}")
+                // 에러 처리 필요시 여기에 추가
+            }
+        }
+    }
+    private fun fetchHealthScore() {
+        lifecycleScope.launch {
+            try {
+                val response = userRepository.getHealthScore(requireContext())
+                response?.let { healthScoreResponse ->
+                    updateHealthInfo(healthScoreResponse.success)
+                }
+            } catch (e: Exception) {
+                Log.e("MyFragment", "건강 점수 조회 실패: ${e.message}")
+                // 에러 처리 필요시 여기에 추가
+            }
+        }
+    }
+    private fun updateGoalInfo(goal: String) {
+        binding.apply {
+            // goal 값이 업데이트되면 goalmeal TextView에 값 설정
+            goalmeal.text = goal
+        }
+    }
+    private fun updateAiDiagnosisInfo(data: SuccessData?) {
+        data?.let {
+            binding.apply {
+                // 진단 리스트를 보여주기 위해 각 항목을 TextView에 설정
+                it.diagnosis?.let { diagnosis ->
+                    // 진단 내용 출력 (여러 항목을 출력할 수 있게 Join 처리)
+                    tvAiDiagnosisDiet.text = diagnosis.joinToString("\n")
+                }
+
+                it.advice?.let { advice ->
+                    // 조언 내용 출력 (여러 항목을 출력할 수 있게 Join 처리)
+                    tvAiDiagnosisHealth.text = advice.joinToString("\n")
+                }
+            }
+        }
+    }
+    private fun updateHealthInfo(data: HealthScoreData) {
+        binding.apply {
+            // 건강 점수 업데이트
+            healthscore.text = "${data.healthScore}점"
+
+            // 비교값 업데이트 (comparison이 String으로 받아지므로 그대로 표시)
+            comparsion.text = data.comparison
+
+            // 업데이트 날짜 표시
+            textView52.text = "${data.updateAt} 기준"
+        }
+    }
+
 
     private fun initializeViews() {
         binding.apply {
@@ -142,5 +229,7 @@ class MyFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         (activity as? MainActivity)?.hideTitle()
+
+        // 여기나 oncreateView에 추가
     }
 }

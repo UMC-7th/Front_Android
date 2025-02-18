@@ -3,11 +3,13 @@ package com.example.umc.Subscribe
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -15,6 +17,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.umc.R
 import com.example.umc.model.Address
 import com.example.umc.Main.MainActivity
+import com.example.umc.Subscribe.Retrofit.RetrofitClient
+import com.example.umc.Subscribe.SubscribeRequest.DeliveryAddressRequest
+import com.example.umc.UserApi.UserRepository
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class SubAddressFragment : Fragment() {
     private lateinit var recyclerView: RecyclerView
@@ -46,12 +55,37 @@ class SubAddressFragment : Fragment() {
         editTextPhone = view.findViewById(R.id.tv_phone)
         editTextMemo = view.findViewById(R.id.tv_memo)
 
-        adapter = AddressAdapter(addressList)
+        adapter = AddressAdapter(requireContext(), addressList)
+
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.adapter = adapter
 
         addAddressButton.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.Gray7))
-
+        // 원래코드
+//        addAddressButton.setOnClickListener {
+//            if (cvAddAddress.visibility == View.GONE) {
+//                cvAddAddress.visibility = View.VISIBLE
+//                addAddressButton.text = "추가완료"
+//                addAddressButton.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.Gray7))
+//                (activity as? MainActivity)?.hideBottomBar()
+//            } else {
+//                val newAddress = editTextAddress.text.toString()
+//                if (newAddress.isNotEmpty()) {
+//                    val address = Address(editTextName.text.toString(), editTextPostcode.text.toString(), newAddress, editTextPhone.text.toString(), editTextMemo.text.toString())
+//                    addressList.add(address)
+//                    adapter.notifyItemInserted(addressList.size - 1)
+//                    editTextName.text.clear()
+//                    editTextPostcode.text.clear()
+//                    editTextAddress.text.clear()
+//                    editTextPhone.text.clear()
+//                    editTextMemo.text.clear()
+//                    cvAddAddress.visibility = View.GONE
+//                    addAddressButton.text = "신규 배송지 추가"
+//                    addAddressButton.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.Gray7))
+//                    (activity as? MainActivity)?.showBottomBar()
+//                }
+//            }
+//        }
         addAddressButton.setOnClickListener {
             if (cvAddAddress.visibility == View.GONE) {
                 cvAddAddress.visibility = View.VISIBLE
@@ -61,21 +95,66 @@ class SubAddressFragment : Fragment() {
             } else {
                 val newAddress = editTextAddress.text.toString()
                 if (newAddress.isNotEmpty()) {
-                    val address = Address(editTextName.text.toString(), editTextPostcode.text.toString(), newAddress, editTextPhone.text.toString(), editTextMemo.text.toString())
+                    val address = Address(
+                        editTextName.text.toString(),
+                        editTextPostcode.text.toString(),
+                        newAddress,
+                        editTextPhone.text.toString(),
+                        editTextMemo.text.toString()
+                    )
                     addressList.add(address)
                     adapter.notifyItemInserted(addressList.size - 1)
-                    editTextName.text.clear()
-                    editTextPostcode.text.clear()
-                    editTextAddress.text.clear()
-                    editTextPhone.text.clear()
-                    editTextMemo.text.clear()
-                    cvAddAddress.visibility = View.GONE
-                    addAddressButton.text = "신규 배송지 추가"
-                    addAddressButton.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.Gray7))
-                    (activity as? MainActivity)?.showBottomBar()
+
+                    // API 호출 - 주소 추가
+                    val token = UserRepository.getAuthToken(requireContext())  // Context에서 토큰 가져오기
+                    val deliveryAddressRequest = DeliveryAddressRequest(
+                        name = editTextName.text.toString(),
+                        address = newAddress,
+                        postNum = editTextPostcode.text.toString().replace("[^0-9]".toRegex(), "").toInt(),
+                        phoneNum = editTextPhone.text.toString(),
+                        memo = editTextMemo.text.toString()
+                    )
+
+                    // Retrofit을 사용한 POST 요청
+                    CoroutineScope(Dispatchers.IO).launch {
+                        try {
+                            // context가 null이 아니면 getDeliveryAddressApi를 호출하도록 처리
+
+                            // Fragment 내부에서 context가 null이 아니면 안전하게 사용 가능
+                            val context = requireContext()  // context가 null이 아닐 때만 호출됨
+                            val response = RetrofitClient.getDeliveryAddressApi(context).addDeliveryAddress("Bearer $token", deliveryAddressRequest)
+
+
+
+                            if (response.isSuccessful && response.body() != null) {
+                                // 성공 시, UI 업데이트 (메인 스레드에서)
+                                withContext(Dispatchers.Main) {
+                                    Toast.makeText(context, "배송지 추가 성공", Toast.LENGTH_SHORT).show()
+                                    editTextName.text.clear()
+                                    editTextPostcode.text.clear()
+                                    editTextAddress.text.clear()
+                                    editTextPhone.text.clear()
+                                    editTextMemo.text.clear()
+                                    cvAddAddress.visibility = View.GONE
+                                    addAddressButton.text = "신규 배송지 추가"
+                                    addAddressButton.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.Gray7))
+                                    (activity as? MainActivity)?.showBottomBar()
+                                }
+                            } else {
+                                withContext(Dispatchers.Main) {
+                                    Toast.makeText(context, "배송지 추가 실패", Toast.LENGTH_SHORT).show()
+                                }
+                            }
+                        } catch (e: Exception) {
+                            withContext(Dispatchers.Main) {
+                                Toast.makeText(context, "네트워크 오류: ${e.message}", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                    }
                 }
             }
         }
+
 
         val textWatcher = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
