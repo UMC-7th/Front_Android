@@ -159,6 +159,7 @@
                     android:fontFamily="@font/pretendard_medium"/>
 
                 <TextView
+                    android:id="@+id/tv_recipient1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="김태현"
@@ -180,6 +181,7 @@
                     android:fontFamily="@font/pretendard_medium"/>
 
                 <TextView
+                    android:id="@+id/tv_address1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="서울시 가나구 다라동 아파트먼트 101동 101호"
@@ -201,6 +203,7 @@
                     android:fontFamily="@font/pretendard_medium"/>
 
                 <TextView
+                    android:id="@+id/tv_phone1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="010-1234-5678"
@@ -222,6 +225,7 @@
                     android:fontFamily="@font/pretendard_medium"/>
 
                 <TextView
+                    android:id="@+id/tv_gatecode"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="1234"
