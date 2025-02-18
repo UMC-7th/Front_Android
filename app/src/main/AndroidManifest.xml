@@ -5,10 +5,18 @@
     <!--Internet, network_security 추가-->
     <uses-permission android:name="android.permission.INTERNET" />
 
+    <!-- 앨범 저장소 추가-->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+
+
+
+
 
 
     <application
         android:name=".model.MyApplication"
+        android:requestLegacyExternalStorage="true"
         android:allowBackup="true"
         android:networkSecurityConfig="@xml/network_security_config"
         android:dataExtractionRules="@xml/data_extraction_rules"
