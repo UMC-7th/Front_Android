@@ -10,7 +10,7 @@ data class MealRefreshSuccess(
     val addedByUser: Boolean,
     val calorieDetail: String,
     val calorieTotal: Int,
-    val difficulty: String,
+    val difficulty: Int?,
     val food: String,
     val material: String,
     val mealId: Int,

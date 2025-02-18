@@ -1,159 +1,236 @@
 package com.example.umc.Diet
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.umc.Diet.meal.MealViewModelFactory
 import com.example.umc.Main.MainActivity
 import com.example.umc.R
+import com.example.umc.UserApi.RetrofitClient
 import com.example.umc.databinding.FragmentDailyHomeBinding
+import com.example.umc.meal.MealViewModel
+import com.example.umc.model.repository.MealRepository
+import com.example.umc.model.response.PostDailyMealSuccess
+import com.example.umc.model.service.MealApiService
 
 class DailyHomeFragment : Fragment() {
     private var _binding: FragmentDailyHomeBinding? = null
     private val binding get() = _binding!!
 
-    private var selectedBreakfastPosition = -1
-    private var selectedLunchPosition = -1
-    private var selectedDinnerPosition = -1
-
     private lateinit var breakfastAdapter: MenuItemAdapter
     private lateinit var lunchAdapter: MenuItemAdapter
     private lateinit var dinnerAdapter: MenuItemAdapter
+
+    private val mealApiService by lazy { RetrofitClient.mealApiService }
+    private val mealRepository by lazy {
+        MealRepository(
+            mealApiService,
+            requireContext()
+        )
+    }
+
+    private val viewModel: MealViewModel by viewModels {
+        MealViewModelFactory(
+            requireContext(),
+            mealRepository
+        )
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        Log.d("UI_DEBUG", "DailyHomeFragment - onCreateView 시작")
         _binding = FragmentDailyHomeBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        Log.d("UI_DEBUG", "DailyHomeFragment - onViewCreated 시작")
+
         initializeAdapters()
         setupRecyclerViews()
+        observeViewModel()
+
+        Log.d("UI_DEBUG", "DailyHomeFragment - fetchDailyMeal 호출")
+        viewModel.fetchDailyMeal()
     }
 
     private fun initializeAdapters() {
+        Log.d("UI_DEBUG", "어댑터 초기화 시작")
+
         breakfastAdapter = MenuItemAdapter(
             onClick = { item: MenuItem, position: Int ->
-                selectedBreakfastPosition = position
-                breakfastAdapter.notifyDataSetChanged()
+                Log.d("UI_DEBUG", "아침 메뉴 클릭 - item: ${item.name}, position: $position")
                 onMenuItemClicked(item, "아침")
             },
             onFavoriteChanged = { item, isFavorite ->
-                // 즐겨찾기 상태 변경 처리
+                Log.d("UI_DEBUG", "아침 메뉴 즐겨찾기 변경 - item: ${item.name}, favorite: $isFavorite")
             },
             onDietCompleteChanged = { item, isCompleted ->
-                // 식단 완료 상태 변경 처리
+                Log.d("UI_DEBUG", "아침 메뉴 완료 상태 변경 - item: ${item.name}, completed: $isCompleted")
             }
         )
 
         lunchAdapter = MenuItemAdapter(
             onClick = { item: MenuItem, position: Int ->
-                selectedLunchPosition = position
-                lunchAdapter.notifyDataSetChanged()
+                Log.d("UI_DEBUG", "점심 메뉴 클릭 - item: ${item.name}, position: $position")
                 onMenuItemClicked(item, "점심")
             },
             onFavoriteChanged = { item, isFavorite ->
-                // 즐겨찾기 상태 변경 처리
+                Log.d("UI_DEBUG", "점심 메뉴 즐겨찾기 변경 - item: ${item.name}, favorite: $isFavorite")
             },
             onDietCompleteChanged = { item, isCompleted ->
-                // 식단 완료 상태 변경 처리
+                Log.d("UI_DEBUG", "점심 메뉴 완료 상태 변경 - item: ${item.name}, completed: $isCompleted")
             }
         )
 
         dinnerAdapter = MenuItemAdapter(
             onClick = { item: MenuItem, position: Int ->
-                selectedDinnerPosition = position
-                dinnerAdapter.notifyDataSetChanged()
+                Log.d("UI_DEBUG", "저녁 메뉴 클릭 - item: ${item.name}, position: $position")
                 onMenuItemClicked(item, "저녁")
             },
             onFavoriteChanged = { item, isFavorite ->
-                // 즐겨찾기 상태 변경 처리
+                Log.d("UI_DEBUG", "저녁 메뉴 즐겨찾기 변경 - item: ${item.name}, favorite: $isFavorite")
             },
             onDietCompleteChanged = { item, isCompleted ->
-                // 식단 완료 상태 변경 처리
+                Log.d("UI_DEBUG", "저녁 메뉴 완료 상태 변경 - item: ${item.name}, completed: $isCompleted")
             }
         )
+        Log.d("UI_DEBUG", "어댑터 초기화 완료")
     }
 
     private fun setupRecyclerViews() {
+        Log.d("UI_DEBUG", "RecyclerView 설정 시작")
         binding.apply {
-            // 아침 메뉴
             rvBreakfast.apply {
+                Log.d("UI_DEBUG", "아침 RecyclerView 설정")
                 layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
                 adapter = breakfastAdapter
                 addOnScrollListener(object : RecyclerView.OnScrollListener() {
                     override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                        updateIndicator(
-                            recyclerView,
-                            binding.breakfastIndicatorBar
-                        )
+                        updateIndicator(recyclerView, binding.breakfastIndicatorBar)
                     }
                 })
             }
-            breakfastAdapter.submitList(getDummyMenuItems())
 
-            // 점심 메뉴
             rvLunch.apply {
+                Log.d("UI_DEBUG", "점심 RecyclerView 설정")
                 layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
                 adapter = lunchAdapter
                 addOnScrollListener(object : RecyclerView.OnScrollListener() {
                     override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                        updateIndicator(
-                            recyclerView,
-                            binding.lunchIndicatorBar
-                        )
+                        updateIndicator(recyclerView, binding.lunchIndicatorBar)
                     }
                 })
             }
-            lunchAdapter.submitList(getDummyMenuItems())
 
-            // 저녁 메뉴
             rvDinner.apply {
+                Log.d("UI_DEBUG", "저녁 RecyclerView 설정")
                 layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
                 adapter = dinnerAdapter
                 addOnScrollListener(object : RecyclerView.OnScrollListener() {
                     override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                        updateIndicator(
-                            recyclerView,
-                            binding.dinnerIndicatorBar
-                        )
+                        updateIndicator(recyclerView, binding.dinnerIndicatorBar)
                     }
                 })
             }
-            dinnerAdapter.submitList(getDummyMenuItems())
+        }
+        Log.d("UI_DEBUG", "RecyclerView 설정 완료")
+    }
+
+    private fun observeViewModel() {
+        viewModel.dailyMeals.observe(viewLifecycleOwner) { mealWrapper ->
+            Log.d("UI_DEBUG", "데이터 수신: $mealWrapper")
+
+            // mealDate 활용 (필요한 경우)
+            mealWrapper.mealDate?.let { date ->
+                Log.d("UI_DEBUG", "식단 날짜: $date")
+            }
+
+            val meals = mealWrapper.existingMeals ?: emptyList()
+            if (meals.isEmpty()) {
+                Log.d("UI_DEBUG", "식사 데이터가 없습니다")
+                return@observe
+            }
+
+            val mealsCount = meals.size
+            Log.d("UI_DEBUG", "전체 식사 수: $mealsCount")
+
+            // 전체 식사 수가 3의 배수가 아닌 경우 처리
+            if (mealsCount % 3 != 0) {
+                Log.e("UI_DEBUG", "식사 데이터 개수가 3의 배수가 아닙니다: $mealsCount")
+            }
+
+            val mealSize = mealsCount / 3
+            try {
+                val breakfastMeals = meals.subList(0, mealSize)
+                val lunchMeals = meals.subList(mealSize, mealSize * 2)
+                val dinnerMeals = meals.subList(mealSize * 2, mealsCount)
+
+                Log.d("UI_DEBUG", """
+                |식사별 개수:
+                |아침: ${breakfastMeals.size}
+                |점심: ${lunchMeals.size}
+                |저녁: ${dinnerMeals.size}
+            """.trimMargin())
+
+                breakfastAdapter.submitList(breakfastMeals.map {
+                    Log.d("UI_DEBUG", "아침 메뉴 변환: ${it.food}")
+                    it.toMenuItem()
+                })
+                lunchAdapter.submitList(lunchMeals.map {
+                    Log.d("UI_DEBUG", "점심 메뉴 변환: ${it.food}")
+                    it.toMenuItem()
+                })
+                dinnerAdapter.submitList(dinnerMeals.map {
+                    Log.d("UI_DEBUG", "저녁 메뉴 변환: ${it.food}")
+                    it.toMenuItem()
+                })
+            } catch (e: Exception) {
+                Log.e("UI_DEBUG", "식사 데이터 처리 중 오류 발생", e)
+                Toast.makeText(requireContext(), "식단 데이터 처리 중 오류가 발생했습니다", Toast.LENGTH_SHORT).show()
+            }
         }
     }
-    // 인디케이터 업데이트 함수
+
     private fun updateIndicator(recyclerView: RecyclerView, indicator: View) {
         val totalWidth = recyclerView.computeHorizontalScrollRange()
         val visibleWidth = recyclerView.computeHorizontalScrollExtent()
         val scrollOffset = recyclerView.computeHorizontalScrollOffset()
 
-        // 스크롤 진행률 계산
         val scrollProgress = if (totalWidth - visibleWidth > 0) {
             scrollOffset.toFloat() / (totalWidth - visibleWidth)
         } else {
             0f
         }
 
-        // 인디케이터 이동
         val maxScroll = (indicator.parent as View).width - indicator.width
         indicator.translationX = maxScroll * scrollProgress
     }
 
     private fun onMenuItemClicked(item: MenuItem, mealTime: String) {
         val dietDetailFragment = DietDetailFragment()
-
-        val bundle = Bundle()
-        bundle.putString("name", item.name)
-        bundle.putString("calories", item.calories)
+        val bundle = Bundle().apply {
+            putString("name", item.name)
+            putString("calories", item.calories)
+            putString("material", item.material)
+            putString("recipe", item.recipe)
+            putString("calorieDetail", item.calorieDetail)
+            putInt("difficulty", item.difficulty ?: 0) // null일 경우 기본값 0으로 설정
+            putInt("mealId", item.mealId)
+            putInt("price", item.price ?: 0)           // 추가
+            putBoolean("addedByUser", item.addedByUser) // 추가
+        }
         dietDetailFragment.arguments = bundle
 
         val transaction: FragmentTransaction = parentFragmentManager.beginTransaction()
@@ -166,17 +243,26 @@ class DailyHomeFragment : Fragment() {
         mainActivity?.hideBottomBar()
     }
 
-    private fun getDummyMenuItems(): List<MenuItem> {
-        return listOf(
-            MenuItem("image_url1", "제육볶음 도시락", "560Kcal"),
-            MenuItem("image_url2", "샐러드 도시락", "450Kcal"),
-            MenuItem("image_url3", "볶음밥 도시락", "520Kcal"),
-            MenuItem("image_url4", "연어 도시락", "480Kcal")
+    private fun PostDailyMealSuccess.toMenuItem(): MenuItem {
+        return MenuItem(
+            imageUrl = "",
+            name = this.food ?: "Unknown Meal",
+            calories = "${this.calorieTotal}Kcal", // 칼로리 단위 추가
+            mealId = this.mealId,
+            material = this.material,
+            recipe = this.recipe,
+            calorieDetail = this.calorieDetail,
+            difficulty = this.difficulty,
+            price = this.price,              // price 추가
+            addedByUser = this.addedByUser,  // addedByUser 추가
+            isFavorite = false,
+            isDietCompleted = false
         )
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
+        Log.d("UI_DEBUG", "DailyHomeFragment - onDestroyView")
         _binding = null
     }
 }

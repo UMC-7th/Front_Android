@@ -99,12 +99,20 @@ class MenuItemAdapter(
 
     private fun changeRandomFavoriteItem() {
         val randomIndex = Random.nextInt(menuItems.size)
-        val randomItem = menuItems[Random.nextInt(menuItems.size)]
+        val randomItem = menuItems[randomIndex]
         menuItems[randomIndex] = MenuItem(
-            randomItem.name,
-            randomItem.calories,
-            randomItem.isFavorite.toString(),
-            randomItem.isDietCompleted
+            imageUrl = "",
+            name = randomItem.name,
+            calories = randomItem.calories,
+            mealId = randomItem.mealId,
+            material = randomItem.material,
+            recipe = randomItem.recipe,
+            calorieDetail = randomItem.calorieDetail,
+            difficulty = randomItem.difficulty,
+            isFavorite = !randomItem.isFavorite,
+            isDietCompleted = randomItem.isDietCompleted,
+            price = randomItem.price,              // 추가
+            addedByUser = randomItem.addedByUser,  // 추가
         )
     }
 

@@ -40,6 +40,7 @@ class DailyDietFragment : Fragment() {
         val month = arguments?.getInt("month") ?: 1
         val day = arguments?.getInt("day") ?: 1
         binding.tvDailyDietToday.text = getString(R.string.daily_diet_day, month, day)
+
     }
 
     private fun initializeAdapters() {
@@ -91,14 +92,10 @@ class DailyDietFragment : Fragment() {
                 adapter = breakfastAdapter
                 addOnScrollListener(object : RecyclerView.OnScrollListener() {
                     override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                        updateIndicator(
-                            recyclerView,
-                            binding.breakfastIndicatorBar
-                        )
+                        updateIndicator(recyclerView, binding.breakfastIndicatorBar)
                     }
                 })
             }
-            breakfastAdapter.submitList(getDummyMenuItems())
 
             // 점심 메뉴
             rvLunch.apply {
@@ -106,14 +103,10 @@ class DailyDietFragment : Fragment() {
                 adapter = lunchAdapter
                 addOnScrollListener(object : RecyclerView.OnScrollListener() {
                     override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                        updateIndicator(
-                            recyclerView,
-                            binding.lunchIndicatorBar
-                        )
+                        updateIndicator(recyclerView, binding.lunchIndicatorBar)
                     }
                 })
             }
-            lunchAdapter.submitList(getDummyMenuItems())
 
             // 저녁 메뉴
             rvDinner.apply {
@@ -121,15 +114,16 @@ class DailyDietFragment : Fragment() {
                 adapter = dinnerAdapter
                 addOnScrollListener(object : RecyclerView.OnScrollListener() {
                     override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                        updateIndicator(
-                            recyclerView,
-                            binding.dinnerIndicatorBar
-                        )
+                        updateIndicator(recyclerView, binding.dinnerIndicatorBar)
                     }
                 })
             }
-            dinnerAdapter.submitList(getDummyMenuItems())
         }
+    }
+    fun updateMeals(breakfastMeals: List<MenuItem>, lunchMeals: List<MenuItem>, dinnerMeals: List<MenuItem>) {
+        breakfastAdapter.submitList(breakfastMeals)
+        lunchAdapter.submitList(lunchMeals)
+        dinnerAdapter.submitList(dinnerMeals)
     }
     // 인디케이터 업데이트 함수
     private fun updateIndicator(recyclerView: RecyclerView, indicator: View) {
@@ -169,14 +163,6 @@ class DailyDietFragment : Fragment() {
 
     }
 
-    private fun getDummyMenuItems(): List<MenuItem> {
-        return listOf(
-            MenuItem("image_url1", "제육볶음 도시락", "560Kcal"),
-            MenuItem("image_url2", "샐러드 도시락", "450Kcal"),
-            MenuItem("image_url3", "볶음밥 도시락", "520Kcal"),
-            MenuItem("image_url4", "연어 도시락", "480Kcal")
-        )
-    }
 
     override fun onDestroyView() {
         super.onDestroyView()
