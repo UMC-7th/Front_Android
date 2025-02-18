@@ -1,7 +1,9 @@
 package com.example.umc.UserApi
 
 import android.content.Context
+import com.example.umc.UserApi.APi.DiagnosisApi
 import com.example.umc.UserApi.APi.GetUserApi
+import com.example.umc.UserApi.APi.HealthScoreApi
 import com.example.umc.UserApi.APi.KakaoLoginApi
 import com.example.umc.UserApi.APi.OtpApi
 import com.example.umc.UserApi.APi.OtpValidationApi
@@ -101,4 +103,24 @@ object RetrofitClient {
             .build()
             .create(KakaoLoginApi::class.java)
     }
+
+    // 건강 점수 확인 로직
+    val healthScoreApi: HealthScoreApi by lazy {
+        Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .client(okHttpClient)
+            .build()
+            .create(HealthScoreApi::class.java)
+    }
+    val diagnosisApi: DiagnosisApi by lazy {
+        Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .client(okHttpClient)
+            .build()
+            .create(DiagnosisApi::class.java)
+    }
+
+
 }
