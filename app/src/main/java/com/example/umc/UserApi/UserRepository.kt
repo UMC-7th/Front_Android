@@ -11,6 +11,7 @@ import com.example.umc.UserApi.Request.UpdateUserRequest
 import com.example.umc.UserApi.Response.DiagnosisResponse
 import com.example.umc.UserApi.Response.HealthScoreResponse
 import com.example.umc.UserApi.Response.LoginResponse
+import com.example.umc.UserApi.Response.MypageGoalResponse
 import com.example.umc.UserApi.Response.OtpResponse
 import com.example.umc.UserApi.Response.OtpValidationResponse
 import com.example.umc.UserApi.Response.SignUpResponse
@@ -23,6 +24,7 @@ class UserRepository {
     private val api = RetrofitClient.instance
     private val getUserApi = RetrofitClient.getApiService
     private val otpApi = RetrofitClient.otpApi
+    private val mypageGoalApi = RetrofitClient.mypageGoalApi
 
     // SharedPreferences에 accessToken 저장
     companion object {
@@ -194,6 +196,42 @@ class UserRepository {
             null
         }
     }
+
+    suspend fun getMypageGoal(context: Context): MypageGoalResponse? {
+        val token = getAuthToken(context)
+        if (token.isNullOrEmpty()) {
+            Log.e("UserRepository", "액세스 토큰이 없습니다.")
+            return null
+        }
+
+        return try {
+            // API 요청
+            val response = mypageGoalApi.getMypageGoal("Bearer $token").execute() // 동기 호출로 변경
+
+            // 응답 처리
+            if (response.isSuccessful) {
+                val body = response.body()
+                if (body != null) {
+                    body // 응답 본문 반환
+                } else {
+                    // 응답 본문이 null일 경우 처리
+                    Log.e("UserRepository", "응답 본문이 null입니다.")
+                    null
+                }
+            } else {
+                // 실패시 로깅
+                Log.e("UserRepository", "서버 응답 실패: ${response.code()}")
+                Log.e("UserRepository", "에러 메시지: ${response.errorBody()?.string()}")
+                null
+            }
+        } catch (e: Exception) {
+            // 네트워크 오류 처리
+            Log.e("UserRepository", "네트워크 오류 발생: ${e.message}")
+            null
+        }
+    }
+
+
 
 
 

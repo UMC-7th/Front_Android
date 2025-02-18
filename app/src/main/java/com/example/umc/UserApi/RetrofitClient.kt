@@ -5,6 +5,7 @@ import com.example.umc.UserApi.APi.DiagnosisApi
 import com.example.umc.UserApi.APi.GetUserApi
 import com.example.umc.UserApi.APi.HealthScoreApi
 import com.example.umc.UserApi.APi.KakaoLoginApi
+import com.example.umc.UserApi.APi.MypageGoalApi
 import com.example.umc.UserApi.APi.OtpApi
 import com.example.umc.UserApi.APi.OtpValidationApi
 import com.example.umc.UserApi.APi.UpdateUserApi
@@ -122,5 +123,12 @@ object RetrofitClient {
             .create(DiagnosisApi::class.java)
     }
 
-
+    val mypageGoalApi: MypageGoalApi by lazy {
+        Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .client(okHttpClient)
+            .build()
+            .create(MypageGoalApi::class.java)
+    }
 }

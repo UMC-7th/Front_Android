@@ -45,6 +45,7 @@ class MyFragment : Fragment() {
         setupListeners()
         fetchHealthScore()
         fetchAiDiagnosis() // AI 진단 데이터 조회
+        fetchMypageGoal() // 목표 정보 조회
 
     }
     private fun fetchAiDiagnosis() {
@@ -60,6 +61,21 @@ class MyFragment : Fragment() {
             }
         }
     }
+    private fun fetchMypageGoal() {
+        lifecycleScope.launch {
+            try {
+                // 목표 정보를 가져오는 API 호출
+                val response = userRepository.getMypageGoal(requireContext())
+                response?.let { mypageGoalResponse ->
+                    // goal 값 화면에 업데이트
+                    updateGoalInfo(mypageGoalResponse.user.goal)
+                }
+            } catch (e: Exception) {
+                Log.e("MyFragment", "목표 정보 조회 실패: ${e.message}")
+                // 에러 처리 필요시 여기에 추가
+            }
+        }
+    }
     private fun fetchHealthScore() {
         lifecycleScope.launch {
             try {
@@ -71,6 +87,12 @@ class MyFragment : Fragment() {
                 Log.e("MyFragment", "건강 점수 조회 실패: ${e.message}")
                 // 에러 처리 필요시 여기에 추가
             }
+        }
+    }
+    private fun updateGoalInfo(goal: String) {
+        binding.apply {
+            // goal 값이 업데이트되면 goalmeal TextView에 값 설정
+            goalmeal.text = goal
         }
     }
     private fun updateAiDiagnosisInfo(data: SuccessData?) {
