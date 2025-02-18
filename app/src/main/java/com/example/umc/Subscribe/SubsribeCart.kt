@@ -11,7 +11,6 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.umc.Main.MainActivity
 import com.example.umc.R
-import com.example.umc.Subscribe.RetrofitClient
 import com.example.umc.Subscribe.SubscribeCartAdapter
 import com.example.umc.Subscribe.Subscribecredit
 import com.example.umc.databinding.FragmentSubscribeCartBinding
@@ -22,7 +21,6 @@ import java.util.Locale
 class SubscribeCart : Fragment() {
     private var _binding: FragmentSubscribeCartBinding? = null
     private val binding get() = _binding!!
-    private val apiService = RetrofitClient.mealApiService
 
     private var isAllSelected = false
     private val itemChecked = mutableListOf(false, false, false, false)

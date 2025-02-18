@@ -6,3 +6,6 @@ data class PostRefreshMealRequest(
     val time: String,
     val userId: Int
 )
+data class MealRefreshRequest(
+    val mealId: Int
+)
