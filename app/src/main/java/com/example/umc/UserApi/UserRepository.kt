@@ -16,15 +16,22 @@ import com.example.umc.UserApi.Response.OtpResponse
 import com.example.umc.UserApi.Response.OtpValidationResponse
 import com.example.umc.UserApi.Response.SignUpResponse
 import com.example.umc.UserApi.Response.UserProfileResponse
+import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.io.File
 
 class UserRepository {
     private val api = RetrofitClient.instance
     private val getUserApi = RetrofitClient.getApiService
     private val otpApi = RetrofitClient.otpApi
     private val mypageGoalApi = RetrofitClient.mypageGoalApi
+    private val imageProfileApi = RetrofitClient.imageProfileApi
 
     // SharedPreferences에 accessToken 저장
     companion object {
@@ -230,6 +237,35 @@ class UserRepository {
             null
         }
     }
+
+    // 이미지 업로드 메서드
+    fun updateProfileImage(context: Context, imagePart: MultipartBody.Part, callback: (Boolean, String?) -> Unit) {
+        val token = getAuthToken(context)
+        if (token.isNullOrEmpty()) {
+            Log.e("UserRepository", "액세스 토큰이 없습니다.")
+            callback(false, "액세스 토큰이 없습니다.")
+            return
+        }
+
+        Log.d("UserRepository", "토큰 전달 확인: Bearer $token") // ✅ 디버깅 로그 추가
+
+        imageProfileApi.updateProfileImage("Bearer $token", imagePart).enqueue(object : Callback<ResponseBody> {
+            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                if (response.isSuccessful) {
+                    callback(true, "프로필 이미지 업데이트 성공")
+                } else {
+                    Log.e("UserRepository", "프로필 이미지 업데이트 실패: ${response.errorBody()?.string()}")
+                    callback(false, "서버 오류: ${response.code()}")
+                }
+            }
+
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                Log.e("UserRepository", "프로필 이미지 업로드 네트워크 오류: ${t.message}")
+                callback(false, "네트워크 오류: ${t.message}")
+            }
+        })
+    }
+
 
 
 
