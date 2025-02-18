@@ -1,6 +1,5 @@
-package com.example.umc.subscribe
+package com.example.umc.Subscribe
 
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -11,11 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.umc.Main.MainActivity
 import com.example.umc.R
-import com.example.umc.Subscribe.OrderGroup
-import com.example.umc.Subscribe.OrderHistoryAdapter
-import com.example.umc.Subscribe.OrderItem
 import com.example.umc.databinding.FragmentSubscriptionHistoryBinding
-import com.example.umc.Subscribe.OrderDetailFragment // 주의: 패키지 경로 확인
 
 class SubscriptionHistoryFragment : Fragment() {
     private var _binding: FragmentSubscriptionHistoryBinding? = null
