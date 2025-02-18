@@ -10,6 +10,7 @@ import android.widget.PopupWindow
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
@@ -17,12 +18,15 @@ import com.example.umc.model.Nutrition
 import com.example.umc.R
 import com.example.umc.UserApi.RetrofitClient
 import com.example.umc.databinding.FragmentDietDetailBinding
+import com.example.umc.model.request.PatchFavoriteDeleteRequest
 import com.example.umc.model.request.PatchFavoriteRequest
+import com.example.umc.model.request.PatchMealsDislikeDeleteRequest
+import com.example.umc.model.request.PatchMealsDislikeRequest
 import com.example.umc.model.request.PatchPreferenceRequest
 import com.example.umc.model.request.PostCompleteMealRequest
+import com.example.umc.model.response.GetMealsDetailSuccess
 import com.example.umc.model.response.PostCompleteMealResponse
 import kotlinx.coroutines.launch
-import org.json.JSONObject
 import retrofit2.Response
 import java.text.SimpleDateFormat
 import java.util.*
@@ -31,8 +35,6 @@ class DietDetailFragment : Fragment() {
     private var _binding: FragmentDietDetailBinding? = null
     private val binding get() = _binding!!
 
-    private var currentMealId: Int = -1
-
     private var isLiked = false  // 좋아요
     private var isDisliked = false // 싫어요
     private var isFavorited = false // 즐겨찾기
@@ -40,82 +42,70 @@ class DietDetailFragment : Fragment() {
     private var isTooltipVisible = false // 툴팁
     private var popupWindow: PopupWindow? = null // 툴팁 열기
 
+    private val viewModel: DietDetailViewModel by viewModels()
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentDietDetailBinding.inflate(inflater, container, false)
         return binding.root
-
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // 전달받은 데이터로 UI 업데이트
-        arguments?.let { args ->
-            currentMealId = args.getInt("mealId", -1)
+        val mealId = arguments?.getInt("mealId") ?: return
 
-            // 기본 정보 설정
-            binding.tvRecipeTitle.text = args.getString("name")
-            binding.tvCalories.text = args.getString("calories")
-            binding.tvPrice.text = String.format("%,d원", args.getInt("price", 0))  // 가격 정보 추가
+        Log.d("DietDetailFragment", "전달된 mealId: $mealId")
 
-//            if (args.getBoolean("addedByUser", false)) {
-//                // 사용자가 추가한 메뉴일 경우의 UI 처리
-//                binding.tvUserAdded.visibility = View.VISIBLE
-//            }
+        val token = viewModel.getAuthToken()
 
-            // 난이도 설정
-            val difficulty = args.getInt("difficulty", 0)
-            binding.ratingBar.rating = difficulty.toFloat()
-
-
-            // 이미지 로드
-            args.getString("name")?.let { name ->
-                loadMealImage(name)
-            }
-
-            // 재료 설정
-            args.getString("material")?.let { material ->
-                binding.tvIngredients.text = material.split(",").mapIndexed { index, ingredient ->
-                    "${index + 1}. ${ingredient.trim()}"
-                }.joinToString("\n")
-            }
-
-            // 레시피 설정
-            args.getString("recipe")?.let { recipe ->
-                binding.tvRecipe.text = recipe.split("\n").mapIndexed { index, step ->
-                    "${index + 1}. ${step.trim()}"
-                }.joinToString("\n")
-            }
-
-            // 영양 정보 설정
-            args.getString("calorieDetail")?.let { details ->
-                val nutritionList = parseNutritionDetails(details)
-                binding.recyclerNutrition.adapter = DietDetailAdapter(nutritionList)
-            }
+        viewModel.mealDetail.observe(viewLifecycleOwner) { mealDetail ->
+            updateUI(mealDetail)
         }
 
-        setupButtons()
-    }
-    private fun parseNutritionDetails(details: String): List<Nutrition> {
-        return try {
-            val nutritionJson = JSONObject(details)
-            val nutritionList = mutableListOf<Nutrition>()
+        // 서버로부터 데이터 가져오기
+        viewModel.fetchMealDetail(mealId, token)
 
-            nutritionJson.keys().forEach { key ->
-                val value = nutritionJson.getInt(key)
-                nutritionList.add(Nutrition(key, "${value}kcal"))
-            }
-            nutritionList
-        } catch (e: Exception) {
-            Log.e("DietDetail", "Error parsing nutrition details", e)
-            emptyList()
+        // 버튼 설정
+        setupButtons(mealId, token)
+    }
+
+    private fun updateUI(mealDetail: GetMealsDetailSuccess) {
+        binding.tvRecipeTitle.text = mealDetail.food
+        binding.tvPrice.text = "약 ${mealDetail.price}원"
+        binding.tvCalories.text = "${mealDetail.calorieTotal} kcal"
+        binding.tvIngredients.text = mealDetail.material
+        binding.tvRecipe.text = mealDetail.recipe
+
+        val nutritionList = mealDetail.calorieDetail.split(", ").map { item ->
+            val parts = item.split(": ")
+            Nutrition(parts[0], parts[1])
         }
+
+        binding.recyclerNutrition.layoutManager = LinearLayoutManager(context)
+        binding.recyclerNutrition.adapter = DietDetailAdapter(nutritionList)
+
+        // recipe 데이터를 숫자 앞에서 개행 처리하여 변환
+        val recipeSteps = mealDetail.recipe.split(Regex("(?=\\d\\.\\s)")).drop(1)
+
+        // 레시피 출력
+        binding.tvRecipe.text = recipeSteps.joinToString("\n")
+
+        // 이미지 로딩
+        binding.ratingBar.rating = mealDetail.difficulty.toFloat()
+
+        // UI 업데이트
+        binding.btLike.setColorFilter(ContextCompat.getColor(requireContext(), if (isLiked) R.color.Primary_Orange1 else R.color.Gray7))
+        binding.btDislike.setColorFilter(ContextCompat.getColor(requireContext(), if (isDisliked) R.color.Primary_Orange1 else R.color.Gray7))
+        binding.btFavorite.setColorFilter(ContextCompat.getColor(requireContext(), if (isFavorited) R.color.Primary_Orange1 else R.color.Gray7))
+        binding.btDietComplete.setBackgroundColor(ContextCompat.getColor(requireContext(), if (isCompleted) R.color.Primary_Orange1 else R.color.Gray7))
+
+        loadMealImage(mealDetail.food)
     }
 
-    private fun setupButtons() {
+    private fun setupButtons(mealId: Int, token: String) {
         // 좋아요 버튼 설정
         binding.btLike.setOnClickListener {
             isLiked = !isLiked
@@ -129,10 +119,8 @@ class DietDetailFragment : Fragment() {
 
             // 좋아요 상태가 true이면 선호도 API 요청
             if (isLiked) {
-                // val mealId = getMealId()
-                // val userId = getUserId()
-                val preferenceRequest = PatchPreferenceRequest(userId = 1, mealId = 16)
-                addToPreference(preferenceRequest)
+                val preferenceRequest = PatchPreferenceRequest(mealId = mealId)
+                viewModel.addToPreference(preferenceRequest, token)
             }
         }
 
@@ -144,6 +132,16 @@ class DietDetailFragment : Fragment() {
                 isLiked = false
                 binding.btLike.setColorFilter(ContextCompat.getColor(requireContext(), R.color.Gray7))
             }
+
+            if(isDisliked) {
+                val dislikeRequest = PatchMealsDislikeRequest(mealId = mealId)
+                viewModel.addToDislike(dislikeRequest, token)
+            }
+
+            if (!isDisliked) {
+                val dislikeDeleteRequest = PatchMealsDislikeDeleteRequest(mealId = mealId)
+                viewModel.deleteDislike(dislikeDeleteRequest, token)
+            }
         }
 
         // 즐겨찾기 버튼 설정
@@ -152,8 +150,13 @@ class DietDetailFragment : Fragment() {
             binding.btFavorite.setColorFilter(ContextCompat.getColor(requireContext(), if (isFavorited) R.color.Primary_Orange1 else R.color.Gray7))
 
             if (isFavorited) {
-                val favoriteRequest = PatchFavoriteRequest(userId = 1, mealId = 16)
-                addToFavorite(favoriteRequest)
+                val favoriteRequest = PatchFavoriteRequest(mealId = mealId)
+                viewModel.addToFavorite(favoriteRequest, token)
+            }
+
+            if (!isFavorited) {
+                val favoriteDeleteRequest = PatchFavoriteDeleteRequest(mealId = mealId)
+                viewModel.deleteFavorite(favoriteDeleteRequest, token)
             }
         }
 
@@ -164,8 +167,9 @@ class DietDetailFragment : Fragment() {
 
             // API 요청
             if (isCompleted) {
-                val completedRequest = PostCompleteMealRequest(userId = 1, mealId = 1, mealDate = "2025-02-01T00:00:00.000Z" )  // Replace with actual userId and mealId
-                mealComplete(completedRequest)  // Fixed function call
+                val currentDate = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault()).format(Date())
+                val completedRequest = PostCompleteMealRequest(mealId = mealId, mealDate = currentDate)
+                viewModel.mealComplete(completedRequest, token)
             }
         }
 
@@ -192,100 +196,6 @@ class DietDetailFragment : Fragment() {
                 true
             } else {
                 false
-            }
-        }
-    }
-
-    private fun addToFavorite(favoriteRequest: PatchFavoriteRequest) {
-        lifecycleScope.launch {
-            try {
-                val response = RetrofitClient.mealApiService.favoriteMeal(favoriteRequest)
-
-                if (response.isSuccessful) {
-                    val responseBody = response.body()
-                    if (responseBody?.resultType == "SUCCESS") {
-                        // 성공 처리
-                        Log.d("MealLogging", "식단을 즐겨찾기 목록에 추가 성공")
-                        Toast.makeText(context, "즐겨찾기에 추가되었습니다.", Toast.LENGTH_SHORT).show()
-                    } else {
-                        // 실패 처리
-                        Log.e("MealLogging", "즐겨찾기 추가 실패: ${responseBody?.error?.reason}")
-                        Toast.makeText(context, "즐겨찾기 추가 실패: ${responseBody?.error?.reason}", Toast.LENGTH_SHORT).show()
-                    }
-                } else {
-                    // 실패 처리 (HTTP 에러)
-                    Log.e("MealLogging", "API 호출 실패: ${response.message()}")
-                    Toast.makeText(context, "즐겨찾기 추가 실패", Toast.LENGTH_SHORT).show()
-                }
-            } catch (e: Exception) {
-                // 네트워크 오류 처리
-                Log.e("MealLogging", "네트워크 오류: ${e.message}")
-                Toast.makeText(context, "네트워크 오류", Toast.LENGTH_SHORT).show()
-            }
-        }
-    }
-
-
-    // API 호출 함수: 선호도 추가
-    private fun addToPreference(preferenceRequest: PatchPreferenceRequest) {
-        lifecycleScope.launch {
-            try {
-                val response = RetrofitClient.mealApiService.preferenceMeal(preferenceRequest)
-
-                if (response.isSuccessful) {
-                    val responseBody = response.body()
-                    if (responseBody?.resultType == "SUCCESS") {
-                        // 성공 처리
-                        Log.d("MealLogging", "식단을 선호도 목록에 추가 성공")
-                        Toast.makeText(context, "선호도에 추가되었습니다.", Toast.LENGTH_SHORT).show()
-                    } /*else {
-                        // 실패 처리
-                        Log.e("MealLogging", "선호도 추가 실패: ${responseBody?.error?.reason}")
-                    }*/
-                } else {
-                    // 실패 처리 (HTTP 에러)
-                    Log.e("MealLogging", "API 호출 실패:${response.message()}")
-                    Toast.makeText(context, "선호도 추가 실패", Toast.LENGTH_SHORT).show()
-                }
-            } catch (e: Exception) {
-                // 네트워크 오류 처리
-                Log.e("MealLogging", "네트워크 오류: ${e.message}")
-                Toast.makeText(context, "네트워크 오류", Toast.LENGTH_SHORT).show()
-            }
-        }
-    }
-
-    private fun mealComplete(completedRequest: PostCompleteMealRequest) {
-        lifecycleScope.launch {
-            try {
-                // Get the current date in the required format (ISO 8601)
-                val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
-                val mealDate = dateFormat.format(Date())  // Get the current date and format it
-
-                // Update the request to include the mealDate
-                val updatedRequest = completedRequest.copy(mealDate = mealDate)
-
-                val response = RetrofitClient.mealApiService.completeMeal(updatedRequest)
-
-                if (response.isSuccessful) {
-                    val responseBody = response.body()
-                    if (responseBody?.resultType == "SUCCESS") {
-                        // 성공 처리
-                        Log.d("MealLogging", "식단 완료 처리 성공")
-                        Toast.makeText(context, "식단 완료되었습니다.", Toast.LENGTH_SHORT).show()
-                    } else {
-                        // 실패 처리
-                        Log.e("MealLogging", "식단 완료 실패: ${responseBody?.error?.reason}")
-                    }
-                } else {
-                    // 실패 처리 (HTTP 에러)
-                    Log.e("MealLogging", "API 호출 실패: ${response.message()}")
-                    Toast.makeText(context, "식단 완료 실패", Toast.LENGTH_SHORT).show()
-                }
-            } catch (e: Exception) {
-                // 네트워크 오류 처리
-                Log.e("MealLogging", "네트워크 오류: ${e.message}")
-                Toast.makeText(context, "네트워크 오류", Toast.LENGTH_SHORT).show()
             }
         }
     }

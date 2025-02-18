@@ -5,9 +5,7 @@ import android.util.Log
 import com.example.umc.UserApi.UserRepository
 import com.example.umc.model.request.MealRefreshRequest
 import com.example.umc.model.request.PostDailyMealRequest
-import com.example.umc.model.request.PostRefreshMealRequest
 import com.example.umc.model.response.MealRefreshSuccess
-import com.example.umc.model.response.PostDailyMealSuccess
 import com.example.umc.model.response.PostDailyMealSuccessWrapper
 import com.example.umc.model.service.MealApiService
 
@@ -39,16 +37,16 @@ class MealRepository(
                     }
                     responseBody?.error != null -> {
                         Log.e("ERROR_CHECK", "4. Repository - 에러: ${responseBody.error}")
-                        Result.Error("서버 오류: ${responseBody.error.reason}")
+                        Result.Error(errorMessage = "서버 오류: ${responseBody.error.reason}")
                     }
-                    else -> Result.Error("알 수 없는 응답 형식")
+                    else -> Result.Error(errorMessage = "알 수 없는 응답 형식")
                 }
             } else {
-                Result.Error("API 호출 실패: ${response.code()}")
+                Result.Error(errorMessage = "API 호출 실패: ${response.code()}")
             }
         } catch (e: Exception) {
             Log.e("ERROR_CHECK", "Repository - 예외 발생", e)
-            Result.Error("네트워크 오류: ${e.message}")
+            Result.Error(errorMessage = "네트워크 오류: ${e.message}")
         }
     }
 
@@ -61,15 +59,15 @@ class MealRepository(
                 "SUCCESS" -> {
                     response.success?.let {
                         Result.Success(it)
-                    } ?: Result.Error("Success response with null data")
+                    } ?: Result.Error(errorMessage = "Success response with null data")
                 }
                 "ERROR" -> {
-                    Result.Error(response.error?.reason ?: "Unknown error occurred")
+                    Result.Error(errorMessage = response.error?.reason ?: "Unknown error occurred")
                 }
-                else -> Result.Error("Unknown result type")
+                else -> Result.Error(errorMessage = "Unknown result type")
             }
         } catch (e: Exception) {
-            Result.Error(e.message ?: "Network error occurred")
+            Result.Error(errorMessage = e.message ?: "Network error occurred")
         }
     }
 }

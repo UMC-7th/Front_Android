@@ -36,12 +36,10 @@ class MealViewModel(
     val errorMessage: LiveData<String> = _errorMessage
 
     // 일일 식사 데이터를 가져오는 함수
-    fun fetchDailyMeal() {
+    fun fetchDailyMeal(mealDate: String) {
         Log.d("MEAL_DEBUG", "fetchDailyMeal 시작")
 
-        val currentDate = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
-            .format(Date())
-        Log.d("MEAL_DEBUG", "요청 날짜: $currentDate")
+        Log.d("MEAL_DEBUG", "요청 날짜: $mealDate")
 
         viewModelScope.launch {
             _apiStatus.value = ApiStatus.LOADING
@@ -49,7 +47,7 @@ class MealViewModel(
 
             try {
                 Log.d("MEAL_DEBUG", "Repository 호출 시작")
-                val result = mealRepository.getDailyMeal(currentDate)
+                val result = mealRepository.getDailyMeal(mealDate)
 
                 when (result) {
                     is Result.Success -> {
@@ -78,7 +76,6 @@ class MealViewModel(
             }
         }
     }
-
     // 식사 새로고침 함수
     fun refreshMeal(mealId: Int) {
         viewModelScope.launch {
@@ -111,7 +108,6 @@ class MealViewModel(
         }
     }
 }
-
 
     private fun MealRefreshSuccess.toPostDailyMealSuccess() = PostDailyMealSuccess(
         addedByUser = this.addedByUser,

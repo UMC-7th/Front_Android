@@ -20,6 +20,9 @@ import com.example.umc.meal.MealViewModel
 import com.example.umc.model.repository.MealRepository
 import com.example.umc.model.response.PostDailyMealSuccess
 import com.example.umc.model.service.MealApiService
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
 
 class DailyHomeFragment : Fragment() {
     private var _binding: FragmentDailyHomeBinding? = null
@@ -61,8 +64,18 @@ class DailyHomeFragment : Fragment() {
         setupRecyclerViews()
         observeViewModel()
 
-        Log.d("UI_DEBUG", "DailyHomeFragment - fetchDailyMeal 호출")
-        viewModel.fetchDailyMeal()
+        val sdf = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
+
+// 오늘 날짜 설정
+        val calendar = Calendar.getInstance()
+        val mealDate = sdf.format(calendar.time)
+
+
+        // mealDate를 viewModel의 fetchDailyMeal에 전달
+        Log.d("UI_DEBUG", "fetchDailyMeal 호출 with mealDate: $mealDate")
+        viewModel.fetchDailyMeal(mealDate)
+
+
     }
 
     private fun initializeAdapters() {

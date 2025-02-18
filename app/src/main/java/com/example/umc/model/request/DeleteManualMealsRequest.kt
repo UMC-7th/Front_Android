@@ -1,5 +1,5 @@
 package com.example.umc.model.request
 
-data class PatchFavoriteRequest(
+data class DeleteManualMealsRequest (
     val mealId: Int
 )

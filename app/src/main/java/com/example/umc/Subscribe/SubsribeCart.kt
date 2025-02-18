@@ -22,7 +22,6 @@ import java.util.Locale
 class SubscribeCart : Fragment() {
     private var _binding: FragmentSubscribeCartBinding? = null
     private val binding get() = _binding!!
-    private val apiService = RetrofitClient.mealApiService()
 
     private var isAllSelected = false
     private val itemChecked = mutableListOf(false, false, false, false)
