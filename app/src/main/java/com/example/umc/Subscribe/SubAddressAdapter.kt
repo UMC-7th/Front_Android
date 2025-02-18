@@ -237,10 +237,38 @@ class AddressAdapter(
 
 
         holder.ivCheck.setOnClickListener {
+            val savedAddressId = AddressRepository.getAddressId(context)
+
+            if (savedAddressId.isNullOrEmpty()) {
+                Toast.makeText(context, "기본 배송지 ID를 찾을 수 없습니다.", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            val addressId = savedAddressId.toInt()
+
             if (holder.ivCheck.tag == "unchecked") {
-                holder.ivCheck.setImageResource(R.drawable.ic_orange_check)  // 이미지 변경
+                holder.ivCheck.setImageResource(R.drawable.ic_orange_check)
                 holder.cardView.strokeColor = ContextCompat.getColor(holder.itemView.context, R.color.Primary_Orange1)
                 holder.ivCheck.tag = "checked"
+
+                // 🚀 PATCH 요청: 기본 배송지 설정
+                CoroutineScope(Dispatchers.IO).launch {
+                    val result = DeliveryAddressRepository.Patch.setDefaultDeliveryAddress(context, addressId)
+
+                    withContext(Dispatchers.Main) {
+                        if (result.isSuccess) {
+                            Toast.makeText(context, "기본 배송지가 설정되었습니다.", Toast.LENGTH_SHORT).show()
+
+                            // ✅ UI 업데이트 (다른 체크 해제)
+                            notifyDataSetChanged()
+                        } else {
+                            Toast.makeText(context, "기본 배송지 설정 실패", Toast.LENGTH_SHORT).show()
+                            holder.ivCheck.setImageResource(R.drawable.ic_gray_check)
+                            holder.cardView.strokeColor = ContextCompat.getColor(holder.itemView.context, R.color.Gray7)
+                            holder.ivCheck.tag = "unchecked"
+                        }
+                    }
+                }
             } else {
                 holder.ivCheck.setImageResource(R.drawable.ic_gray_check)
                 holder.cardView.strokeColor = ContextCompat.getColor(holder.itemView.context, R.color.Gray7)
@@ -248,8 +276,6 @@ class AddressAdapter(
             }
         }
 
-        holder.cardView.strokeColor = ContextCompat.getColor(holder.itemView.context, R.color.Gray7)
-        holder.ivCheck.tag = "unchecked"
     }
     override fun getItemCount() = addressList.size
 }
