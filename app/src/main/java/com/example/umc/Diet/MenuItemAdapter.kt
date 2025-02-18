@@ -4,6 +4,7 @@ import android.graphics.Color
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.ImageButton
 import android.widget.ImageView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
@@ -21,7 +22,8 @@ import kotlin.random.Random
 class MenuItemAdapter(
     private val onClick: (MenuItem, Int) -> Unit,
     private val onFavoriteChanged: ((MenuItem, Boolean) -> Unit)? = null,
-    private val onDietCompleteChanged: ((MenuItem, Boolean) -> Unit)? = null
+    private val onDietCompleteChanged: ((MenuItem, Boolean) -> Unit)? = null,
+    private val onRefresh: (MenuItem) -> Unit
 ) : ListAdapter<MenuItem, MenuItemAdapter.ViewHolder>(DiffCallback()) {
 
     private var selectedPosition = RecyclerView.NO_POSITION
@@ -89,33 +91,14 @@ class MenuItemAdapter(
                 }
 
                 // 랜덤 변경 버튼 클릭 리스너
-                binding.btnRefresh.setOnClickListener {
-                    changeRandomFavoriteItem()
-                    notifyDataSetChanged()
+                btnRefresh.setOnClickListener {
+                    onRefresh(menuItem)
                 }
             }
         }
     }
 
-    private fun changeRandomFavoriteItem() {
-        val randomIndex = Random.nextInt(menuItems.size)
-        val randomItem = menuItems[randomIndex]
-        menuItems[randomIndex] = MenuItem(
-            imageUrl = "",
-            name = randomItem.name,
-            calories = randomItem.calories,
-            mealId = randomItem.mealId,
-            material = randomItem.material,
-            recipe = randomItem.recipe,
-            calorieDetail = randomItem.calorieDetail,
-            difficulty = randomItem.difficulty,
-            isFavorite = !randomItem.isFavorite,
-            isDietCompleted = randomItem.isDietCompleted,
-            price = randomItem.price,              // 추가
-            addedByUser = randomItem.addedByUser,  // 추가
-        )
-    }
-
+    // 필요없는 메서드 제거
     fun clearSelection() {
         val oldPosition = selectedPosition
         selectedPosition = RecyclerView.NO_POSITION
@@ -157,7 +140,15 @@ class MenuItemAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(getItem(position))
+        val item = getItem(position)
+        holder.bind(item)
+    }
+
+    override fun submitList(list: List<MenuItem>?) {
+        super.submitList(list)
+        list?.let {
+            menuItems = it.toMutableList()
+        }
     }
 
     private class DiffCallback : DiffUtil.ItemCallback<MenuItem>() {
@@ -166,12 +157,5 @@ class MenuItemAdapter(
 
         override fun areContentsTheSame(oldItem: MenuItem, newItem: MenuItem) =
             oldItem == newItem
-    }
-
-    override fun submitList(list: List<MenuItem>?) {
-        super.submitList(list)
-        list?.let {
-            menuItems = it.toMutableList()
-        }
     }
 }

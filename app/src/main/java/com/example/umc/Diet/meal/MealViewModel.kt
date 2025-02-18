@@ -81,24 +81,21 @@ class MealViewModel(
 
     // 식사 새로고침 함수
     fun refreshMeal(mealId: Int) {
-        val currentDate = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
-            .format(Date())
-        val currentTime = SimpleDateFormat("HH:mm:ss", Locale.getDefault())
-            .format(Date())
-
         viewModelScope.launch {
             _apiStatus.value = ApiStatus.LOADING
             _errorMessage.value = ""
 
             try {
-                when (val result = mealRepository.refreshMeal(currentDate, mealId, currentTime)) {
+                when (val result = mealRepository.refreshMeal(mealId)) {
                     is Result.Success -> {
                         val currentMeals = _dailyMeals.value?.existingMeals?.toMutableList() ?: mutableListOf()
                         val index = currentMeals.indexOfFirst { it.mealId == mealId }
 
                         if (index != -1) {
                             currentMeals[index] = result.data.toPostDailyMealSuccess()
-                            _dailyMeals.value = PostDailyMealSuccessWrapper(mealDate = currentDate, existingMeals = currentMeals)
+                            _dailyMeals.value = PostDailyMealSuccessWrapper(
+                                existingMeals = currentMeals
+                            )
                         }
                         _apiStatus.value = ApiStatus.SUCCESS
                     }
@@ -113,6 +110,8 @@ class MealViewModel(
             }
         }
     }
+}
+
 
     private fun MealRefreshSuccess.toPostDailyMealSuccess() = PostDailyMealSuccess(
         addedByUser = this.addedByUser,
@@ -125,4 +124,3 @@ class MealViewModel(
         price = this.price,
         recipe = this.recipe
     )
-}

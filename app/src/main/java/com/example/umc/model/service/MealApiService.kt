@@ -1,8 +1,8 @@
 package com.example.umc.model.service
 
-
 import com.example.umc.model.CartRequest
 import com.example.umc.model.CartResponse
+import com.example.umc.model.request.MealRefreshRequest
 import com.example.umc.model.request.PatchFavoriteRequest
 import com.example.umc.model.request.PatchPreferenceRequest
 import com.example.umc.model.request.PostCompleteMealRequest
@@ -10,12 +10,12 @@ import com.example.umc.model.request.PostDailyMealRequest
 import com.example.umc.model.request.PostManualMealsRequest
 import com.example.umc.model.request.PostRefreshMealRequest
 import com.example.umc.model.response.GetManualMealsResponse
+import com.example.umc.model.response.MealRefreshResponse
 import com.example.umc.model.response.PostManualMealsResponse
 import com.example.umc.model.response.PatchFavoriteResponse
 import com.example.umc.model.response.PatchPreferenceResponse
 import com.example.umc.model.response.PostCompleteMealResponse
 import com.example.umc.model.response.PostDailyMealResponse
-import com.example.umc.model.response.PostMealRefreshResponse
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -52,10 +52,10 @@ interface MealApiService {
         @Body preferenceRequest: PatchPreferenceRequest
     ): Response<PatchPreferenceResponse>
 
-    @POST("api/v1/meals/refresh")
+    @POST("/api/v1/meals/refresh")
     suspend fun refreshMeal(
-        @Body refreshRequest: PostRefreshMealRequest
-    ): Response<PostMealRefreshResponse>
+        @Body request: MealRefreshRequest
+    ): MealRefreshResponse
 
     @POST("api/v1/meals/daily")
     suspend fun getDailyMeal(

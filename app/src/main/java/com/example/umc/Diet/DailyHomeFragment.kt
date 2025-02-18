@@ -78,6 +78,10 @@ class DailyHomeFragment : Fragment() {
             },
             onDietCompleteChanged = { item, isCompleted ->
                 Log.d("UI_DEBUG", "아침 메뉴 완료 상태 변경 - item: ${item.name}, completed: $isCompleted")
+            },
+            onRefresh = { item ->
+                Log.d("UI_DEBUG", "아침 메뉴 새로고침 - item: ${item.name}, mealId: ${item.mealId}")
+                viewModel.refreshMeal(item.mealId)
             }
         )
 
@@ -91,6 +95,10 @@ class DailyHomeFragment : Fragment() {
             },
             onDietCompleteChanged = { item, isCompleted ->
                 Log.d("UI_DEBUG", "점심 메뉴 완료 상태 변경 - item: ${item.name}, completed: $isCompleted")
+            },
+            onRefresh = { item ->
+                Log.d("UI_DEBUG", "점심 메뉴 새로고침 - item: ${item.name}, mealId: ${item.mealId}")
+                viewModel.refreshMeal(item.mealId)
             }
         )
 
@@ -104,6 +112,10 @@ class DailyHomeFragment : Fragment() {
             },
             onDietCompleteChanged = { item, isCompleted ->
                 Log.d("UI_DEBUG", "저녁 메뉴 완료 상태 변경 - item: ${item.name}, completed: $isCompleted")
+            },
+            onRefresh = { item ->
+                Log.d("UI_DEBUG", "저녁 메뉴 새로고침 - item: ${item.name}, mealId: ${item.mealId}")
+                viewModel.refreshMeal(item.mealId)
             }
         )
         Log.d("UI_DEBUG", "어댑터 초기화 완료")

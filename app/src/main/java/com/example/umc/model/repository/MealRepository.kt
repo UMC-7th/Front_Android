@@ -3,6 +3,7 @@ package com.example.umc.model.repository
 import android.content.Context
 import android.util.Log
 import com.example.umc.UserApi.UserRepository
+import com.example.umc.model.request.MealRefreshRequest
 import com.example.umc.model.request.PostDailyMealRequest
 import com.example.umc.model.request.PostRefreshMealRequest
 import com.example.umc.model.response.MealRefreshSuccess
@@ -51,34 +52,24 @@ class MealRepository(
         }
     }
 
-    suspend fun refreshMeal(
-        mealDate: String,
-        mealId: Int,
-        time: String
-    ): Result<MealRefreshSuccess> {
+    suspend fun refreshMeal(mealId: Int): Result<MealRefreshSuccess> {
         return try {
-            val token = UserRepository.getAuthToken(context)
+            val request = MealRefreshRequest(mealId)
+            val response = mealApiService.refreshMeal(request)
 
-            val request = PostRefreshMealRequest(
-                mealDate = mealDate,
-                mealId = mealId,
-                time = time,
-                userId = 1 // 우선 하드코딩. 추후 userId 저장/관리 로직 추가 필요
-            )
-
-            val response = mealApiService.refreshMeal(refreshRequest = request)
-
-            if (response.isSuccessful) {
-                val body = response.body()
-                when (body?.resultType) {
-                    "SUCCESS" -> Result.Success(body.success)
-                    else -> Result.Error("Refresh failed")
+            when (response.resultType) {
+                "SUCCESS" -> {
+                    response.success?.let {
+                        Result.Success(it)
+                    } ?: Result.Error("Success response with null data")
                 }
-            } else {
-                Result.Error("Network call failed")
+                "ERROR" -> {
+                    Result.Error(response.error?.reason ?: "Unknown error occurred")
+                }
+                else -> Result.Error("Unknown result type")
             }
         } catch (e: Exception) {
-            Result.Error(e.message ?: "Unknown error occurred")
+            Result.Error(e.message ?: "Network error occurred")
         }
     }
 }

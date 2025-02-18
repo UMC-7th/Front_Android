@@ -7,19 +7,25 @@ data class PostMealRefreshResponse(
 )
 
 data class MealRefreshSuccess(
-    val addedByUser: Boolean,
-    val calorieDetail: String,
-    val calorieTotal: Int,
-    val difficulty: Int?,
-    val food: String,
-    val material: String,
     val mealId: Int,
+    val food: String,
+    val calorieTotal: Int,
+    val material: String,
+    val calorieDetail: String,
     val price: Int,
-    val recipe: String
+    val difficulty: Int,
+    val recipe: String,
+    val addedByUser: Boolean
 )
 
 data class MealRefreshError(
-    val data: String,
     val errorCode: String,
-    val reason: String
+    val reason: String,
+    val data: String
+)
+
+data class MealRefreshResponse(
+    val resultType: String,
+    val error: MealRefreshError?,
+    val success: MealRefreshSuccess?
 )

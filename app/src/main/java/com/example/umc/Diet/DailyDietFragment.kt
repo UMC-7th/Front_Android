@@ -40,7 +40,6 @@ class DailyDietFragment : Fragment() {
         val month = arguments?.getInt("month") ?: 1
         val day = arguments?.getInt("day") ?: 1
         binding.tvDailyDietToday.text = getString(R.string.daily_diet_day, month, day)
-
     }
 
     private fun initializeAdapters() {
@@ -54,6 +53,10 @@ class DailyDietFragment : Fragment() {
             },
             onDietCompleteChanged = { item, isCompleted ->
                 // 식단 완료 상태 변경 처리
+            },
+            onRefresh = { item ->
+                // 새로고침 처리 (필요에 따라 구현)
+                // 예: refreshMeal(item.mealId)
             }
         )
 
@@ -67,6 +70,10 @@ class DailyDietFragment : Fragment() {
             },
             onDietCompleteChanged = { item, isCompleted ->
                 // 식단 완료 상태 변경 처리
+            },
+            onRefresh = { item ->
+                // 새로고침 처리 (필요에 따라 구현)
+                // 예: refreshMeal(item.mealId)
             }
         )
 
@@ -80,6 +87,10 @@ class DailyDietFragment : Fragment() {
             },
             onDietCompleteChanged = { item, isCompleted ->
                 // 식단 완료 상태 변경 처리
+            },
+            onRefresh = { item ->
+                // 새로고침 처리 (필요에 따라 구현)
+                // 예: refreshMeal(item.mealId)
             }
         )
     }
@@ -120,11 +131,13 @@ class DailyDietFragment : Fragment() {
             }
         }
     }
+
     fun updateMeals(breakfastMeals: List<MenuItem>, lunchMeals: List<MenuItem>, dinnerMeals: List<MenuItem>) {
         breakfastAdapter.submitList(breakfastMeals)
         lunchAdapter.submitList(lunchMeals)
         dinnerAdapter.submitList(dinnerMeals)
     }
+
     // 인디케이터 업데이트 함수
     private fun updateIndicator(recyclerView: RecyclerView, indicator: View) {
         val totalWidth = recyclerView.computeHorizontalScrollRange()
@@ -143,13 +156,20 @@ class DailyDietFragment : Fragment() {
         indicator.translationX = maxScroll * scrollProgress
     }
 
-
     private fun onMenuItemClicked(item: MenuItem, mealTime: String) {
         val dietDetailFragment = DietDetailFragment()
 
-        val bundle = Bundle()
-        bundle.putString("name", item.name)
-        bundle.putString("calories", item.calories)
+        val bundle = Bundle().apply {
+            putString("name", item.name)
+            putString("calories", item.calories)
+            putString("material", item.material)
+            putString("recipe", item.recipe)
+            putString("calorieDetail", item.calorieDetail)
+            putInt("difficulty", item.difficulty ?: 0)
+            putInt("mealId", item.mealId)
+            putInt("price", item.price ?: 0)
+            putBoolean("addedByUser", item.addedByUser)
+        }
         dietDetailFragment.arguments = bundle
 
         val mainActivity = activity as? MainActivity
@@ -160,9 +180,7 @@ class DailyDietFragment : Fragment() {
         transaction.replace(R.id.main_container, dietDetailFragment)
         transaction.addToBackStack(null)
         transaction.commit()
-
     }
-
 
     override fun onDestroyView() {
         super.onDestroyView()
