@@ -7,21 +7,21 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.umc.Main.MainActivity
 import com.example.umc.R
 import com.example.umc.databinding.FragmentFavoriteBinding
+import com.example.umc.model.response.GetFavoriteMeals
+import com.example.umc.model.response.GetFavoriteMealsResponse
 
 class DietFavoriteFragment : Fragment() {
     private var _binding: FragmentFavoriteBinding? = null
     private val binding get() = _binding!!
 
-    private val favoriteItems = listOf(
-        FavoriteItem("https://example.com/imageUrl1.png", "빵, 바나나, 계란후라이", "560 kcal"),
-        FavoriteItem("https://example.com/imageUrl2.png", "사과, 땅콩잼", "116 kcal"),
-        FavoriteItem("https://example.com/imageUrl3.png", "계란후라이, 토스트, 바나나", "135 kcal"),
-        FavoriteItem("https://example.com/imageUrl4.png", "두부 볶음, 파, 양파, 밥", "583 kcal")
-    )
+    private val viewModel: DietFavoriteViewModel by viewModels()
+    private lateinit var adapter: DietFavoriteAdapter
+    private var favoriteItems: List<GetFavoriteMeals> = emptyList()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -38,37 +38,43 @@ class DietFavoriteFragment : Fragment() {
 
         // Adapter 설정
         val adapter = DietFavoriteAdapter { item, position ->
-            onFavoriteItemClicked(item) // 수정: item을 전달
+            onFavoriteItemClicked(item)
         }
         binding.rvDietFavorite.adapter = adapter
 
-        // 어댑터에 아이템 설정
-        adapter.updateItems(favoriteItems)
+        // ViewModel Observe 설정
+        viewModel.favoriteMeals.observe(viewLifecycleOwner) { mealList ->
+            favoriteItems = mealList
+            adapter.updateItems(mealList)
+        }
+
+        // 서버로부터 데이터 가져오기
+        viewModel.fetchFavoriteMeals()
 
         // 텍스트뷰 클릭 리스너 설정
         binding.tvNew.setOnClickListener {
             binding.tvNew.setTextColor(ContextCompat.getColor(requireContext(), R.color.Primary_Orange1))
             binding.tvCalorie.setTextColor(ContextCompat.getColor(requireContext(), R.color.Gray7))
 
-            adapter.updateItems(favoriteItems)
+            viewModel.fetchFavoriteMeals()
         }
 
         binding.tvCalorie.setOnClickListener {
             binding.tvNew.setTextColor(ContextCompat.getColor(requireContext(), R.color.Gray7))
             binding.tvCalorie.setTextColor(ContextCompat.getColor(requireContext(), R.color.Primary_Orange1))
 
-            // 칼로리 순으로 정렬
-            val sortedItems = favoriteItems.sortedBy { it.calories.replace(" kcal", "").toInt() }
-            adapter.updateItems(sortedItems)
+            // 칼로리 순으로 데이터 가져오기
+            viewModel.getFavoriteMealsCalorie()
         }
     }
 
-    private fun onFavoriteItemClicked(item: FavoriteItem) {
+    private fun onFavoriteItemClicked(item: GetFavoriteMeals) {
         val dietDetailFragment = DietDetailFragment()
 
         val bundle = Bundle()
-        bundle.putString("name", item.name)
-        bundle.putString("calories", item.calories)
+        bundle.putInt("mealId", item.mealId) // mealId를 Bundle에 추가
+        bundle.putString("name", item.food)
+        bundle.putString("calories", "${item.calorieTotal} kcal")
         dietDetailFragment.arguments = bundle
 
         val transaction: FragmentTransaction = parentFragmentManager.beginTransaction()
