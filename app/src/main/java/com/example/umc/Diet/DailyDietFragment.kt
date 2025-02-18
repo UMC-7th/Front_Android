@@ -53,6 +53,10 @@ class DailyDietFragment : Fragment() {
             },
             onDietCompleteChanged = { item, isCompleted ->
                 // 식단 완료 상태 변경 처리
+            },
+            onRefresh = { item ->
+                // 새로고침 처리 (필요에 따라 구현)
+                // 예: refreshMeal(item.mealId)
             }
         )
 
@@ -66,6 +70,10 @@ class DailyDietFragment : Fragment() {
             },
             onDietCompleteChanged = { item, isCompleted ->
                 // 식단 완료 상태 변경 처리
+            },
+            onRefresh = { item ->
+                // 새로고침 처리 (필요에 따라 구현)
+                // 예: refreshMeal(item.mealId)
             }
         )
 
@@ -79,6 +87,10 @@ class DailyDietFragment : Fragment() {
             },
             onDietCompleteChanged = { item, isCompleted ->
                 // 식단 완료 상태 변경 처리
+            },
+            onRefresh = { item ->
+                // 새로고침 처리 (필요에 따라 구현)
+                // 예: refreshMeal(item.mealId)
             }
         )
     }
@@ -91,14 +103,10 @@ class DailyDietFragment : Fragment() {
                 adapter = breakfastAdapter
                 addOnScrollListener(object : RecyclerView.OnScrollListener() {
                     override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                        updateIndicator(
-                            recyclerView,
-                            binding.breakfastIndicatorBar
-                        )
+                        updateIndicator(recyclerView, binding.breakfastIndicatorBar)
                     }
                 })
             }
-            breakfastAdapter.submitList(getDummyMenuItems())
 
             // 점심 메뉴
             rvLunch.apply {
@@ -106,14 +114,10 @@ class DailyDietFragment : Fragment() {
                 adapter = lunchAdapter
                 addOnScrollListener(object : RecyclerView.OnScrollListener() {
                     override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                        updateIndicator(
-                            recyclerView,
-                            binding.lunchIndicatorBar
-                        )
+                        updateIndicator(recyclerView, binding.lunchIndicatorBar)
                     }
                 })
             }
-            lunchAdapter.submitList(getDummyMenuItems())
 
             // 저녁 메뉴
             rvDinner.apply {
@@ -121,16 +125,19 @@ class DailyDietFragment : Fragment() {
                 adapter = dinnerAdapter
                 addOnScrollListener(object : RecyclerView.OnScrollListener() {
                     override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                        updateIndicator(
-                            recyclerView,
-                            binding.dinnerIndicatorBar
-                        )
+                        updateIndicator(recyclerView, binding.dinnerIndicatorBar)
                     }
                 })
             }
-            dinnerAdapter.submitList(getDummyMenuItems())
         }
     }
+
+    fun updateMeals(breakfastMeals: List<MenuItem>, lunchMeals: List<MenuItem>, dinnerMeals: List<MenuItem>) {
+        breakfastAdapter.submitList(breakfastMeals)
+        lunchAdapter.submitList(lunchMeals)
+        dinnerAdapter.submitList(dinnerMeals)
+    }
+
     // 인디케이터 업데이트 함수
     private fun updateIndicator(recyclerView: RecyclerView, indicator: View) {
         val totalWidth = recyclerView.computeHorizontalScrollRange()
@@ -149,13 +156,20 @@ class DailyDietFragment : Fragment() {
         indicator.translationX = maxScroll * scrollProgress
     }
 
-
     private fun onMenuItemClicked(item: MenuItem, mealTime: String) {
         val dietDetailFragment = DietDetailFragment()
 
-        val bundle = Bundle()
-        bundle.putString("name", item.name)
-        bundle.putString("calories", item.calories)
+        val bundle = Bundle().apply {
+            putString("name", item.name)
+            putString("calories", item.calories)
+            putString("material", item.material)
+            putString("recipe", item.recipe)
+            putString("calorieDetail", item.calorieDetail)
+            putInt("difficulty", item.difficulty ?: 0)
+            putInt("mealId", item.mealId)
+            putInt("price", item.price ?: 0)
+            putBoolean("addedByUser", item.addedByUser)
+        }
         dietDetailFragment.arguments = bundle
 
         val mainActivity = activity as? MainActivity
@@ -166,16 +180,6 @@ class DailyDietFragment : Fragment() {
         transaction.replace(R.id.main_container, dietDetailFragment)
         transaction.addToBackStack(null)
         transaction.commit()
-
-    }
-
-    private fun getDummyMenuItems(): List<MenuItem> {
-        return listOf(
-            MenuItem("image_url1", "제육볶음 도시락", "560Kcal"),
-            MenuItem("image_url2", "샐러드 도시락", "450Kcal"),
-            MenuItem("image_url3", "볶음밥 도시락", "520Kcal"),
-            MenuItem("image_url4", "연어 도시락", "480Kcal")
-        )
     }
 
     override fun onDestroyView() {

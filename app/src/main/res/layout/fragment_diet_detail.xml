@@ -287,7 +287,9 @@
                 android:numStars="5"
                 android:rating="2"
                 android:stepSize="1"
+
                 android:layout_marginTop="8dp"
+
                 style="@style/CustomRatingBar"/>
 
             <LinearLayout

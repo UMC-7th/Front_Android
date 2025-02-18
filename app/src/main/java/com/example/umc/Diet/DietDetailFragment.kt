@@ -22,6 +22,7 @@ import com.example.umc.model.request.PatchPreferenceRequest
 import com.example.umc.model.request.PostCompleteMealRequest
 import com.example.umc.model.response.PostCompleteMealResponse
 import kotlinx.coroutines.launch
+import org.json.JSONObject
 import retrofit2.Response
 import java.text.SimpleDateFormat
 import java.util.*
@@ -29,6 +30,8 @@ import java.util.*
 class DietDetailFragment : Fragment() {
     private var _binding: FragmentDietDetailBinding? = null
     private val binding get() = _binding!!
+
+    private var currentMealId: Int = -1
 
     private var isLiked = false  // 좋아요
     private var isDisliked = false // 싫어요
@@ -49,47 +52,67 @@ class DietDetailFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // 버튼 설정
-        setupButtons()
-        loadMealImage("제육볶음 도시락")
+        // 전달받은 데이터로 UI 업데이트
+        arguments?.let { args ->
+            currentMealId = args.getInt("mealId", -1)
 
-        val name = arguments?.getString("name")
-        val calories = arguments?.getString("calories")
+            // 기본 정보 설정
+            binding.tvRecipeTitle.text = args.getString("name")
+            binding.tvCalories.text = args.getString("calories")
+            binding.tvPrice.text = String.format("%,d원", args.getInt("price", 0))  // 가격 정보 추가
 
-        binding.tvRecipeTitle.text = name
-        binding.tvCalories.text = calories
+//            if (args.getBoolean("addedByUser", false)) {
+//                // 사용자가 추가한 메뉴일 경우의 UI 처리
+//                binding.tvUserAdded.visibility = View.VISIBLE
+//            }
 
-        if (!name.isNullOrEmpty()) {
-            loadMealImage(name)
+            // 난이도 설정
+            val difficulty = args.getInt("difficulty", 0)
+            binding.ratingBar.rating = difficulty.toFloat()
+
+
+            // 이미지 로드
+            args.getString("name")?.let { name ->
+                loadMealImage(name)
+            }
+
+            // 재료 설정
+            args.getString("material")?.let { material ->
+                binding.tvIngredients.text = material.split(",").mapIndexed { index, ingredient ->
+                    "${index + 1}. ${ingredient.trim()}"
+                }.joinToString("\n")
+            }
+
+            // 레시피 설정
+            args.getString("recipe")?.let { recipe ->
+                binding.tvRecipe.text = recipe.split("\n").mapIndexed { index, step ->
+                    "${index + 1}. ${step.trim()}"
+                }.joinToString("\n")
+            }
+
+            // 영양 정보 설정
+            args.getString("calorieDetail")?.let { details ->
+                val nutritionList = parseNutritionDetails(details)
+                binding.recyclerNutrition.adapter = DietDetailAdapter(nutritionList)
+            }
         }
 
-        // 더미 데이터
-        val nutritionList = listOf(
-            Nutrition("계란", "70"),
-            Nutrition("식빵", "80"),
-            Nutrition("바나나", "100"),
-            Nutrition("버터", "35"),
-            Nutrition("올리브유", "45")
-        )
+        setupButtons()
+    }
+    private fun parseNutritionDetails(details: String): List<Nutrition> {
+        return try {
+            val nutritionJson = JSONObject(details)
+            val nutritionList = mutableListOf<Nutrition>()
 
-        val recipeSteps = listOf(
-            "식빵을 토스터기나 후라이팬에 약불로 데워주세요.",
-            "후라이팬에 약간의 기름을 두른 후 계란을 올려주세요.",
-            "바나나와 함께 토스트를 섭취"
-        )
-
-        // 열량 테이블
-        binding.recyclerNutrition.layoutManager = LinearLayoutManager(context)
-        binding.recyclerNutrition.adapter = DietDetailAdapter(nutritionList)
-
-        // 필요 식재료 및 레시피 출력
-        binding.tvIngredients.text = nutritionList.mapIndexed { index, nutrition ->
-            "${index + 1}. ${nutrition.name}"
-        }.joinToString("\n")
-
-        binding.tvRecipe.text = recipeSteps.mapIndexed { index, step ->
-            "${index + 1}. $step"
-        }.joinToString("\n")
+            nutritionJson.keys().forEach { key ->
+                val value = nutritionJson.getInt(key)
+                nutritionList.add(Nutrition(key, "${value}kcal"))
+            }
+            nutritionList
+        } catch (e: Exception) {
+            Log.e("DietDetail", "Error parsing nutrition details", e)
+            emptyList()
+        }
     }
 
     private fun setupButtons() {
