@@ -22,20 +22,15 @@ import com.example.umc.model.SubItem
 import kotlinx.coroutines.launch
 
 class SubFragment : Fragment() {
-    // View Binding을 안전하게 관리합니다
     private var _binding: FragmentSubBinding? = null
     private val binding get() = _binding!!
-
-    // RecyclerView의 어댑터입니다
     private lateinit var subAdapter: SubAdapter
 
-    // ViewModel을 초기화합니다. 의존성 주입을 통해 Repository를 전달합니다
     private val viewModel: SubViewModel by viewModels {
-        val api = RetrofitClient.deliveryAddressApi // API 인스턴스를 가져옵니다
+        val api = RetrofitClient.deliveryAddressApi
         SubViewModelFactory(SubRepository(api, requireContext()))
     }
 
-    // Fragment의 레이아웃을 생성하고 초기화합니다
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -45,7 +40,6 @@ class SubFragment : Fragment() {
         return binding.root
     }
 
-    // View가 생성된 후 필요한 설정들을 수행합니다
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Log.d("SubFragment", "Fragment 생성됨")
@@ -53,19 +47,11 @@ class SubFragment : Fragment() {
         setupRecyclerView()
         setupObservers()
         setupClickListeners()
-
-        // API를 통해 카테고리 데이터를 로드합니다
-        viewModel.loadMealCategories()
     }
 
-    // RecyclerView를 설정하는 메서드입니다
     private fun setupRecyclerView() {
         subAdapter = SubAdapter(emptyList()) { subItem ->
-            // 클릭 이벤트 발생 시 상세 화면으로 이동합니다
-            if (subItem.isClickable) {
-                Log.d("SubFragment", "카테고리 클릭: ${subItem.item1}")
-                navigateToDietSub(subItem)
-            }
+            onCategoryClick(subItem)
         }
 
         binding.rvSubItem.apply {
@@ -74,7 +60,6 @@ class SubFragment : Fragment() {
         }
     }
 
-    // 클릭 이벤트 리스너들을 설정합니다
     private fun setupClickListeners() {
         binding.llManageSubscription.setOnClickListener {
             Log.d("SubFragment", "구독 관리 클릭")
@@ -87,8 +72,8 @@ class SubFragment : Fragment() {
         }
     }
 
-    // ViewModel의 상태 변화를 관찰하는 메서드입니다
     private fun setupObservers() {
+        // 카테고리 목록 관찰
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.mealCategories.collect { categories ->
                 Log.d("SubFragment", "카테고리 데이터 수신: ${categories.size}개")
@@ -96,6 +81,31 @@ class SubFragment : Fragment() {
             }
         }
 
+        // 맛있는 일상 음식 데이터 관찰
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.dailyMeals.collect { meals ->
+                Log.d("SubFragment", "일상 음식 데이터 업데이트: ${meals.size}개")
+                // 필요한 UI 업데이트 처리
+            }
+        }
+
+        // 다이어트 식단 데이터 관찰
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.dietMeals.collect { meals ->
+                Log.d("SubFragment", "다이어트 식단 데이터 업데이트: ${meals.size}개")
+                // 필요한 UI 업데이트 처리
+            }
+        }
+
+        // 건강 음식 데이터 관찰
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.healthMeals.collect { meals ->
+                Log.d("SubFragment", "건강 음식 데이터 업데이트: ${meals.size}개")
+                // 필요한 UI 업데이트 처리
+            }
+        }
+
+//        // 로딩 상태 관찰
 //        viewLifecycleOwner.lifecycleScope.launch {
 //            viewModel.isLoading.collect { isLoading ->
 //                Log.d("SubFragment", "로딩 상태: $isLoading")
@@ -103,6 +113,7 @@ class SubFragment : Fragment() {
 //            }
 //        }
 
+        // 에러 상태 관찰
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.error.collect { errorMessage ->
                 errorMessage?.let {
@@ -117,22 +128,32 @@ class SubFragment : Fragment() {
         }
     }
 
-    // 식단 상세 화면으로 이동하는 메서드입니다
-    private fun navigateToDietSub(subItem: SubItem) {
-        val fragmentDietSubFragment = DietSubFragment().apply {
-            arguments = Bundle().apply {
-                putString("item1", subItem.item1)
-                putString("item2", subItem.item2)
-            }
-        }
+    private fun onCategoryClick(subItem: SubItem) {
+        Log.d("SubFragment", "카테고리 클릭: ${subItem.item1}")
+        if (subItem.isClickable) {
+            // 먼저 카테고리의 데이터를 로드
+            viewModel.loadMealsForCategory(subItem.item1)
 
-        parentFragmentManager.beginTransaction()
-            .replace(R.id.main_container, fragmentDietSubFragment)
-            .addToBackStack(null)
-            .commit()
+            // DietSubFragment로 이동
+            val dietSubFragment = DietSubFragment().apply {
+                arguments = Bundle().apply {
+                    putString("item1", subItem.item1)
+                    putString("item2", subItem.item2)
+                }
+            }
+
+            // 명시적으로 트랜잭션 수행
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.main_container, dietSubFragment)
+                .addToBackStack(null)  // 백 스택에 추가
+                .commit()
+
+            Log.d("SubFragment", "DietSubFragment로 전환 시도")
+        } else {
+            Log.d("SubFragment", "클릭 불가능한 카테고리입니다.")
+        }
     }
 
-    // 구독 관리 화면으로 이동하는 메서드입니다
     private fun navigateToSubscriptionManage() {
         parentFragmentManager.beginTransaction()
             .replace(R.id.main_container, SubscriptionManageFragment())
@@ -140,7 +161,6 @@ class SubFragment : Fragment() {
             .commit()
     }
 
-    // 장바구니 화면으로 이동하는 메서드입니다
     private fun navigateToCart() {
         parentFragmentManager.beginTransaction()
             .replace(R.id.main_container, SubscribeCart())
@@ -148,24 +168,20 @@ class SubFragment : Fragment() {
             .commit()
     }
 
-    // 로그인 화면으로 이동하는 메서드입니다
     private fun navigateToLogin() {
-        // TODO: 로그인 화면으로 이동하는 로직을 구현해야 합니다
         Toast.makeText(context, "로그인이 필요합니다", Toast.LENGTH_LONG).show()
+        // 로그인 화면으로 이동하는 로직 구현
     }
 
-    // 에러 메시지를 표시하는 메서드입니다
     private fun showError(message: String) {
         Toast.makeText(context, message, Toast.LENGTH_LONG).show()
     }
 
-    // Fragment가 파괴될 때 호출되는 메서드입니다
     override fun onDestroyView() {
         super.onDestroyView()
-        _binding = null // 메모리 누수를 방지합니다
+        _binding = null
     }
 
-    // Fragment가 재개될 때 호출되는 메서드입니다
     override fun onResume() {
         super.onResume()
         (activity as? MainActivity)?.hideTitle()

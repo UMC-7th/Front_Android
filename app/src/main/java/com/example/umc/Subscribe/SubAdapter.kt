@@ -1,5 +1,6 @@
 package com.example.umc.Subscribe
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -76,11 +77,10 @@ class SubAdapter(
             binding.tvSubItem1.text = subItem.item1
             binding.tvSubItem2.text = subItem.item2
 
-            // 클릭 리스너를 설정합니다
+            // 클릭 리스너를 전체 아이템에 설정
             binding.root.setOnClickListener {
-                if (subItem.item1 == "맛있는 일상 음식 구독") {
-                    onItemClick(subItem) // 생성자에서 받은 콜백을 사용합니다
-                }
+                Log.d("SubAdapter", "아이템 클릭: ${subItem.item1}")
+                onItemClick(subItem)
             }
         }
     }

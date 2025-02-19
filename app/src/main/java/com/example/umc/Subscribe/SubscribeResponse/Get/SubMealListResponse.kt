@@ -15,12 +15,25 @@ data class ErrorResponse(
 // 개별 식사 정보를 담는 클래스
 data class SubMealList(
     val mealId: Int,
-    val food: String,
+    val date: String?,     // nullable로 변경
+    val week: String?,     // day 대신 week로 변경
+    val food: String?,     // breakfast로 사용
+    val lunch: String?,    // 점심 메뉴 추가
+    val dinner: String?,   // 저녁 메뉴 추가
     val calorieTotal: Int,
-    val material: String,
-    val calorieDetail: String,
+    val material: String?,
+    val calorieDetail: String?,
     val price: Int,
     val difficulty: Int,
-    val recipe: String,
-    val addedByUser: Boolean
+    val recipe: String?,
+    val addedByUser: Boolean,
+    val mealSubs: List<MealSub>?
+)
+
+data class MealSub(
+    val mealSubId: Int,
+    val mealId: Int,
+    val categoryId: Int,
+    val time: String,
+    val mealDate: String
 )

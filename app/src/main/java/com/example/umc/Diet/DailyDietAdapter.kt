@@ -29,7 +29,7 @@ class DailyDietAdapter(private val dietList: List<DietItem>) :
 
         fun bind(dietItem: DietItem) {
             binding.tvDate.text = dietItem.date
-            binding.tvWeek.text = dietItem.week
+            binding.tvWeek.text = dietItem.day
             binding.tvFoodBreakfast.text = dietItem.breakfast
             binding.tvFoodLunch.text = dietItem.lunch
             binding.tvFoodDinner.text = dietItem.dinner

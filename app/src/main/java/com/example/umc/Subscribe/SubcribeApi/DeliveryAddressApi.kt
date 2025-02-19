@@ -48,7 +48,7 @@ interface DeliveryAddressApi {
     @GET("/api/v1/subscribes/meals/list")
     suspend fun getMealSubscriptions(
         @Header("Authorization") token: String,
-        @Query("category") category: String? = null
+        @Query("category") category: String? = "맛있는 일상 음식" // 기본값 설정
     ): Response<ApiResponse<List<SubMealList>>>
 
 

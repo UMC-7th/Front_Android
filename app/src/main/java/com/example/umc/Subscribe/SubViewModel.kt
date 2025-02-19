@@ -1,5 +1,6 @@
 package com.example.umc.Subscribe
 
+import SubMealList
 import SubRepository
 import android.util.Log
 import androidx.lifecycle.ViewModel
@@ -10,9 +11,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-class SubViewModel(
-    private val repository: SubRepository
-) : ViewModel() {
+class SubViewModel(private val repository: SubRepository) : ViewModel() {
     private val _mealCategories = MutableStateFlow<List<SubItem>>(emptyList())
     val mealCategories: StateFlow<List<SubItem>> = _mealCategories.asStateFlow()
 
@@ -22,26 +21,46 @@ class SubViewModel(
     private val _error = MutableStateFlow<String?>(null)
     val error: StateFlow<String?> = _error.asStateFlow()
 
-    fun loadMealCategories() {
+    // 각 카테고리별 데이터를 저장할 StateFlow들
+    private val _dailyMeals = MutableStateFlow<List<SubMealList>>(emptyList())
+    val dailyMeals: StateFlow<List<SubMealList>> = _dailyMeals.asStateFlow()
+
+    private val _dietMeals = MutableStateFlow<List<SubMealList>>(emptyList())
+    val dietMeals: StateFlow<List<SubMealList>> = _dietMeals.asStateFlow()
+
+    private val _healthMeals = MutableStateFlow<List<SubMealList>>(emptyList())
+    val healthMeals: StateFlow<List<SubMealList>> = _healthMeals.asStateFlow()
+
+    // 카테고리 정보와 조회를 위한 매핑
+    private val categories = listOf(
+        Category("맛있는 일상 음식", "누구나 좋아하는 맛있는 일상 음식을 구독해보세요!", true),
+        Category("다이어트 식단", "맛있는 다이어트 식단을 정기 배송받아 보세요!", true),
+        Category("건강 음식", "당뇨, 고혈압 등 지병이 있는 분들께 추천해요!", true)
+    )
+
+    init {
+        loadAllCategories()
+    }
+
+    private fun loadAllCategories() {
         viewModelScope.launch {
             _isLoading.value = true
             try {
-                // 카테고리별로 데이터를 불러와서 UI에 표시할 형태로 변환합니다
-                val categories = listOf(
-                    Triple("맛있는 일상 음식", "누구나 좋아하는 맛있는 일상 음식을 구독해보세요!", true),
-                    Triple("다이어트 식단", "맛있는 다이어트 식단을 정기 배송받아 보세요!", false),
-                    Triple("건강 음식", "당뇨, 고혈압 등 지병이 있는 분들께 추천해요!", false)
-                )
-
-                _mealCategories.value = categories.map { (title, desc, isClickable) ->
+                // UI에 카테고리 목록 표시
+                _mealCategories.value = categories.map { category ->
                     SubItem(
-                        item1 = title,
-                        item2 = desc,
-                        isClickable = isClickable
+                        item1 = category.title,
+                        item2 = category.description,
+                        isClickable = category.isClickable
                     )
                 }
+
+                // 각 카테고리별 데이터 로드
+                categories.forEach { category ->
+                    loadMealsForCategory(category.title)
+                }
             } catch (e: Exception) {
-                _error.value = e.message
+                _error.value = "카테고리 로드 중 오류: ${e.message}"
             } finally {
                 _isLoading.value = false
             }
@@ -50,22 +69,39 @@ class SubViewModel(
 
     fun loadMealsForCategory(category: String) {
         viewModelScope.launch {
-            _isLoading.value = true
-            Log.d("SubViewModel", "카테고리 로딩 시작: $category")
-
             try {
                 repository.getMealSubscriptions(category)
                     .onSuccess { meals ->
-                        Log.d("SubViewModel", "카테고리 데이터 로드 성공: ${meals.size}개 항목")
-                        // 추가적인 처리
+                        when (category) {
+                            "맛있는 일상 음식" -> _dailyMeals.value = meals
+                            "다이어트 식단" -> _dietMeals.value = meals
+                            "건강 음식" -> _healthMeals.value = meals
+                        }
+                        Log.d("SubViewModel", "$category 데이터 로드 성공: ${meals.size}개")
                     }
                     .onFailure { exception ->
-                        Log.e("SubViewModel", "카테고리 데이터 로드 실패", exception)
-                        _error.value = exception.message
+                        _error.value = "$category 로드 실패: ${exception.message}"
+                        Log.e("SubViewModel", "$category 로드 실패", exception)
                     }
-            } finally {
-                _isLoading.value = false
+            } catch (e: Exception) {
+                _error.value = "$category 로드 중 오류: ${e.message}"
+                Log.e("SubViewModel", "$category 로드 중 예외", e)
             }
         }
     }
+
+    fun getMealsForCategory(category: String): StateFlow<List<SubMealList>> {
+        return when (category) {
+            "맛있는 일상 음식" -> dailyMeals
+            "다이어트 식단" -> dietMeals
+            "건강 음식" -> healthMeals
+            else -> MutableStateFlow(emptyList())
+        }
+    }
+
+    data class Category(
+        val title: String,
+        val description: String,
+        val isClickable: Boolean
+    )
 }
