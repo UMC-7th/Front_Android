@@ -176,6 +176,41 @@ class LoginActivity : AppCompatActivity() {
     }
 
     // 설문조사 임시코드
+    private fun performLogin(email: String, password: String) {
+        userRepository.login(email, password).enqueue(object : retrofit2.Callback<LoginResponse> {
+            override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
+                Log.d("Login", "Response Code: ${response.code()}")
+
+                if (response.isSuccessful) {
+                    val accessToken = response.body()?.success?.accessToken
+
+                    if (accessToken != null) {
+                        UserRepository.saveAuthToken(this@LoginActivity, accessToken)
+
+                        // 사용자가 설문조사를 완료했는지 확인하는 로직
+                        checkSurveyStatus(accessToken)
+                    } else {
+                        Toast.makeText(this@LoginActivity, "토큰이 없습니다.", Toast.LENGTH_SHORT).show()
+                    }
+                } else {
+                    Toast.makeText(
+                        this@LoginActivity,
+                        "로그인 실패: ${response.errorBody()?.string()}",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+
+            override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
+                Log.e("Login", "Network Error", t)
+                Toast.makeText(this@LoginActivity, "네트워크 오류: ${t.message}", Toast.LENGTH_SHORT)
+                    .show()
+            }
+        })
+    }
+
+
+//    //원래 코드
 //    private fun performLogin(email: String, password: String) {
 //        userRepository.login(email, password).enqueue(object : retrofit2.Callback<LoginResponse> {
 //            override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
@@ -186,9 +221,9 @@ class LoginActivity : AppCompatActivity() {
 //
 //                    if (accessToken != null) {
 //                        UserRepository.saveAuthToken(this@LoginActivity, accessToken)
+//                        Log.d("LoginAuthToken", "토큰이 저장되었습니다: $accessToken")
 //
-//                        // 사용자가 설문조사를 완료했는지 확인하는 로직
-//                        checkSurveyStatus(accessToken)
+//                        navigateToMain(accessToken) //코드가 중복된 같아서 이렇게 바꿨습니다.
 //                    } else {
 //                        Toast.makeText(this@LoginActivity, "토큰이 없습니다.", Toast.LENGTH_SHORT).show()
 //                    }
@@ -203,36 +238,6 @@ class LoginActivity : AppCompatActivity() {
 //            }
 //        })
 //    }
-
-
-    //원래 코드
-    private fun performLogin(email: String, password: String) {
-        userRepository.login(email, password).enqueue(object : retrofit2.Callback<LoginResponse> {
-            override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
-                Log.d("Login", "Response Code: ${response.code()}")
-
-                if (response.isSuccessful) {
-                    val accessToken = response.body()?.success?.accessToken
-
-                    if (accessToken != null) {
-                        UserRepository.saveAuthToken(this@LoginActivity, accessToken)
-                        Log.d("LoginAuthToken", "토큰이 저장되었습니다: $accessToken")
-
-                        navigateToMain(accessToken) //코드가 중복된 같아서 이렇게 바꿨습니다.
-                    } else {
-                        Toast.makeText(this@LoginActivity, "토큰이 없습니다.", Toast.LENGTH_SHORT).show()
-                    }
-                } else {
-                    Toast.makeText(this@LoginActivity, "로그인 실패: ${response.errorBody()?.string()}", Toast.LENGTH_SHORT).show()
-                }
-            }
-
-            override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
-                Log.e("Login", "Network Error", t)
-                Toast.makeText(this@LoginActivity, "네트워크 오류: ${t.message}", Toast.LENGTH_SHORT).show()
-            }
-        })
-    }
 
 
     private fun checkSurveyStatus(accessToken: String) {
