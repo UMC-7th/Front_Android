@@ -11,7 +11,6 @@ import com.example.umc.databinding.ItemDietSubBinding
 class SubscribeDietAdapter(private val dietList: List<DietItem>, private val listener: OnDietCheckedChangeListener) :
     RecyclerView.Adapter<SubscribeDietAdapter.DietViewHolder>() {
 
-    // 날짜별로 그룹화된 데이터를 저장할 리스트
     private val groupedDietList = dietList.groupBy { it.mealDate }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DietViewHolder {

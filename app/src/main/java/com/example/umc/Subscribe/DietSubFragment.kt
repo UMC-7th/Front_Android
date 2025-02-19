@@ -97,6 +97,7 @@ class DietSubFragment : Fragment(), OnDietCheckedChangeListener {
         }
     }
 
+
     private fun navigateToSubscribeCart() {
         val transaction: FragmentTransaction = parentFragmentManager.beginTransaction()
         transaction.replace(R.id.main_container, SubscribeCart())

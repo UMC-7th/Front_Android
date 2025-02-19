@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.umc.Diet.DietDetailFragment
 import com.example.umc.Main.MainActivity
 import com.example.umc.Quote.FoodPriceFragment
+import com.example.umc.Quote.MaterialFavoriteFragment
 import com.example.umc.Quote.PriceAdapter
 import com.example.umc.Quote.PriceDetailFragment
 import com.example.umc.Quote.Sub.QuoteFragmentSub
@@ -119,6 +120,12 @@ class PriceFragment : Fragment() {
                 }
                 val transaction = parentFragmentManager.beginTransaction()
                 transaction.replace(R.id.main_container, priceDetailFragment)
+                transaction.addToBackStack(null)
+                transaction.commit()
+            } else if (category.id == 8) {
+                val transaction = parentFragmentManager.beginTransaction()
+                val fragment = MaterialFavoriteFragment()
+                transaction.replace(R.id.main_container, fragment)
                 transaction.addToBackStack(null)
                 transaction.commit()
             }
