@@ -1,0 +1,26 @@
+// API 응답의 전체 구조를 나타내는 클래스
+data class ApiResponse<T>(
+    val resultType: String,       // "SUCCESS" 또는 "ERROR"
+    val error: ErrorResponse?,    // 에러 발생 시 에러 정보
+    val success: T?              // 성공 시 실제 데이터
+)
+
+// 에러 응답을 위한 클래스
+data class ErrorResponse(
+    val errorCode: String,
+    val reason: String,
+    val data: String
+)
+
+// 개별 식사 정보를 담는 클래스
+data class SubMealList(
+    val mealId: Int,
+    val food: String,
+    val calorieTotal: Int,
+    val material: String,
+    val calorieDetail: String,
+    val price: Int,
+    val difficulty: Int,
+    val recipe: String,
+    val addedByUser: Boolean
+)

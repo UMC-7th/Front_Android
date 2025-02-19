@@ -2,6 +2,7 @@ package com.example.umc.UserApi
 
 import ImageProfileApi
 import android.content.Context
+import com.example.umc.Subscribe.SubcribeApi.DeliveryAddressApi
 import com.example.umc.UserApi.APi.DiagnosisApi
 import com.example.umc.UserApi.APi.GetUserApi
 import com.example.umc.UserApi.APi.HealthScoreApi
@@ -140,5 +141,15 @@ object RetrofitClient {
             .client(okHttpClient)
             .build()
             .create(ImageProfileApi::class.java)
+    }
+
+    // 기존 API 서비스들과 같은 방식으로 DeliveryAddressApi 추가
+    val deliveryAddressApi: DeliveryAddressApi by lazy {
+        Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .client(okHttpClient)
+            .build()
+            .create(DeliveryAddressApi::class.java)
     }
 }

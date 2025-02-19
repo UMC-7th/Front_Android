@@ -1,5 +1,7 @@
 package com.example.umc.Subscribe.SubcribeApi
 
+import ApiResponse
+import SubMealList
 import com.example.umc.Subscribe.SubscribeRequest.DeliveryAddressRequest
 import com.example.umc.Subscribe.SubscribeRequest.DeliveryAddressputRequest
 import com.example.umc.Subscribe.SubscribeResponse.Post.DeliveryAddressresponse
@@ -11,6 +13,7 @@ import retrofit2.http.PATCH
 import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface DeliveryAddressApi {
     @GET("api/v1/deliveryAddress")
@@ -41,4 +44,18 @@ interface DeliveryAddressApi {
     suspend fun getDefaultDeliveryAddress(
         @Header("Authorization") token: String
     ): Response<DeliveryAddressresponse>
+
+    @GET("/api/v1/subscribes/meals/list")
+    suspend fun getMealSubscriptions(
+        @Header("Authorization") token: String,
+        @Query("category") category: String? = null
+    ): Response<ApiResponse<List<SubMealList>>>
+
+
+//    @GET("/api/v1/subscribes/meals/list")
+//    suspend fun getDefaultDeliveryAddress(
+//        @Header("Authorization") token: String
+//    ): Response<DeliveryAddressresponse>
+
+
 }
