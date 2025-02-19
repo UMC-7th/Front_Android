@@ -4,21 +4,38 @@ import android.app.Dialog
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.style.ForegroundColorSpan
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import android.widget.Button
+import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import com.example.umc.Main.MainActivity
 import com.example.umc.R
 import com.example.umc.Survey.SurveyGoalFragment
+import com.example.umc.UserApi.Response.HealthScoreData
+import com.example.umc.UserApi.Response.SuccessData
+import com.example.umc.UserApi.UserRepository
 import com.example.umc.databinding.FragmentMyBinding
+import kotlinx.coroutines.launch
 
 
 class MyFragment : Fragment() {
     private var _binding: FragmentMyBinding? = null
     private val binding get() = _binding!!
+    private val userRepository = UserRepository()
+
+    private lateinit var diagnosis1: TextView
+    private lateinit var diagnosis2: TextView
+    private lateinit var advice1: TextView
+    private lateinit var advice2: TextView
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -31,19 +48,163 @@ class MyFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        diagnosis1 = binding.diagnosis1
+        diagnosis2 = binding.diagnosis2
+        advice1 = binding.advice1
+        advice2 = binding.advice2
+
         initializeViews()
         setupListeners()
+        fetchHealthScore()
+        fetchAiDiagnosis() // AI 진단 데이터 조회
+        fetchMypageGoal() // 목표 정보 조회
+
     }
+    private fun fetchAiDiagnosis() {
+        lifecycleScope.launch {
+            try {
+                val response = userRepository.getDiagnosisResult(requireContext())
+                if (response == null) {
+                    Log.e("MyFragment", "서버 응답이 null입니다.")
+                    binding.tvAiDiagnosisDiet.text = "서버 응답이 없습니다."
+                    binding.tvAiDiagnosisHealth.text = "서버 응답이 없습니다."
+                    return@launch
+                }
+
+                // 응답에서 성공적인 데이터가 있을 경우, UI 업데이트
+                if (response.success != null) {
+                    updateAiDiagnosisInfo(response.success)
+                } else {
+                    Log.e("MyFragment", "진단 결과가 없습니다.")
+                    binding.tvAiDiagnosisDiet.text = "진단 결과가 없습니다."
+                    binding.tvAiDiagnosisHealth.text = "조언 정보가 없습니다."
+                }
+            } catch (e: Exception) {
+                Log.e("MyFragment", "AI 진단 조회 실패: ${e.message}", e)
+                binding.tvAiDiagnosisDiet.text = "AI 진단 조회 실패"
+                binding.tvAiDiagnosisHealth.text = "AI 진단 조회 실패"
+            }
+        }
+    }
+
+
+    private fun fetchMypageGoal() {
+        lifecycleScope.launch {
+            try {
+                // 목표 정보를 가져오는 API 호출
+                val response = userRepository.getMypageGoal(requireContext())
+                response?.let { mypageGoalResponse ->
+                    // goal 값 화면에 업데이트
+                    updateGoalInfo(mypageGoalResponse.user.goal)
+                }
+            } catch (e: Exception) {
+                Log.e("MyFragment", "목표 정보 조회 실패: ${e.message}")
+                // 에러 처리 필요시 여기에 추가
+            }
+        }
+    }
+    private fun fetchHealthScore() {
+        lifecycleScope.launch {
+            try {
+                val response = userRepository.getHealthScore(requireContext())
+                response?.let { healthScoreResponse ->
+                    updateHealthInfo(healthScoreResponse.success)
+                }
+            } catch (e: Exception) {
+                Log.e("MyFragment", "건강 점수 조회 실패: ${e.message}")
+                // 에러 처리 필요시 여기에 추가
+            }
+        }
+    }
+    private fun updateGoalInfo(goal: String) {
+        binding.apply {
+            // goal 값이 업데이트되면 goalmeal TextView에 값 설정
+            goalmeal.text = goal
+        }
+    }
+    private fun updateAiDiagnosisInfo(data: SuccessData?) {
+        data?.let {
+            Log.d("MyFragment", "Diagnosis: ${it.diagnosis}")  // diagnosis 리스트의 내용을 확인
+            Log.d("MyFragment", "Advice: ${it.advice}")  // advice 리스트의 내용을 확인
+
+            binding.apply {
+                // 진단 내용 출력: diagnosis1, diagnosis2에 각각 두 항목 표시
+                it.diagnosis?.let { diagnosis ->
+                    if (diagnosis.size >= 2) {
+                        diagnosis1.text = diagnosis[0]  // 첫 번째 진단 항목
+                        diagnosis2.text = diagnosis[1]  // 두 번째 진단 항목
+                    } else {
+                        tvAiDiagnosisDiet.text = "진단 정보 없음"
+                    }
+                } ?: run {
+                    tvAiDiagnosisDiet.text = "진단 정보 없음"  // diagnosis가 null인 경우 처리
+                }
+
+                // 조언 내용 출력: advice1, advice2에 각각 두 항목 표시
+                it.advice?.let { advice ->
+                    if (advice.size >= 2) {
+                        advice1.text = advice[0]  // 첫 번째 조언 항목
+                        advice2.text = advice[1]  // 두 번째 조언 항목
+                    } else {
+                        tvAiDiagnosisHealth.text = "조언 정보 없음"
+                    }
+                } ?: run {
+                    tvAiDiagnosisHealth.text = "조언 정보 없음"  // advice가 null인 경우 처리
+                }
+            }
+        } ?: run {
+            // SuccessData가 null일 경우 처리
+            binding.tvAiDiagnosisDiet.text = "진단 데이터 불러오기 실패"
+            binding.tvAiDiagnosisHealth.text = "조언 데이터 불러오기 실패"
+        }
+    }
+
+
+    private fun updateHealthInfo(data: HealthScoreData) {
+        binding.apply {
+            // 건강 점수 업데이트
+            healthscore.text = "${data.healthScore}점"
+
+            // 비교값 업데이트 (comparison이 String으로 받아지므로 그대로 표시)
+            comparsion.text = data.comparison
+
+            // 업데이트 날짜 표시
+            textView52.text = "${data.updateAt} 기준"
+        }
+    }
+
 
     private fun initializeViews() {
         binding.apply {
-            // 프로필 정보 설정
-            binding.tvName.text = "토미"
-            binding.tvProfileManage.text = "내 정보 관리"
-            //ivProfile.setImageResource(R.drawable.default_profile)
+            // 기존 코드
+            tvName.text = "토미"
+            tvProfileManage.text = "내 정보 관리"
 
-            // 건강 점수 설정
-            //tvScore.text = "82점"
+            // AI 텍스트 색상 변경을 위한 SpannableString 설정
+            val texts = listOf(
+                binding.tvAiDiagnosisDiet,
+                binding.tvAiDiagnosisHealth,
+                binding.tvAiDiagnosisSuggestion
+            )
+
+            texts.forEach { textView ->
+                val fullText = textView.text.toString()
+                val spannableString = SpannableString(fullText)
+
+                // "AI" 텍스트의 위치 찾기
+                val startIndex = fullText.indexOf("AI")
+                if (startIndex != -1) {
+                    spannableString.setSpan(
+                        ForegroundColorSpan(resources.getColor(R.color.Primary_Orange1, null)),
+                        startIndex,
+                        startIndex + 5,  // "AI"는 2글자
+                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                    )
+                }
+
+                textView.text = spannableString
+            }
         }
     }
 
@@ -118,5 +279,7 @@ class MyFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         (activity as? MainActivity)?.hideTitle()
+
+        // 여기나 oncreateView에 추가
     }
 }

@@ -1,8 +1,14 @@
 package com.example.umc.UserApi
 
+import ImageProfileApi
 import android.content.Context
+import com.example.umc.Subscribe.SubcribeApi.SubMealService
+import com.example.umc.UserApi.APi.DiagnosisApi
 import com.example.umc.UserApi.APi.GetUserApi
+import com.example.umc.UserApi.APi.HealthScoreApi
+
 import com.example.umc.UserApi.APi.KakaoLoginApi
+import com.example.umc.UserApi.APi.MypageGoalApi
 import com.example.umc.UserApi.APi.OtpApi
 import com.example.umc.UserApi.APi.OtpValidationApi
 import com.example.umc.UserApi.APi.UpdateUserApi
@@ -100,5 +106,48 @@ object RetrofitClient {
             .client(okHttpClient)
             .build()
             .create(KakaoLoginApi::class.java)
+    }
+
+    // 건강 점수 확인 로직
+    val healthScoreApi: HealthScoreApi by lazy {
+        Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .client(okHttpClient)
+            .build()
+            .create(HealthScoreApi::class.java)
+    }
+    val diagnosisApi: DiagnosisApi by lazy {
+        Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .client(okHttpClient)
+            .build()
+            .create(DiagnosisApi::class.java)
+    }
+
+    val mypageGoalApi: MypageGoalApi by lazy {
+        Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .client(okHttpClient)
+            .build()
+            .create(MypageGoalApi::class.java)
+    }
+    val imageProfileApi: ImageProfileApi by lazy {
+        Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create()) // JSON 변환
+            .client(okHttpClient)
+            .build()
+            .create(ImageProfileApi::class.java)
+    }
+
+    val subMealService: SubMealService by lazy {
+        Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(SubMealService::class.java)
     }
 }

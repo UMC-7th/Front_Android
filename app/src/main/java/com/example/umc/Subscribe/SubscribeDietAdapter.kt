@@ -1,6 +1,7 @@
 package com.example.umc.Subscribe
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.umc.Diet.DietItem
@@ -10,69 +11,87 @@ import com.example.umc.databinding.ItemDietSubBinding
 class SubscribeDietAdapter(private val dietList: List<DietItem>, private val listener: OnDietCheckedChangeListener) :
     RecyclerView.Adapter<SubscribeDietAdapter.DietViewHolder>() {
 
+    // 날짜별로 그룹화된 데이터를 저장할 리스트
+    private val groupedDietList = dietList.groupBy { it.mealDate }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DietViewHolder {
         val binding = ItemDietSubBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return DietViewHolder(binding)
+        return DietViewHolder(binding, listener)
     }
 
     override fun onBindViewHolder(holder: DietViewHolder, position: Int) {
-        val dietItem = dietList[position]
-        holder.bind(dietItem)
+        val date = groupedDietList.keys.toList()[position]
+        val items = groupedDietList[date] ?: emptyList()
+        holder.bind(date, items)
     }
 
+    override fun getItemCount(): Int = groupedDietList.size
 
-    override fun getItemCount(): Int = dietList.size
+    inner class DietViewHolder(private val binding: ItemDietSubBinding, private val listener: OnDietCheckedChangeListener) : RecyclerView.ViewHolder(binding.root) {
 
-    inner class DietViewHolder(private val binding: ItemDietSubBinding) : RecyclerView.ViewHolder(binding.root) {
+        private lateinit var items: List<DietItem> // 클래스 멤버 변수로 선언
 
-        private var isBreakfastChecked = false
-        private var isLunchChecked = false
-        private var isDinnerChecked = false
+        fun bind(date: String, items: List<DietItem>) {
+            this.items = items // 초기화
+            binding.tvDate.text = date
+            binding.tvWeek.text = items.firstOrNull()?.week ?: ""
 
-        fun bind(dietItem: DietItem) {
-            binding.tvDate.text = dietItem.date
-            binding.tvWeek.text = dietItem.week
-            binding.tvFoodBreakfast.text = dietItem.breakfast
-            binding.tvFoodLunch.text = dietItem.lunch
-            binding.tvFoodDinner.text = dietItem.dinner
+            // 기본적으로 모든 시간대를 숨김
+            binding.llSubMealBreakfast.visibility = View.GONE
+            binding.llSubMealLunch.visibility = View.GONE
+            binding.llSubMealDinner.visibility = View.GONE
 
-            updateBackground()
-
-            binding.ibtnCheckBreakfast.setOnClickListener {
-                isBreakfastChecked = !isBreakfastChecked
-                updateButtonState()
+            // 시간대에 따라 가시성을 설정
+            items.forEach { dietItem ->
+                when (dietItem.time) {
+                    "아침" -> {
+                        binding.llSubMealBreakfast.visibility = View.VISIBLE
+                        binding.tvFoodBreakfast.text = dietItem.food
+                        binding.ibtnCheckBreakfast.setImageResource(if (dietItem.isChecked) R.drawable.ic_check else R.drawable.ic_uncheck)
+                        binding.ibtnCheckBreakfast.setOnClickListener {
+                            dietItem.isChecked = !dietItem.isChecked
+                            binding.ibtnCheckBreakfast.setImageResource(if (dietItem.isChecked) R.drawable.ic_check else R.drawable.ic_uncheck)
+                            updateBackground()
+                            listener.onDietCheckedChange(dietItem.isChecked)
+                        }
+                    }
+                    "점심" -> {
+                        binding.llSubMealLunch.visibility = View.VISIBLE
+                        binding.tvFoodLunch.text = dietItem.food
+                        binding.ibtnCheckLunch.setImageResource(if (dietItem.isChecked) R.drawable.ic_check else R.drawable.ic_uncheck)
+                        binding.ibtnCheckLunch.setOnClickListener {
+                            dietItem.isChecked = !dietItem.isChecked
+                            binding.ibtnCheckLunch.setImageResource(if (dietItem.isChecked) R.drawable.ic_check else R.drawable.ic_uncheck)
+                            updateBackground()
+                            listener.onDietCheckedChange(dietItem.isChecked)
+                        }
+                    }
+                    "저녁" -> {
+                        binding.llSubMealDinner.visibility = View.VISIBLE
+                        binding.tvFoodDinner.text = dietItem.food
+                        binding.ibtnCheckDinner.setImageResource(if (dietItem.isChecked) R.drawable.ic_check else R.drawable.ic_uncheck)
+                        binding.ibtnCheckDinner.setOnClickListener {
+                            dietItem.isChecked = !dietItem.isChecked
+                            binding.ibtnCheckDinner.setImageResource(if (dietItem.isChecked) R.drawable.ic_check else R.drawable.ic_uncheck)
+                            updateBackground()
+                            listener.onDietCheckedChange(dietItem.isChecked)
+                        }
+                    }
+                }
             }
-
-            binding.ibtnCheckLunch.setOnClickListener {
-                isLunchChecked = !isLunchChecked
-                updateButtonState()
-            }
-
-            binding.ibtnCheckDinner.setOnClickListener {
-                isDinnerChecked = !isDinnerChecked
-                updateButtonState()
-            }
-        }
-
-        private fun updateButtonState() {
-            binding.ibtnCheckBreakfast.setImageResource(if (isBreakfastChecked) R.drawable.ic_uncheck else R.drawable.ic_check)
-            binding.ibtnCheckLunch.setImageResource(if (isLunchChecked) R.drawable.ic_uncheck else R.drawable.ic_check)
-            binding.ibtnCheckDinner.setImageResource(if (isDinnerChecked) R.drawable.ic_uncheck else R.drawable.ic_check)
 
             updateBackground()
         }
 
         private fun updateBackground() {
-            val isAnyChecked = isBreakfastChecked || isLunchChecked || isDinnerChecked
+            val isAnyChecked = items.any { it.isChecked }
             binding.root.setBackgroundResource(
                 if (isAnyChecked) R.drawable.bg_diet_sub_selected else R.drawable.bg_diet_sub_unselected
             )
-            listener.onDietCheckedChanged(isAnyChecked)
         }
     }
-
 }
 
 interface OnDietCheckedChangeListener {
-    fun onDietCheckedChanged(isAnyChecked: Boolean)
+    fun onDietCheckedChange(isAnyChecked: Boolean)
 }

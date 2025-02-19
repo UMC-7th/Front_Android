@@ -11,33 +11,26 @@ import com.bumptech.glide.Glide
 import com.example.umc.R
 import com.example.umc.UserApi.RetrofitClient
 import com.example.umc.databinding.ItemFavoriteBinding
+import com.example.umc.model.response.GetFavoriteMeals
 import kotlinx.coroutines.launch
 
 class DietFavoriteAdapter(
-    private val onClick: (FavoriteItem, Int) -> Unit
+    private val onClick: (GetFavoriteMeals, Int) -> Unit
 ) : RecyclerView.Adapter<DietFavoriteAdapter.ViewHolder>() {
 
-    private val favoriteItems = mutableListOf<FavoriteItem>()
+    private val favoriteItems = mutableListOf<GetFavoriteMeals>()
 
     inner class ViewHolder(private val binding: ItemFavoriteBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(favoriteItem: FavoriteItem) {
+        fun bind(favoriteItem: GetFavoriteMeals) {
             binding.apply {
                 // 아이템 데이터를 바인딩합니다
-                tvFavoriteName.text = favoriteItem.name
-                tvFavoriteCalories.text = favoriteItem.calories
+                tvFavoriteName.text = favoriteItem.food
+                tvFavoriteCalories.text = "${favoriteItem.calorieTotal} kcal"
 
-                loadMealImage(favoriteItem.name, ivFavoriteImage) // favoriteItem.name으로 수정
+                loadMealImage(favoriteItem.food, ivFavoriteImage) // favoriteItem.food로 수정
 
-                // 즐겨찾기 클릭 리스너 설정
-                ivStar.setOnClickListener {
-                    favoriteItem.isFavorite = !favoriteItem.isFavorite
-                    ivStar.setImageResource(
-                        if (favoriteItem.isFavorite) R.drawable.ic_star_filled
-                        else R.drawable.ic_star
-                    )
-                }
 
                 // 아이템 클릭 리스너 설정
                 root.setOnClickListener {
@@ -83,7 +76,7 @@ class DietFavoriteAdapter(
     override fun getItemCount(): Int = favoriteItems.size
 
     // 아이템 업데이트 메서드
-    fun updateItems(items: List<FavoriteItem>) {
+    fun updateItems(items: List<GetFavoriteMeals>) {
         favoriteItems.clear()
         favoriteItems.addAll(items)
         notifyDataSetChanged()

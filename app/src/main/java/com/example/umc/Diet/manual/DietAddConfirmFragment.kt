@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.umc.R
 import com.example.umc.databinding.FragmentDietAddConfirmBinding
@@ -17,6 +18,7 @@ class DietAddConfirmFragment : Fragment(R.layout.fragment_diet_add_confirm) {
     private val binding get() = _binding!!
 
     private lateinit var adapter: DietAddConfirmAdapter
+    private val viewModel: DietAddConfirmViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -29,11 +31,15 @@ class DietAddConfirmFragment : Fragment(R.layout.fragment_diet_add_confirm) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // 어댑터 설정
-        adapter = DietAddConfirmAdapter(mutableListOf())
+        adapter = DietAddConfirmAdapter(mutableListOf()) { position ->
+            val mealId = viewModel.mealList.value?.get(position)?.mealId ?: return@DietAddConfirmAdapter
+            viewModel.deleteManualMeals(mealId, position)
+        }
+
         binding.rvAddConfirm.layoutManager = LinearLayoutManager(requireContext())
         binding.rvAddConfirm.adapter = adapter
 
+        // 전달된 인자 확인
         val foods = arguments?.getString("foods")?.split(", ") ?: emptyList()
         val date = arguments?.getString("date")
         val time = arguments?.getString("time")
@@ -44,15 +50,19 @@ class DietAddConfirmFragment : Fragment(R.layout.fragment_diet_add_confirm) {
         Log.d("MealLogging", "전달된 time: $time")
         Log.d("MealLogging", "전달된 calories: $calories")
 
-        val mealList = listOf(
-            ManualMeals(
-                calorieTotal = calories ?: 0,
-                foods = foods,
-                time = time ?: "Unknown",  // 기본값 설정
-                mealDate = date ?: "Unknown"
-            )
+        viewModel.mealList.observe(viewLifecycleOwner) { mealList ->
+            adapter.updateMeals(mealList)
+        }
+
+        viewModel.fetchManualMeals(
+            requireContext(),
+            onSuccess = {
+                Log.d("MealLogging", "식단 가져오기 성공")
+            },
+            onError = { errorMsg: String ->
+                Log.e("MealLogging", "식단 가져오기 실패: $errorMsg")
+            }
         )
-        adapter.updateMeals(mealList)
     }
 
     override fun onDestroyView() {

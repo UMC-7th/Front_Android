@@ -8,6 +8,7 @@ import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.Gravity
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
@@ -38,7 +39,7 @@ class HomeContainerFragment : Fragment() {
         setupViewPager()
         setupTabLayout()
         setupButtons()
-        binding.tvServe.text = getString(R.string.serve).format("장태준")
+        binding.tvServe.text = getString(R.string.serve).format("토미")
     }
 
     private fun setupViewPager() {
@@ -81,18 +82,35 @@ class HomeContainerFragment : Fragment() {
                 setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
                 setDimAmount(0.5f)
 
-
-                setLayout(
-                    WindowManager.LayoutParams.MATCH_PARENT,
-                    WindowManager.LayoutParams.MATCH_PARENT
-                )
+                val layoutParams = WindowManager.LayoutParams().apply {
+                    copyFrom(dialog.window?.attributes)
+                    width = WindowManager.LayoutParams.WRAP_CONTENT
+                    height = WindowManager.LayoutParams.WRAP_CONTENT
+                    gravity = Gravity.TOP or Gravity.START
+                    x = -50 // X 좌표 설정 (왼쪽으로 이동)
+                    y = 30 // Y 좌표 설정 (아래로 이동)
+                }
+                dialog.window?.attributes = layoutParams
             }
 
             dialog.findViewById<View>(android.R.id.content).setOnClickListener {
                 dialog.dismiss()
             }
+
+            dialog.setOnShowListener {
+                dialog.window?.decorView?.setOnTouchListener { view, event ->
+                    if (event.action == MotionEvent.ACTION_DOWN) {
+                        dialog.dismiss()
+                        view.performClick()
+                        true
+                    } else {
+                        false
+                    }
+                }
+            }
             dialog.show()
         }
+
 
         binding.markButton.setOnClickListener {
             val transaction = parentFragmentManager.beginTransaction()

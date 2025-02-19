@@ -1,30 +1,41 @@
 package com.example.umc.cart
 
-import Subscribecredit
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
+import android.widget.PopupWindow
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.umc.Main.MainActivity
 import com.example.umc.R
-import com.example.umc.model.CartRequest
-import com.example.umc.Subscribe.RetrofitClient
+import com.example.umc.Subscribe.Retrofit.RetrofitClient
+import com.example.umc.Subscribe.SubscribeCartAdapter
+import com.example.umc.Subscribe.Subscribecredit
 import com.example.umc.databinding.FragmentSubscribeCartBinding
-import com.example.umc.model.KartSubRequest
-import kotlinx.coroutines.launch
+import com.example.umc.model.CartItem
+import java.text.NumberFormat
+import java.util.Locale
 
 class SubscribeCart : Fragment() {
     private var _binding: FragmentSubscribeCartBinding? = null
     private val binding get() = _binding!!
-    private val apiService = RetrofitClient.mealApiService
 
     private var isAllSelected = false
     private val itemChecked = mutableListOf(false, false, false, false)
     private val itemCounts = mutableListOf(1, 1, 1, 1)
+
+    private val cartItems = mutableListOf(
+        CartItem("01.01", "아침", "콩나물 김치찌개 외 3개", 1),
+        CartItem("01.02", "점심", "돈까스 냉모밀 외 3개", 1),
+        CartItem("01.03", "저녁", "제육볶음 외 3개", 1)
+    )
+
+    private lateinit var adapter: SubscribeCartAdapter
+    private var popupWindow: PopupWindow? = null
+    private var isTooltipVisible = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -36,6 +47,17 @@ class SubscribeCart : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        // 어댑터 초기화
+        adapter = SubscribeCartAdapter(cartItems, { cartItem ->
+            updateButtonColor()
+        }, {
+            updateTotalPrice() // 총 합계 업데이트
+            updateServingSummary()
+        })
+
+        binding.rvMenuCart.layoutManager = LinearLayoutManager(requireContext())
+        binding.rvMenuCart.adapter = adapter
 
         binding.creditbutton.setOnClickListener {
             val transaction = requireActivity().supportFragmentManager.beginTransaction()
@@ -55,88 +77,81 @@ class SubscribeCart : Fragment() {
             updateItemCheckState()
         }
 
-        val checkBoxes = listOf(binding.imgCheck1, binding.imgCheck2, binding.imgCheck3, binding.imgCheck4)
-        checkBoxes.forEachIndexed { index, imageView ->
-            imageView.setOnClickListener {
-                itemChecked[index] = !itemChecked[index]
-                imageView.setImageResource(if (itemChecked[index]) R.drawable.check_on else R.drawable.real_add)
-
-                isAllSelected = itemChecked.all { it }
-                binding.imageView7.setImageResource(if (isAllSelected) R.drawable.check_on else R.drawable.real_add)
-            }
-        }
-
-        val addButtons = listOf(binding.imgAdd1, binding.imgAdd2, binding.imgAdd3, binding.imgAdd4)
-        val minusButtons = listOf(binding.imgMinus1, binding.imgMinus2, binding.imgMinus3, binding.imgMinus4)
-        val textCounts = listOf(binding.txtCount1, binding.txtCount2, binding.txtCount3, binding.txtCount4)
-
-        addButtons.forEachIndexed { index, imageView ->
-            imageView.setOnClickListener {
-                if (itemCounts[index] < 2) {
-                    lifecycleScope.launch {
-                        try {
-                            Log.d("API_TEST", "API 호출 시작 - index: $index")
-                            val response = apiService.addToCart(
-                                CartRequest(
-                                    KartSubRequest(
-                                        mealSubId = index + 1,
-                                        cnt = 2
-                                    )
-                                )
-                            )
-                            Log.d("API_TEST", "API 응답: ${response.body()}")
-                            Log.d("API_TEST", "에러 응답: ${response.errorBody()?.string()}")
-                            Log.d("API_TEST", "성공 여부: ${response.isSuccessful}")
-
-                            if (response.isSuccessful) {
-                                itemCounts[index] = 2
-                                textCounts[index].text = "2인분"
-                            }
-                        } catch (e: Exception) {
-                            Log.e("API_TEST", "API 오류 발생: ${e.message}")
-                        }
-                    }
+        binding.textView45.setOnClickListener {
+            if (popupWindow == null) {
+                val tooltipView = layoutInflater.inflate(R.layout.dialog_price_policy, null)
+                popupWindow = PopupWindow(tooltipView, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT).apply {
+                    isOutsideTouchable = true
+                    setBackgroundDrawable(ContextCompat.getDrawable(requireContext(), android.R.color.transparent)) // 배경 투명 설정
                 }
             }
+            if (isTooltipVisible) {
+                popupWindow?.dismiss()
+            } else {
+                popupWindow?.showAsDropDown(binding.textView45, -30, 0)
+            }
+            isTooltipVisible = !isTooltipVisible
         }
 
-        minusButtons.forEachIndexed { index, imageView ->
-            imageView.setOnClickListener {
-                if (itemCounts[index] > 1) {
-                    lifecycleScope.launch {
-                        try {
-                            val response = apiService.addToCart(
-                                CartRequest(
-                                    KartSubRequest(
-                                        mealSubId = index + 1,
-                                        cnt = 1
-                                    )
-                                )
-                            )
-                            Log.d("API", "Success: ${response.body()}")
-                            if (response.isSuccessful) {
-                                itemCounts[index] = 1
-                                textCounts[index].text = "1인분"
-                                Toast.makeText(context, "API 성공: 수량 감소", Toast.LENGTH_SHORT).show()
-                            } else {
-                                Log.e("API", "Error: ${response.errorBody()?.string()}")
-                                Toast.makeText(context, "API 실패: ${response.errorBody()?.string()}", Toast.LENGTH_SHORT).show()
-                            }
-                        } catch (e: Exception) {
-                            Log.e("API", "Exception: ${e.message}")
-                            Toast.makeText(context, "API 오류: ${e.message}", Toast.LENGTH_SHORT).show()
-                        }
-                    }
-                }
+        // 터치 인터셉터를 사용하여 다른 곳 클릭 시 팝업 창 닫기
+        popupWindow?.setTouchInterceptor { v, event ->
+            if (event.action == MotionEvent.ACTION_OUTSIDE) {
+                popupWindow?.dismiss()
+                isTooltipVisible = false
+                v.performClick() // 클릭 이벤트 호출
+                true
+            } else {
+                false
             }
         }
+
+        // 총 합계 초기 업데이트
+        updateTotalPrice()
     }
 
     private fun updateItemCheckState() {
-        val checkBoxes = listOf(binding.imgCheck1, binding.imgCheck2, binding.imgCheck3, binding.imgCheck4)
-        checkBoxes.forEachIndexed { index, imageView ->
-            imageView.setImageResource(if (itemChecked[index]) R.drawable.check_on else R.drawable.real_add)
+        cartItems.forEachIndexed { index, cartItem ->
+            cartItem.isChecked = itemChecked[index]
         }
+        adapter.notifyDataSetChanged()
+        updateButtonColor()
+        updateTotalPrice() // 총 합계 업데이트
+        updateServingSummary()
+    }
+
+    private fun updateButtonColor() {
+        val isAnyChecked = cartItems.any { it.isChecked }
+        val color = if (isAnyChecked) R.color.Primary_Orange1 else R.color.Gray7
+        binding.creditbutton.setBackgroundColor(ContextCompat.getColor(requireContext(), color))
+    }
+
+    private fun updateTotalPrice() {
+        var totalPrice = 0
+        cartItems.forEach { cartItem ->
+            if (cartItem.isChecked) {
+                val price = when {
+                    cartItem.serving == 1 -> 12000
+                    cartItem.serving == 2 -> 10000 * cartItem.serving
+                    cartItem.serving >= 3 -> 9000 * cartItem.serving
+                    else -> 0
+                }
+                totalPrice += price
+            }
+        }
+        val numberFormat = NumberFormat.getNumberInstance(Locale.KOREA)
+        val formattedPrice = numberFormat.format(totalPrice)
+        binding.textView11.text = String.format("%s원", formattedPrice)
+    }
+
+    private fun updateServingSummary() {
+        val servingSummary = mutableMapOf<Int, Int>()
+        cartItems.forEach { cartItem ->
+            if (cartItem.isChecked) {
+                servingSummary[cartItem.serving] = servingSummary.getOrDefault(cartItem.serving, 0) + 1
+            }
+        }
+        val servingSummaryText = servingSummary.entries.joinToString(" + ") { "(${it.key}인분×${it.value})" }
+        binding.tvSummaryServing.text = servingSummaryText
     }
 
     override fun onDestroyView() {

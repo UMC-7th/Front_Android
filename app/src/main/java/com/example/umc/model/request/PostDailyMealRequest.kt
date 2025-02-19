@@ -1,6 +1,5 @@
 package com.example.umc.model.request
 
-data class PostDailyMealRequest (
-    val userId: Int,
+data class PostDailyMealRequest(
     val mealDate: String
 )

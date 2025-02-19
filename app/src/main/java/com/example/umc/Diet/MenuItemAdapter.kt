@@ -15,17 +15,22 @@ import com.bumptech.glide.Glide
 import com.example.umc.R
 import com.example.umc.UserApi.RetrofitClient
 import com.example.umc.databinding.ItemMenuBinding
+import com.example.umc.model.request.PatchFavoriteDeleteRequest
+import com.example.umc.model.request.PatchFavoriteRequest
+import com.example.umc.model.request.PostCompleteMealRequest
 import kotlinx.coroutines.launch
-import kotlin.random.Random
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class MenuItemAdapter(
     private val onClick: (MenuItem, Int) -> Unit,
     private val onFavoriteChanged: ((MenuItem, Boolean) -> Unit)? = null,
-    private val onDietCompleteChanged: ((MenuItem, Boolean) -> Unit)? = null
+    private val onDietCompleteChanged: ((MenuItem, Boolean) -> Unit)? = null,
+    private val onRefresh: (MenuItem) -> Unit
 ) : ListAdapter<MenuItem, MenuItemAdapter.ViewHolder>(DiffCallback()) {
 
     private var selectedPosition = RecyclerView.NO_POSITION
-    private var menuItems = mutableListOf<MenuItem>()
 
     inner class ViewHolder(private val binding: ItemMenuBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -47,16 +52,9 @@ class MenuItemAdapter(
                     else R.drawable.ic_star
                 )
 
-                // 식단 완료 버튼 상태 설정
+                // 식단 완료 버튼 UI 설정
                 btnDietComplete.isSelected = menuItem.isDietCompleted
-                btnDietComplete.setTextColor(
-                    if (menuItem.isDietCompleted) Color.WHITE
-                    else Color.parseColor("#FFFFFF")
-                )
-
-                btnDietComplete.apply {
-                    isSelected = menuItem.isDietCompleted
-                }
+                btnDietComplete.setTextColor(Color.WHITE)
 
                 // 카드 클릭 리스너
                 root.setOnClickListener {
@@ -67,7 +65,7 @@ class MenuItemAdapter(
                     onClick(menuItem, adapterPosition)
                 }
 
-                // 즐겨찾기 클릭 리스너
+                // 즐겨찾기 버튼 설정
                 ivStar.setOnClickListener {
                     menuItem.isFavorite = !menuItem.isFavorite
                     ivStar.setImageResource(
@@ -77,35 +75,25 @@ class MenuItemAdapter(
                     onFavoriteChanged?.invoke(menuItem, menuItem.isFavorite)
                 }
 
-                // 식단 완료 버튼 클릭 리스너
+                // 식단 완료 버튼 설정
                 btnDietComplete.setOnClickListener {
                     menuItem.isDietCompleted = !menuItem.isDietCompleted
-                    it.isSelected = menuItem.isDietCompleted
+                    btnDietComplete.isSelected = menuItem.isDietCompleted
                     btnDietComplete.setBackgroundColor(
-                        if (menuItem.isDietCompleted) ContextCompat.getColor(binding.root.context, R.color.Primary_Orange1)
-                        else ContextCompat.getColor(binding.root.context, R.color.Gray7)
+                        ContextCompat.getColor(
+                            binding.root.context,
+                            if (menuItem.isDietCompleted) R.color.Primary_Orange1 else R.color.Gray7
+                        )
                     )
                     onDietCompleteChanged?.invoke(menuItem, menuItem.isDietCompleted)
                 }
 
                 // 랜덤 변경 버튼 클릭 리스너
-                binding.btnRefresh.setOnClickListener {
-                    changeRandomFavoriteItem()
-                    notifyDataSetChanged()
+                btnRefresh.setOnClickListener {
+                    onRefresh(menuItem)
                 }
             }
         }
-    }
-
-    private fun changeRandomFavoriteItem() {
-        val randomIndex = Random.nextInt(menuItems.size)
-        val randomItem = menuItems[Random.nextInt(menuItems.size)]
-        menuItems[randomIndex] = MenuItem(
-            randomItem.name,
-            randomItem.calories,
-            randomItem.isFavorite.toString(),
-            randomItem.isDietCompleted
-        )
     }
 
     fun clearSelection() {
@@ -149,7 +137,8 @@ class MenuItemAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(getItem(position))
+        val item = getItem(position)
+        holder.bind(item)
     }
 
     private class DiffCallback : DiffUtil.ItemCallback<MenuItem>() {
@@ -158,12 +147,5 @@ class MenuItemAdapter(
 
         override fun areContentsTheSame(oldItem: MenuItem, newItem: MenuItem) =
             oldItem == newItem
-    }
-
-    override fun submitList(list: List<MenuItem>?) {
-        super.submitList(list)
-        list?.let {
-            menuItems = it.toMutableList()
-        }
     }
 }

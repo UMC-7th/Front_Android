@@ -76,7 +76,7 @@ class OrderDetailFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        (activity as? MainActivity)?.showTitle("주문 상세내역", true)
+        (activity as? MainActivity)?.showTitle("주문 상세보기", true)
     }
 
     override fun onDestroyView() {

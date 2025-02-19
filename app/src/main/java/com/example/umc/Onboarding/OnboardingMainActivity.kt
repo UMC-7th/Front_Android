@@ -1,30 +1,19 @@
 package com.example.umc.Onboarding
 
-import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.example.umc.Onboarding.DietActivity // DietActivity 패키지 확인
-import com.example.umc.Signin.LoginActivity
-import com.example.umc.databinding.ActivityOnboardingmainBinding
+import com.example.umc.R
 
 class OnboardingMainActivity : AppCompatActivity() {
-
-    private lateinit var binding: ActivityOnboardingmainBinding
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityOnboardingmainBinding.inflate(layoutInflater) // View Binding 설정 확인
-        setContentView(binding.root)
+        setContentView(R.layout.activity_onboardingmain)
 
-        // 시작 버튼 클릭 시 DietActivity로 이동
-        binding.startButton.setOnClickListener {
-            val intent = Intent(this, DietActivity::class.java)
-            startActivity(intent)
+        // 앱 실행 시 첫 번째 프래그먼트를 로드 (중복 방지)
+        if (savedInstanceState == null) {
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, OnboardingMainFragment()) // OnboardingMainFragment 표시
+                .commit()
         }
-
-        binding.loginButton.setOnClickListener({
-            val intent =Intent(this, LoginActivity::class.java)
-            startActivity(intent)
-        })
     }
 }

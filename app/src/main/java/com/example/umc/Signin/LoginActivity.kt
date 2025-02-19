@@ -16,6 +16,7 @@ import com.example.umc.SignUp.SignUpFragment
 import com.example.umc.Survey.SurveyGoalFragment
 import com.example.umc.UserApi.Response.LoginResponse
 import com.example.umc.UserApi.RetrofitClient
+import com.example.umc.UserApi.SharedPreferencesManager
 import com.example.umc.UserApi.UserRepository
 import com.example.umc.databinding.FragmentSigninBinding
 import retrofit2.Call
@@ -183,6 +184,7 @@ class LoginActivity : AppCompatActivity() {
 
                 if (response.isSuccessful) {
                     val accessToken = response.body()?.success?.accessToken
+                    val userId = response.body()?.success?.user?.userId  // userId 받아오기
 
                     if (accessToken != null) {
                         UserRepository.saveAuthToken(this@LoginActivity, accessToken)

@@ -144,11 +144,6 @@ class DietAddManualFragment : Fragment(R.layout.fragment_diet_add_manual) {
                         putInt("calories", calorie)
                     }
                 }
-
-                parentFragmentManager.beginTransaction()
-                    .replace(R.id.main_container, confirmFragment)
-                    .addToBackStack(null)
-                    .commit()
             } else {
                 Log.e("MealLogging", "날짜와 시간대를 선택해주세요.")
             }
@@ -201,7 +196,7 @@ class DietAddManualFragment : Fragment(R.layout.fragment_diet_add_manual) {
 
         Log.d("DietAddManualFragment", "Request: $request")
 
-        viewModel.addManualMeal(context, request, accessToken,
+        viewModel.postManualMeals(context, request, accessToken,
             onSuccess = { Log.d("MealLogging", "식단 추가 성공") },
             onError = { errorMsg: String -> Log.e("MealLogging", "식단 추가 실패: $errorMsg") }
         )

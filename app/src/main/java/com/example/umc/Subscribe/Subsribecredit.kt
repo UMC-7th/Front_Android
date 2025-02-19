@@ -1,3 +1,5 @@
+package com.example.umc.Subscribe
+
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -7,8 +9,16 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.example.umc.Main.MainActivity
 import com.example.umc.R
+import com.example.umc.Subscribe.Repository.AddressRepository
+import com.example.umc.Subscribe.Repository.DeliveryAddressRepository
 import com.example.umc.Subscribe.SubAddressFragment
+import com.example.umc.Subscribe.SubscribeResponse.Get.DeliveryGetResponse
+import com.example.umc.Subscribe.SubscribeResponse.Post.SuccessAddressResponse
 import com.example.umc.databinding.FragmentSubscribePaymentBinding
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class Subscribecredit : Fragment() {
     private var _binding: FragmentSubscribePaymentBinding? = null
@@ -27,26 +37,61 @@ class Subscribecredit : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupUI()
-        setupClickListeners()
-        setupTextWatcher()
-        setupPriceDetailToggle()
+//        setupUI()
+//        setupClickListeners()
+//        setupTextWatcher()
+//        setupPriceDetailToggle()
+
+        loadDefaultAddress()
     }
 
-    private fun setupUI() {
-        binding.apply {
-            // 주문자 정보 설정
-            textView16.text = "김태현"
-            textView17.text = "[00000]"
-            textView18.text = "서울시 송파구 송파동 송마아파트 101동 101호"
-            textView19.text = "010-1234-5678"
-            textView21.text = "문앞 (1234)"
+//    private fun setupUI() {
+//        binding.apply {
+//            // 주문자 정보 설정
+//            textView16.text = "김태현"
+//            textView17.text = "[00000]"
+//            textView18.text = "서울시 송파구 송파동 송마아파트 101동 101호"
+//            textView19.text = "010-1234-5678"
+//            textView21.text = "문앞 (1234)"
+//
+//            // 가격 상세 정보 초기 설정
+//            priceDetailContainer.visibility = View.GONE
+//        }
+//        setupPaymentInfo()
+//    }
 
-            // 가격 상세 정보 초기 설정
-            priceDetailContainer.visibility = View.GONE
+    private fun loadDefaultAddress() {
+        val context = requireContext()
+
+        // 🚀 SharedPreferences에서 기본 배송지 정보 가져오기
+        val savedAddress = AddressRepository.getDefaultAddress(context)
+
+        if (savedAddress != null) {
+            // ✅ 저장된 정보가 있다면 UI에 반영
+            updateUIWithAddress(savedAddress)
+        } else {
+            // ✅ 저장된 정보가 없으면 서버에서 가져오기
+            CoroutineScope(Dispatchers.IO).launch {
+                val result = DeliveryAddressRepository.Get.getDefaultDeliveryAddress(context)
+
+
+                withContext(Dispatchers.Main) {
+                    if (result.isSuccess) {
+                        val address = result.getOrNull()
+                        if (address != null) {
+                            AddressRepository.saveDefaultAddress(context, address) // ✅ SharedPreferences에 저장
+                            updateUIWithAddress(address)
+                        }
+                    } else {
+                        binding.textView16.text = "기본 배송지 정보 없음"
+                    }
+                }
+            }
         }
-        setupPaymentInfo()
     }
+
+
+
 
     private fun setupPriceDetailToggle() {
         binding.priceToggleButton.setOnClickListener {
@@ -55,6 +100,16 @@ class Subscribecredit : Fragment() {
                 priceDetailContainer.visibility = if (isDetailVisible) View.VISIBLE else View.GONE
                 priceToggleButton.isSelected = isDetailVisible
             }
+        }
+    }
+
+    private fun updateUIWithAddress(address: DeliveryGetResponse) {
+        binding.apply {
+            textView16.text = address.name
+            textView17.text = "[${address.postNum}]"
+            textView18.text = address.address
+            textView19.text = address.phoneNum
+            textView21.text = address.memo
         }
     }
 
