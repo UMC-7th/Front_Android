@@ -386,15 +386,17 @@
                                 android:padding="16dp">
 
                                 <TextView
+                                    android:id="@+id/diagnosis1"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="단백질 섭취량 많음"
                                     android:textStyle="bold"/>
 
                                 <TextView
+                                    android:id="@+id/advice1"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:textSize="12sp"
+                                    android:textSize="10sp"
                                     android:layout_marginTop="4dp"
                                     android:text="운동량을 늘려주세요!"/>
                             </LinearLayout>
@@ -427,12 +429,14 @@
                                 android:padding="16dp">
 
                                 <TextView
+                                    android:id="@+id/diagnosis2"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="야채 섭취량 부족"
                                     android:textStyle="bold"/>
 
                                 <TextView
+                                    android:id="@+id/advice2"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:textSize="10sp"

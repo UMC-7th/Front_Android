@@ -26,7 +26,7 @@ class SurveyHeightWeightFragment : Fragment() {
     private lateinit var heightEditText: EditText
     private lateinit var weightEditText: EditText
     private var progressValue = 70  // SurveyYearFragment에서 증가된 값 유지
-
+    private val viewModel: SurveyViewModel by activityViewModels() // ✅ ViewModel 연동
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -90,6 +90,7 @@ class SurveyHeightWeightFragment : Fragment() {
 
         // "다음 버튼" 클릭 시 ProgressBar 증가 및 SurveyGoalWeightFragment로 이동
         nextButton.setOnClickListener {
+            saveHeightWeightToViewModel() // ✅ 키와 체중을 ViewModel에 저장
             updateProgressBar()
             goToSurveyGoalWeightFragment()
         }
@@ -100,6 +101,14 @@ class SurveyHeightWeightFragment : Fragment() {
         }
 
         return view
+    }
+
+    // ✅ 키와 체중을 ViewModel에 저장하는 메서드
+    private fun saveHeightWeightToViewModel() {
+        val height = heightEditText.text.toString().toIntOrNull() ?: return
+        val weight = weightEditText.text.toString().toIntOrNull() ?: return
+
+        viewModel.updateSurveyData(viewModel.surveyData.value!!.copy(height = height, currentWeight = weight))
     }
 
     // 입력값 확인 함수
@@ -131,7 +140,7 @@ class SurveyHeightWeightFragment : Fragment() {
         animator.start()
     }
 
-    //다음 페이지
+    // 다음 페이지
     private fun goToSurveyGoalWeightFragment() {
         val fragmentTransaction = requireActivity().supportFragmentManager.beginTransaction()
         fragmentTransaction.replace(R.id.survey_container, SurveyGoalWeightFragment())
@@ -139,7 +148,7 @@ class SurveyHeightWeightFragment : Fragment() {
         fragmentTransaction.commit()
     }
 
-    //이전 페이지
+    // 이전 페이지
     private fun goToSurveyYearFragment() {
         val fragmentTransaction = requireActivity().supportFragmentManager.beginTransaction()
         fragmentTransaction.replace(R.id.survey_container, SurveyYearFragment())

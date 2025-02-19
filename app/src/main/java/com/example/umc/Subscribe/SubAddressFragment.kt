@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.umc.R
 import com.example.umc.model.Address
 import com.example.umc.Main.MainActivity
+import com.example.umc.Subscribe.Repository.AddressRepository
 import com.example.umc.Subscribe.Retrofit.RetrofitClient
 import com.example.umc.Subscribe.SubscribeRequest.DeliveryAddressRequest
 import com.example.umc.UserApi.UserRepository
@@ -118,18 +119,21 @@ class SubAddressFragment : Fragment() {
                     // Retrofit을 사용한 POST 요청
                     CoroutineScope(Dispatchers.IO).launch {
                         try {
-                            // context가 null이 아니면 getDeliveryAddressApi를 호출하도록 처리
+                            val context = requireContext()
+                            val response = RetrofitClient.getDeliveryAddressApi(context)
+                                .addDeliveryAddress("Bearer $token", deliveryAddressRequest)
 
-                            // Fragment 내부에서 context가 null이 아니면 안전하게 사용 가능
-                            val context = requireContext()  // context가 null이 아닐 때만 호출됨
-                            val response = RetrofitClient.getDeliveryAddressApi(context).addDeliveryAddress("Bearer $token", deliveryAddressRequest)
+                            withContext(Dispatchers.Main) {
+                                if (response.isSuccessful && response.body() != null) {
+                                    val addressResponse = response.body()!!
 
+                                    // 🚨 여기서 `addressId`를 가져와서 저장
+                                    val newAddressId = addressResponse.success.addressId
+                                    AddressRepository.saveAddressId(context, newAddressId.toString())  // ✅ 저장
 
-
-                            if (response.isSuccessful && response.body() != null) {
-                                // 성공 시, UI 업데이트 (메인 스레드에서)
-                                withContext(Dispatchers.Main) {
                                     Toast.makeText(context, "배송지 추가 성공", Toast.LENGTH_SHORT).show()
+
+                                    // UI 초기화
                                     editTextName.text.clear()
                                     editTextPostcode.text.clear()
                                     editTextAddress.text.clear()
@@ -139,18 +143,20 @@ class SubAddressFragment : Fragment() {
                                     addAddressButton.text = "신규 배송지 추가"
                                     addAddressButton.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.Gray7))
                                     (activity as? MainActivity)?.showBottomBar()
-                                }
-                            } else {
-                                withContext(Dispatchers.Main) {
-                                    Toast.makeText(context, "배송지 추가 실패", Toast.LENGTH_SHORT).show()
+                                } else {
+                                    val errorBody = response.errorBody()?.string()
+                                    Log.e("API_ERROR", "배송지 추가 실패: $errorBody")
+                                    Toast.makeText(context, "배송지 추가 실패: $errorBody", Toast.LENGTH_LONG).show()
                                 }
                             }
                         } catch (e: Exception) {
                             withContext(Dispatchers.Main) {
-                                Toast.makeText(context, "네트워크 오류: ${e.message}", Toast.LENGTH_SHORT).show()
+                                Log.e("NETWORK_ERROR", "네트워크 오류: ${e.message}")
+                                Toast.makeText(context, "네트워크 오류: ${e.message}", Toast.LENGTH_LONG).show()
                             }
                         }
                     }
+
                 }
             }
         }

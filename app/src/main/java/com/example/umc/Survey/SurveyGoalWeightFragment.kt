@@ -17,6 +17,7 @@ import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import com.example.umc.R
 
 class SurveyGoalWeightFragment : Fragment() {
@@ -25,6 +26,8 @@ class SurveyGoalWeightFragment : Fragment() {
     private lateinit var progressBar: ProgressBar
     private lateinit var goalWeightEditText: EditText
     private var progressValue = 80  // 이전 단계에서 증가된 값 유지
+
+    private val viewModel: SurveyViewModel by activityViewModels() // ✅ ViewModel 연동
 
     @SuppressLint("MissingInflatedId")
     override fun onCreateView(
@@ -62,22 +65,19 @@ class SurveyGoalWeightFragment : Fragment() {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                if (s?.isNotEmpty() == true) {
-                    goalWeightEditText.setTextColor(Color.parseColor("#A4A4A4")) // 입력 시 글씨 색 변경
-                    nextButton.isEnabled = true
-                    nextButton.setBackgroundColor(Color.parseColor("#FF7300"))
-                } else {
-                    goalWeightEditText.setTextColor(Color.parseColor("#CDCDCD")) // 기본 색상
-                    nextButton.isEnabled = false
-                    nextButton.setBackgroundColor(Color.parseColor("#CDCDCD"))
-                }
+                validateInput() // 입력값이 변경될 때마다 검사
             }
 
-            override fun afterTextChanged(s: Editable?) {}
+            override fun afterTextChanged(s: Editable?) {
+                s?.let {
+                    goalWeightEditText.setTextColor(Color.parseColor("#A4A4A4")) // 입력 시 글씨 색 변경
+                }
+            }
         })
 
         // "다음 버튼" 클릭 시 ProgressBar 증가 및 SurveyBmiFragment로 이동
         nextButton.setOnClickListener {
+            saveGoalWeightToViewModel() // ✅ 목표 체중을 ViewModel에 저장 (추가된 코드)
             updateProgressBar()
             goToSurveyBmiFragment()
         }
@@ -88,6 +88,24 @@ class SurveyGoalWeightFragment : Fragment() {
         }
 
         return view
+    }
+
+    // ✅ 목표 체중을 ViewModel에 저장하는 코드 (추가된 부분)
+    private fun saveGoalWeightToViewModel() {
+        val goalWeight = goalWeightEditText.text.toString().toIntOrNull() ?: return
+        viewModel.updateSurveyData(viewModel.surveyData.value!!.copy(targetWeight = goalWeight))
+    }
+
+    private fun validateInput() {
+        val goalWeightInput = goalWeightEditText.text.toString().trim()
+
+        if (goalWeightInput.isNotEmpty()) {
+            nextButton.isEnabled = true
+            nextButton.setBackgroundColor(Color.parseColor("#FF7300"))
+        } else {
+            nextButton.isEnabled = false
+            nextButton.setBackgroundColor(Color.parseColor("#CDCDCD"))
+        }
     }
 
     private fun updateProgressBar() {
