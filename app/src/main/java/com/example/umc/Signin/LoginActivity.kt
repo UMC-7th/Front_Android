@@ -193,43 +193,51 @@ class LoginActivity : AppCompatActivity() {
                         Toast.makeText(this@LoginActivity, "토큰이 없습니다.", Toast.LENGTH_SHORT).show()
                     }
                 } else {
-                    Toast.makeText(
-                        this@LoginActivity,
-                        "로그인 실패: ${response.errorBody()?.string()}",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    Toast.makeText(this@LoginActivity, "로그인 실패: ${response.errorBody()?.string()}", Toast.LENGTH_SHORT).show()
                 }
             }
 
             override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
                 Log.e("Login", "Network Error", t)
-                Toast.makeText(this@LoginActivity, "네트워크 오류: ${t.message}", Toast.LENGTH_SHORT)
-                    .show()
+                Toast.makeText(this@LoginActivity, "네트워크 오류: ${t.message}", Toast.LENGTH_SHORT).show()
             }
         })
     }
 
 
-//    //원래 코드
+    //원래 코드
 //    private fun performLogin(email: String, password: String) {
+//        // 로그인 요청 보내기
 //        userRepository.login(email, password).enqueue(object : retrofit2.Callback<LoginResponse> {
 //            override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
+//
 //                Log.d("Login", "Response Code: ${response.code()}")
+//                Log.d("Login", "Response Body: ${response.body()}")
+//                Log.d("Login", "Error Body: ${response.errorBody()?.string()}")
 //
 //                if (response.isSuccessful) {
+//                    Toast.makeText(this@LoginActivity, "로그인 성공!", Toast.LENGTH_SHORT).show()
+//
+//                    // 로그인 성공 시, accessToken을 SharedPreferences에 저장
 //                    val accessToken = response.body()?.success?.accessToken
 //
 //                    if (accessToken != null) {
+//                        // SharedPreferences에 토큰 저장
 //                        UserRepository.saveAuthToken(this@LoginActivity, accessToken)
-//                        Log.d("LoginAuthToken", "토큰이 저장되었습니다: $accessToken")
 //
-//                        navigateToMain(accessToken) //코드가 중복된 같아서 이렇게 바꿨습니다.
+//                        // 로그인 후 MainActivity로 이동
+//                        val intent = Intent(this@LoginActivity, MainActivity::class.java)
+//                        intent.putExtra("ACCESS_TOKEN", accessToken) // accessToken을 Intent에 담아서 전달
+//                        startActivity(intent)
+//                        finish() // LoginActivity 종료 (뒤로 가기 방지)
 //                    } else {
+//                        // accessToken이 없으면 적절한 처리를 추가
 //                        Toast.makeText(this@LoginActivity, "토큰이 없습니다.", Toast.LENGTH_SHORT).show()
 //                    }
 //                } else {
 //                    Toast.makeText(this@LoginActivity, "로그인 실패: ${response.errorBody()?.string()}", Toast.LENGTH_SHORT).show()
 //                }
+//
 //            }
 //
 //            override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
@@ -274,5 +282,7 @@ class LoginActivity : AppCompatActivity() {
         startActivity(intent)
         finish()
     }
+
+
 
 }
