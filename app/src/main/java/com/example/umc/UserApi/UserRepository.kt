@@ -7,6 +7,7 @@ import com.example.umc.UserApi.Request.LoginRequest
 import com.example.umc.UserApi.Request.OtpRequest
 import com.example.umc.UserApi.Request.OtpValidationRequest
 import com.example.umc.UserApi.Request.SignUpRequest
+import com.example.umc.UserApi.Request.UpdateUserNameRequest
 import com.example.umc.UserApi.Request.UpdateUserRequest
 import com.example.umc.UserApi.Response.DiagnosisResponse
 import com.example.umc.UserApi.Response.HealthScoreResponse
@@ -15,6 +16,7 @@ import com.example.umc.UserApi.Response.MypageGoalResponse
 import com.example.umc.UserApi.Response.OtpResponse
 import com.example.umc.UserApi.Response.OtpValidationResponse
 import com.example.umc.UserApi.Response.SignUpResponse
+import com.example.umc.UserApi.Response.UpdateNicknameResponse
 import com.example.umc.UserApi.Response.UserProfileResponse
 import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -192,9 +194,14 @@ class UserRepository {
             return null
         }
 
+        Log.d("UserRepository", "토큰 전달 확인: Bearer $token")
+
         return try {
+            Log.d("UserRepository", "진단 API 호출 시작")
             val response = RetrofitClient.diagnosisApi.getDiagnosisResult("Bearer $token")
-            if (response.isSuccessful && response.body() != null) {
+
+            if (response.isSuccessful) {
+                Log.d("UserRepository", "서버 응답 성공: ${response.body()}")
                 response.body()
             } else {
                 Log.e("UserRepository", "서버 응답 실패: ${response.code()}")
@@ -202,10 +209,11 @@ class UserRepository {
                 null
             }
         } catch (e: Exception) {
-            Log.e("UserRepository", "네트워크 오류 발생: ${e.message}")
+            Log.e("UserRepository", "네트워크 오류 발생: ${e.message}", e)
             null
         }
     }
+
 
     suspend fun getMypageGoal(context: Context): MypageGoalResponse? {
         val token = getAuthToken(context)
@@ -270,6 +278,29 @@ class UserRepository {
     }
 
 
+    // UserRepository
+    fun updateUserName(userId: Int, newName: String, callback: (Boolean, String) -> Unit) {
+        val request = UpdateUserNameRequest(userId, newName)
+
+        api.updateUserName(request).enqueue(object : Callback<UpdateNicknameResponse> {
+            override fun onResponse(call: Call<UpdateNicknameResponse>, response: Response<UpdateNicknameResponse>) {
+                if (response.isSuccessful) {
+                    val result = response.body()
+                    if (result != null) {
+                        callback(true, "이름 수정 성공")
+                    } else {
+                        callback(false, "응답 없음")
+                    }
+                } else {
+                    callback(false, "서버 오류: ${response.code()}")
+                }
+            }
+
+            override fun onFailure(call: Call<UpdateNicknameResponse>, t: Throwable) {
+                callback(false, "네트워크 오류: ${t.message}")
+            }
+        })
+    }
 
 
 
