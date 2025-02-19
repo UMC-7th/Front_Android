@@ -14,12 +14,12 @@ data class GetSubMealsListSuccess(
     val food: String,
     val material: String,
     val mealId: Int,
-    val mealSubs: List<MealSub>,
+    val mealSubs: List<GetSubMealsListMealSub>,
     val price: Int,
     val recipe: String
 )
 
-data class MealSub(
+data class GetSubMealsListMealSub(
     val categoryId: Int,
     val mealDate: String,
     val mealId: Int,
