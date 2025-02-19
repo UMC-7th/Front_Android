@@ -7,15 +7,21 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.umc.Main.MainActivity
 import com.example.umc.R
+import com.example.umc.Subscribe.Repository.MealRepository
 import com.example.umc.databinding.FragmentSubscriptionHistoryBinding
+import kotlinx.coroutines.launch
 
 class SubscriptionHistoryFragment : Fragment() {
     private var _binding: FragmentSubscriptionHistoryBinding? = null
     private val binding get() = _binding!!
     private lateinit var adapter: OrderHistoryAdapter
+
+    private val orderGroups = mutableListOf<OrderGroup>()
+    private val mealRepository by lazy { MealRepository(requireContext()) }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -31,6 +37,7 @@ class SubscriptionHistoryFragment : Fragment() {
         setupRecyclerView()
         setupSearchBar()
         loadOrderHistory()
+
     }
 
     private fun setupRecyclerView() {
@@ -63,7 +70,11 @@ class SubscriptionHistoryFragment : Fragment() {
     }
     private fun setupSearchBar() {
         binding.searchBar.setOnSearchClickListener { searchText ->
-            filterOrders(searchText)
+            if (searchText.isNotEmpty()) {
+                filterOrders(searchText)   // searchText를 loadOrderHistory에 전달
+            } else {
+                loadOrderHistory()  // 검색 텍스트가 비어 있으면 전체 주문 내역을 다시 로드
+            }
         }
     }
 
@@ -82,36 +93,76 @@ class SubscriptionHistoryFragment : Fragment() {
         adapter.submitList(filteredList)
     }
 
-    private fun loadOrderHistory() {
-        val sampleData = listOf(
-            OrderGroup(
-                orderDate = "2025.01.01 주문내역",
-                orderItems = listOf(
-                    OrderItem(
-                        deliveryDate = "1/22 (수)",
-                        deliveryStatus = "배송 완료",
-                        deliveryLocation = "배송장소 (아침, 점심)",
-                        menuName = "다이어트 구독 식단",
-                        breakfastMenu = "아침 - 하루 시작 포케 (420kcal)",
-                        lunchMenu = "점심 - 고등어 조림 한상/비조림 (830kcal)",
-                        imageUrl = "sample_image_url",
-                        isReviewEnabled = true
-                    ),
-                    OrderItem(
-                        deliveryDate = "1/24 (금)",
-                        deliveryStatus = "도착 예정",
-                        deliveryLocation = "배송장소 (아침, 점심)",
-                        menuName = "다이어트 구독 식단",
-                        breakfastMenu = "아침 - 하루 시작 포케 (420kcal)",
-                        lunchMenu = "점심 - 고등어 조림 한상/비조림 (830kcal)",
-                        imageUrl = "sample_image_url",
-                        isReviewEnabled = false
+    private fun loadOrderHistory(searchDate: String? = null) {
+        if (searchDate != null && searchDate.isNotEmpty()) {
+            // 날짜를 기반으로 API 호출
+            fetchOrderHistoryFromApi(searchDate)
+        } else {
+            // 검색 없이 전체 주문 내역 표시
+            // 샘플 데이터 로드 (예시 데이터 추가)
+            val sampleData = listOf(
+                OrderGroup(
+                    orderDate = "2025.01.01 주문내역",
+                    orderItems = listOf(
+                        OrderItem(
+                            deliveryDate = "1/22 (수)",
+                            deliveryStatus = "배송 완료",
+                            deliveryLocation = "배송장소 (아침, 점심)",
+                            menuName = "다이어트 구독 식단",
+                            breakfastMenu = "아침 - 하루 시작 포케 (420kcal)",
+                            lunchMenu = "점심 - 고등어 조림 한상/비조림 (830kcal)",
+                            imageUrl = "sample_image_url",
+                            isReviewEnabled = true
+                        ),
+                        OrderItem(
+                            deliveryDate = "1/24 (금)",
+                            deliveryStatus = "도착 예정",
+                            deliveryLocation = "배송장소 (아침, 점심)",
+                            menuName = "다이어트 구독 식단",
+                            breakfastMenu = "아침 - 하루 시작 포케 (420kcal)",
+                            lunchMenu = "점심 - 고등어 조림 한상/비조림 (830kcal)",
+                            imageUrl = "sample_image_url",
+                            isReviewEnabled = false
+                        )
                     )
                 )
             )
-        )
-
-        adapter.submitList(sampleData)
+            orderGroups.clear()
+            orderGroups.addAll(sampleData)  // 샘플 데이터를 orderGroups에 추가
+            adapter.submitList(sampleData)  // 샘플 데이터를 RecyclerView에 제출
+        }
+    }
+    private fun fetchOrderHistoryFromApi(date: String) {
+        lifecycleScope.launch {
+            try {
+                val result = mealRepository.getMealsByDate(date)
+                result.onSuccess { mealResponse ->
+                    // API에서 받은 데이터를 RecyclerView에 업데이트
+                    val orderGroups = mealResponse.success.map { mealData ->
+                        OrderGroup(
+                            orderDate = mealData.orderAt,
+                            orderItems = listOf(
+                                OrderItem(
+                                    deliveryDate = mealData.mealSub.mealDate,
+                                    deliveryStatus = "상태",  // 실제 상태로 변경 필요
+                                    deliveryLocation = "위치",  // 실제 위치로 변경 필요
+                                    menuName = mealData.mealSub.category.name,
+                                    breakfastMenu = mealData.mealSub.meal.food,
+                                    lunchMenu = "",  // 점심 메뉴가 필요하다면 추가
+                                    imageUrl = "",  // 실제 이미지 URL을 사용
+                                    isReviewEnabled = false // 리뷰 가능 여부 추가
+                                )
+                            )
+                        )
+                    }
+                    adapter.submitList(orderGroups)
+                }.onFailure {
+                    Toast.makeText(requireContext(), "식단 정보를 불러오는 데 실패했습니다.", Toast.LENGTH_SHORT).show()
+                }
+            } catch (e: Exception) {
+                Toast.makeText(requireContext(), "네트워크 오류: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
     override fun onDestroyView() {

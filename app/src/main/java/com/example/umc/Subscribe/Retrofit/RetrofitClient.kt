@@ -2,6 +2,7 @@ package com.example.umc.Subscribe.Retrofit
 
 import android.content.Context
 import com.example.umc.Subscribe.SubcribeApi.DeliveryAddressApi
+import com.example.umc.Subscribe.SubscribeApi.MealApi
 import com.example.umc.UserApi.AuthInterceptor
 import com.example.umc.model.service.MealApiService
 import com.example.umc.UserApi.UserRepository
@@ -46,5 +47,8 @@ object RetrofitClient {
             .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
+    }
+    fun getMealApi(context: Context): MealApi {
+        return getRetrofitInstance(context).create(MealApi::class.java)
     }
 }
