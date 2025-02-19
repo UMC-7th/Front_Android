@@ -2,6 +2,7 @@ package com.example.umc.UserApi
 
 import ImageProfileApi
 import android.content.Context
+import com.example.umc.Subscribe.SubcribeApi.SubMealService
 import com.example.umc.UserApi.APi.DiagnosisApi
 import com.example.umc.UserApi.APi.GetUserApi
 import com.example.umc.UserApi.APi.HealthScoreApi
@@ -140,5 +141,13 @@ object RetrofitClient {
             .client(okHttpClient)
             .build()
             .create(ImageProfileApi::class.java)
+    }
+
+    val subMealService: SubMealService by lazy {
+        Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(SubMealService::class.java)
     }
 }

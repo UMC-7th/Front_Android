@@ -6,12 +6,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import com.example.umc.R
 
 class HorizontalRecyclerViewAdapter(
     private val itemList: List<String>,
-    private val fragment: FoodPriceReFragment // 현재 Fragment를 전달
+    private val fragment: Fragment // 'FoodPriceReFragment' 대신 'Fragment'를 받음
 ) : RecyclerView.Adapter<HorizontalRecyclerViewAdapter.ViewHolder>() {
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
