@@ -25,6 +25,7 @@ class SurveyYearFragment : Fragment() {
     private lateinit var progressBar: ProgressBar
     private lateinit var yearEditText: EditText
     private var progressValue = 60  // 이전 단계에서 증가된 값 유지
+    private val viewModel: SurveyViewModel by activityViewModels() // ✅ ViewModel 연동
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -51,7 +52,6 @@ class SurveyYearFragment : Fragment() {
         yearEditText = view.findViewById(R.id.year_editText)
         nextButton = view.findViewById(R.id.next_button)
         previousButton = view.findViewById(R.id.previous_button)
-
 
         // 초기 상태에서 "다음" 버튼 비활성화
         nextButton.isEnabled = false
@@ -85,6 +85,7 @@ class SurveyYearFragment : Fragment() {
 
         // "다음 버튼" 클릭 시 ProgressBar 증가 및 SurveyHeightWeightFragment로 이동
         nextButton.setOnClickListener {
+            saveBirthYearToViewModel() // ✅ 출생 연도를 ViewModel에 저장
             updateProgressBar()
             goToSurveyHeightWeightFragment()
         }
@@ -95,6 +96,12 @@ class SurveyYearFragment : Fragment() {
         }
 
         return view
+    }
+
+    // ✅ 출생 연도를 ViewModel에 저장하는 메서드
+    private fun saveBirthYearToViewModel() {
+        val birthYear = yearEditText.text.toString().toIntOrNull() ?: return
+        viewModel.updateSurveyData(viewModel.surveyData.value!!.copy(birthYear = birthYear))
     }
 
     private fun updateProgressBar() {
