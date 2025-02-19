@@ -12,6 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import com.example.umc.R
 import com.example.umc.databinding.FragmentSurveyGoalBinding
 import com.google.android.material.button.MaterialButton
@@ -19,9 +20,10 @@ import com.google.android.material.button.MaterialButton
 class SurveyGoalFragment : Fragment() {
     private var _binding: FragmentSurveyGoalBinding? = null
     private val binding get() = _binding!!
-    private val selectedButtons = mutableSetOf<MaterialButton>()
-    private var progressValue = 0
     private var currentSelectedButton: MaterialButton? = null
+    private var progressValue = 0
+
+    private val viewModel: SurveyViewModel by activityViewModels() // ✅ ViewModel 연동
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -42,7 +44,6 @@ class SurveyGoalFragment : Fragment() {
     }
 
     private fun setupTextColor() {
-        // "이루고 싶은 목표를 설정해주세요" 텍스트에서 "목표를" 부분만 강조
         val fullText = binding.textView.text.toString()
         val targetText = "목표를"
         val startIndex = fullText.indexOf(targetText)
@@ -80,14 +81,12 @@ class SurveyGoalFragment : Fragment() {
     }
 
     private fun handleButtonSelection(selectedButton: MaterialButton) {
-        // 이전에 선택된 버튼이 있다면 선택 해제
         currentSelectedButton?.let {
             it.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#F0F0F0"))
             it.setTextColor(Color.parseColor("#9A9A9A"))
             it.strokeColor = ColorStateList.valueOf(Color.parseColor("#F0F0F0"))
         }
 
-        // 새로운 버튼 선택
         if (currentSelectedButton != selectedButton) {
             selectedButton.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#FFEAD9"))
             selectedButton.setTextColor(Color.parseColor("#FF7300"))
@@ -95,8 +94,11 @@ class SurveyGoalFragment : Fragment() {
             currentSelectedButton = selectedButton
             binding.nextButton.isEnabled = true
             binding.nextButton.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#FF7300"))
+
+            // ✅ ViewModel에 선택한 목표(goal) 저장
+            viewModel.updateSurveyData(viewModel.surveyData.value!!.copy(goal = selectedButton.text.toString()))
+
         } else {
-            // 같은 버튼을 다시 클릭한 경우 선택 해제
             currentSelectedButton = null
             binding.nextButton.isEnabled = false
             binding.nextButton.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#CDCDCD"))
@@ -129,8 +131,8 @@ class SurveyGoalFragment : Fragment() {
         animator.start()
     }
 
+    // 다음 버튼 클릭 시
     private fun goToSurveyMealFragment() {
-        // survey_container를 사용하도록 변경
         val fragmentTransaction = requireActivity().supportFragmentManager.beginTransaction()
         fragmentTransaction.replace(R.id.survey_container, SurveyMealFragment())
         fragmentTransaction.addToBackStack(null)

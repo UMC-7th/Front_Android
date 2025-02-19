@@ -14,6 +14,7 @@ import android.widget.Button
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import com.example.umc.R
 import com.google.android.material.button.MaterialButton
 
@@ -23,6 +24,8 @@ class SurveyDiseaseFragment : Fragment() {
     private lateinit var progressBar: ProgressBar
     private var progressValue = 40  // SurveyAllergyFragment에서 증가된 값 유지
     private var selectedButton: MaterialButton? = null  // 하나만 선택 가능
+
+    private val viewModel: SurveyViewModel by activityViewModels() // ✅ ViewModel 연동
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -80,42 +83,58 @@ class SurveyDiseaseFragment : Fragment() {
     // 하나의 버튼만 선택 가능
     private fun selectSingleButton(button: MaterialButton) {
         selectedButton?.let {
-            it.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#F0F0F0")) // 기본 배경
-            it.setTextColor(Color.parseColor("#9A9A9A")) // 기본 글씨 색
-            it.strokeColor = ColorStateList.valueOf(Color.parseColor("#F0F0F0")) // 기본 테두리
+            it.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#F0F0F0"))
+            it.setTextColor(Color.parseColor("#9A9A9A"))
+            it.strokeColor = ColorStateList.valueOf(Color.parseColor("#F0F0F0"))
         }
 
         if (selectedButton == button) {
-            selectedButton = null // 다시 클릭하면 선택 해제
+            selectedButton = null
             nextButton.isEnabled = false
             nextButton.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#CDCDCD"))
         } else {
             selectedButton = button
-            button.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#FFEAD9")) // 선택된 배경
-            button.setTextColor(Color.parseColor("#FF7300")) // 선택된 글씨 색
-            button.strokeColor = ColorStateList.valueOf(Color.parseColor("#FF7300")) // 선택된 테두리
+            button.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#FFEAD9"))
+            button.setTextColor(Color.parseColor("#FF7300"))
+            button.strokeColor = ColorStateList.valueOf(Color.parseColor("#FF7300"))
 
             if (button.id == R.id.yes_button) {
-                // "있음" 선택 시 지병 선택 창 띄우기
-                val diseaseBottomSheet = SurveyDiseaseBottomSheetFragment { isSelected ->
-                    if (isSelected) {
+                // ✅ "있음" 선택 시 ViewModel에 저장
+                viewModel.updateSurveyData(viewModel.surveyData.value!!.copy(healthCondition = "있음"))
+
+                val diseaseBottomSheet = SurveyDiseaseBottomSheetFragment { selectedDiseases ->
+                    // ✅ 반환된 데이터가 List<String>인지 확인
+                    if (selectedDiseases.isNotEmpty()) {
                         nextButton.isEnabled = true
                         nextButton.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#FF7300"))
+
+                        // ✅ selectedDiseases를 String 리스트로 변환하여 저장
+                        viewModel.updateSurveyData(
+                            viewModel.surveyData.value!!.copy(
+                                healthConditionDetails = selectedDiseases.joinToString(", ")
+                            )
+                        )
                     }
                 }
+
                 diseaseBottomSheet.show(parentFragmentManager, "disease_bottom_sheet")
 
-                // "있음" 선택 시 다음 버튼 비활성화 유지
                 nextButton.isEnabled = false
                 nextButton.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#CDCDCD"))
             } else {
-                // "없음" 선택 시 바로 다음 버튼 활성화
+                // ✅ "없음" 선택 시 ViewModel에 저장
+                viewModel.updateSurveyData(
+                    viewModel.surveyData.value!!.copy(healthCondition = "없음", healthConditionDetails = null)
+                )
                 nextButton.isEnabled = true
                 nextButton.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#FF7300"))
             }
+
+
         }
     }
 
+    // 이전 버튼 클릭 시
     private fun goToSurveyAllergyFragment() {
         val fragmentTransaction = requireActivity().supportFragmentManager.beginTransaction()
         fragmentTransaction.replace(R.id.survey_container, SurveyAllergyFragment())
@@ -123,6 +142,7 @@ class SurveyDiseaseFragment : Fragment() {
         fragmentTransaction.commit()
     }
 
+    // 다음 버튼 클릭 시
     private fun goToSurveyPeopleFragment() {
         val fragmentTransaction = requireActivity().supportFragmentManager.beginTransaction()
         fragmentTransaction.replace(R.id.survey_container, SurveyPeopleFragment())
