@@ -6,6 +6,7 @@ import android.os.Handler
 import android.os.Looper
 import androidx.activity.ComponentActivity
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import com.example.umc.Main.MainActivity
 import com.example.umc.Onboarding.OnboardingMainActivity
 
 class SplashActivity : ComponentActivity() {
@@ -23,7 +24,7 @@ class SplashActivity : ComponentActivity() {
         // 로딩 작업을 시뮬레이션
         Handler(Looper.getMainLooper()).postDelayed({
             keepSplashOnScreen = false
-            startActivity(Intent(this, OnboardingMainActivity::class.java))
+            startActivity(Intent(this, MainActivity::class.java))
             finish()
         }, 3000) // 3초 딜레이
     }
