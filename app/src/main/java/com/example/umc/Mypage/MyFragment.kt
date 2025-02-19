@@ -13,6 +13,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import android.widget.Button
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.example.umc.Main.MainActivity
@@ -30,6 +31,12 @@ class MyFragment : Fragment() {
     private val binding get() = _binding!!
     private val userRepository = UserRepository()
 
+    private lateinit var diagnosis1: TextView
+    private lateinit var diagnosis2: TextView
+    private lateinit var advice1: TextView
+    private lateinit var advice2: TextView
+
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -41,6 +48,12 @@ class MyFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        diagnosis1 = binding.diagnosis1
+        diagnosis2 = binding.diagnosis2
+        advice1 = binding.advice1
+        advice2 = binding.advice2
+
         initializeViews()
         setupListeners()
         fetchHealthScore()
@@ -52,15 +65,30 @@ class MyFragment : Fragment() {
         lifecycleScope.launch {
             try {
                 val response = userRepository.getDiagnosisResult(requireContext())
-                response?.let { diagnosisResponse ->
-                    updateAiDiagnosisInfo(diagnosisResponse.success)
+                if (response == null) {
+                    Log.e("MyFragment", "서버 응답이 null입니다.")
+                    binding.tvAiDiagnosisDiet.text = "서버 응답이 없습니다."
+                    binding.tvAiDiagnosisHealth.text = "서버 응답이 없습니다."
+                    return@launch
+                }
+
+                // 응답에서 성공적인 데이터가 있을 경우, UI 업데이트
+                if (response.success != null) {
+                    updateAiDiagnosisInfo(response.success)
+                } else {
+                    Log.e("MyFragment", "진단 결과가 없습니다.")
+                    binding.tvAiDiagnosisDiet.text = "진단 결과가 없습니다."
+                    binding.tvAiDiagnosisHealth.text = "조언 정보가 없습니다."
                 }
             } catch (e: Exception) {
-                Log.e("MyFragment", "AI 진단 조회 실패: ${e.message}")
-                // 에러 처리 필요시 여기에 추가
+                Log.e("MyFragment", "AI 진단 조회 실패: ${e.message}", e)
+                binding.tvAiDiagnosisDiet.text = "AI 진단 조회 실패"
+                binding.tvAiDiagnosisHealth.text = "AI 진단 조회 실패"
             }
         }
     }
+
+
     private fun fetchMypageGoal() {
         lifecycleScope.launch {
             try {
@@ -97,20 +125,42 @@ class MyFragment : Fragment() {
     }
     private fun updateAiDiagnosisInfo(data: SuccessData?) {
         data?.let {
+            Log.d("MyFragment", "Diagnosis: ${it.diagnosis}")  // diagnosis 리스트의 내용을 확인
+            Log.d("MyFragment", "Advice: ${it.advice}")  // advice 리스트의 내용을 확인
+
             binding.apply {
-                // 진단 리스트를 보여주기 위해 각 항목을 TextView에 설정
+                // 진단 내용 출력: diagnosis1, diagnosis2에 각각 두 항목 표시
                 it.diagnosis?.let { diagnosis ->
-                    // 진단 내용 출력 (여러 항목을 출력할 수 있게 Join 처리)
-                    tvAiDiagnosisDiet.text = diagnosis.joinToString("\n")
+                    if (diagnosis.size >= 2) {
+                        diagnosis1.text = diagnosis[0]  // 첫 번째 진단 항목
+                        diagnosis2.text = diagnosis[1]  // 두 번째 진단 항목
+                    } else {
+                        tvAiDiagnosisDiet.text = "진단 정보 없음"
+                    }
+                } ?: run {
+                    tvAiDiagnosisDiet.text = "진단 정보 없음"  // diagnosis가 null인 경우 처리
                 }
 
+                // 조언 내용 출력: advice1, advice2에 각각 두 항목 표시
                 it.advice?.let { advice ->
-                    // 조언 내용 출력 (여러 항목을 출력할 수 있게 Join 처리)
-                    tvAiDiagnosisHealth.text = advice.joinToString("\n")
+                    if (advice.size >= 2) {
+                        advice1.text = advice[0]  // 첫 번째 조언 항목
+                        advice2.text = advice[1]  // 두 번째 조언 항목
+                    } else {
+                        tvAiDiagnosisHealth.text = "조언 정보 없음"
+                    }
+                } ?: run {
+                    tvAiDiagnosisHealth.text = "조언 정보 없음"  // advice가 null인 경우 처리
                 }
             }
+        } ?: run {
+            // SuccessData가 null일 경우 처리
+            binding.tvAiDiagnosisDiet.text = "진단 데이터 불러오기 실패"
+            binding.tvAiDiagnosisHealth.text = "조언 데이터 불러오기 실패"
         }
     }
+
+
     private fun updateHealthInfo(data: HealthScoreData) {
         binding.apply {
             // 건강 점수 업데이트
