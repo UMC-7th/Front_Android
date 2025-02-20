@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -18,13 +19,19 @@ class PriceDetailFragment : Fragment() {
     private var _binding: FragmentPriceDetailBinding? = null
     private val binding get() = _binding!!
     private var categoryName: String? = null
-    private val dateList = arrayOf("오늘", "내일", "모레")
+    private val dateList = arrayOf("오늘")
+
+    // ViewModel 초기화
+    private lateinit var priceDetailViewModel: PriceDetailViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
             categoryName = it.getString("category_name")
         }
+
+        // ViewModel 초기화
+        priceDetailViewModel = ViewModelProvider(this).get(PriceDetailViewModel::class.java)
     }
 
     override fun onCreateView(
@@ -45,16 +52,11 @@ class PriceDetailFragment : Fragment() {
         horizontalRecyclerView.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
 
-        val priceList = listOf(
-            FoodItem("바나나", "26,828원", "1kg", ""),
-            FoodItem("딸기", "12,500원", "500g", ""),
-            FoodItem("토마토", "9,800원", "1kg", ""),
-            FoodItem("샤인머스켓", "38,000원", "500g", ""),
-            FoodItem("귤", "16,000원", "1kg", ""),
-            FoodItem("수박", "22,000원", "1개", "")
-        )
-
-        horizontalRecyclerView.adapter = HorizontalPriceDetailAdapter(priceList, this@PriceDetailFragment)
+        // ViewModel에서 제공하는 데이터를 관찰하여 가로 RecyclerView에 반영
+        priceDetailViewModel.varietyMaterialList.observe(viewLifecycleOwner, { materialList ->
+            // materialList가 갱신될 때마다 어댑터에 데이터를 설정
+            horizontalRecyclerView.adapter = HorizontalPriceDetailAdapter(materialList, this@PriceDetailFragment)
+        })
 
         // 스크롤 리스너 설정
         horizontalRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
@@ -70,17 +72,16 @@ class PriceDetailFragment : Fragment() {
         // 세로 RecyclerView 설정
         val recyclerView: RecyclerView = binding.recyclerView
         recyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
-        recyclerView.adapter = PriceDetailAdapter(priceList, this@PriceDetailFragment)
 
-        // 날짜 선택 버튼 설정 (예: TextView로 날짜 선택)
-        binding.dateSelector.setOnClickListener {
-            AlertDialog.Builder(requireContext())
-                .setTitle("날짜 선택")
-                .setItems(dateList) { _, which ->
-                    binding.tvToday.text = dateList[which] // 선택된 날짜 표시
-                }
-                .show()
+        // Variety 이름을 ViewModel에 전달하여 데이터 로드
+        categoryName?.let {
+            priceDetailViewModel.fetchVarietyMaterialList(it) // 서버에서 데이터를 불러옴
         }
+
+        // 세로 RecyclerView 어댑터 설정
+        priceDetailViewModel.varietyMaterialList.observe(viewLifecycleOwner, { materialList ->
+            recyclerView.adapter = PriceDetailAdapter(materialList, this@PriceDetailFragment)
+        })
     }
 
     private fun updateIndicator(recyclerView: RecyclerView, indicator: ProgressBar) {
@@ -100,7 +101,7 @@ class PriceDetailFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        (activity as? MainActivity)?.showTitle(categoryName ?: "과일류", true)
+        (activity as? MainActivity)?.showTitle(categoryName ?: "Variety", true)
     }
 
     override fun onDestroyView() {
