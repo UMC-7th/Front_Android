@@ -23,8 +23,6 @@ class DietDetailViewModel(application: Application) : AndroidViewModel(applicati
     private val _mealDetail = MutableLiveData<GetMealsDetailSuccess>()
     val mealDetail: LiveData<GetMealsDetailSuccess> get() = _mealDetail
 
-
-
     private val _isLiked = MutableLiveData<Boolean>()
     val isLiked: LiveData<Boolean> get() = _isLiked
 
@@ -34,13 +32,15 @@ class DietDetailViewModel(application: Application) : AndroidViewModel(applicati
     private val _isFavorited = MutableLiveData<Boolean>()
     val isFavorited: LiveData<Boolean> get() = _isFavorited
 
+    private val _isCompleted = MutableLiveData<Boolean>()
+    val isCompleted: LiveData<Boolean> get() = _isCompleted
+
     fun fetchMealDetail(mealId: Int, token: String) {
         viewModelScope.launch {
             try {
                 val response = RetrofitClient.mealApiService.getMealsDetail(mealId, "Bearer $token")
                 if (response.isSuccessful && response.body() != null) {
                     _mealDetail.value = response.body()?.success
-
                 } else {
                     Log.e("MealLogging", "API 요청 실패: ${response.errorBody()?.string()}")
                 }
@@ -53,15 +53,11 @@ class DietDetailViewModel(application: Application) : AndroidViewModel(applicati
     fun addToPreference(request: PatchPreferenceRequest, token: String) {
         viewModelScope.launch {
             try {
-                val token = getAuthToken()
-                if (token.isEmpty()) {
-                    Log.e("MealLogging", "토큰이 없습니다..")
-                    return@launch
-                }
-
                 val response = RetrofitClient.mealApiService.patchPreferenceMeal(request, "Bearer $token")
-                if (!response.isSuccessful) {
-                    Log.e("MealLogging", "선호도 업데이트 실패: ${response.errorBody()?.string()}")
+                if (response.isSuccessful) {
+                    _isLiked.value = true
+                } else {
+                    Log.e("MealLogging", "API 요청 실패: ${response.errorBody()?.string()}")
                 }
             } catch (e: Exception) {
                 Log.e("MealLogging", "오류 발생: ${e.message}")
@@ -69,17 +65,14 @@ class DietDetailViewModel(application: Application) : AndroidViewModel(applicati
         }
     }
 
-    fun addToDislike(request: PatchMealsDislikeRequest, token: String){
+    fun addToDislike(request: PatchMealsDislikeRequest, token: String) {
         viewModelScope.launch {
             try {
-                val token = getAuthToken()
-                if (token.isEmpty()) {
-                    Log.e("MealLogging", "토큰이 없습니다..")
-                    return@launch
-                }
                 val response = RetrofitClient.mealApiService.patchMealsDislike(request, "Bearer $token")
-                if (!response.isSuccessful) {
-                    Log.e("MealLogging", "싫어요 실패: ${response.errorBody()?.string()}")
+                if (response.isSuccessful) {
+                    _isDisliked.value = true
+                } else {
+                    Log.e("MealLogging", "API 요청 실패: ${response.errorBody()?.string()}")
                 }
             } catch (e: Exception) {
                 Log.e("MealLogging", "오류 발생: ${e.message}")
@@ -87,17 +80,14 @@ class DietDetailViewModel(application: Application) : AndroidViewModel(applicati
         }
     }
 
-    fun deleteDislike(request: PatchMealsDislikeDeleteRequest, token: String){
+    fun deleteDislike(request: PatchMealsDislikeDeleteRequest, token: String) {
         viewModelScope.launch {
             try {
-                val token = getAuthToken()
-                if (token.isEmpty()) {
-                    Log.e("MealLogging", "토큰이 없습니다..")
-                    return@launch
-                }
                 val response = RetrofitClient.mealApiService.patchMealsDislikeDelete(request, "Bearer $token")
-                if (!response.isSuccessful) {
-                    Log.e("MealLogging", "싫어요 취소 실패: ${response.errorBody()?.string()}")
+                if (response.isSuccessful) {
+                    _isDisliked.value = false
+                } else {
+                    Log.e("MealLogging", "API 요청 실패: ${response.errorBody()?.string()}")
                 }
             } catch (e: Exception) {
                 Log.e("MealLogging", "오류 발생: ${e.message}")
@@ -108,16 +98,11 @@ class DietDetailViewModel(application: Application) : AndroidViewModel(applicati
     fun addToFavorite(request: PatchFavoriteRequest, token: String) {
         viewModelScope.launch {
             try {
-                val token = getAuthToken()
-                if (token.isEmpty()) {
-                    Log.e("MealLogging", "토큰이 없습니다..")
-                    return@launch
-                }
-
                 val response = RetrofitClient.mealApiService.patchFavoriteMeal(request, "Bearer $token")
-
-                if (!response.isSuccessful) {
-                    Log.e("MealLogging", "즐겨찾기 업데이트 실패: ${response.errorBody()?.string()}")
+                if (response.isSuccessful) {
+                    _isFavorited.value = true
+                } else {
+                    Log.e("MealLogging", "API 요청 실패: ${response.errorBody()?.string()}")
                 }
             } catch (e: Exception) {
                 Log.e("MealLogging", "오류 발생: ${e.message}")
@@ -128,15 +113,11 @@ class DietDetailViewModel(application: Application) : AndroidViewModel(applicati
     fun deleteFavorite(request: PatchFavoriteDeleteRequest, token: String) {
         viewModelScope.launch {
             try {
-                val token = getAuthToken()
-                if (token.isEmpty()) {
-                    Log.e("MealLogging", "토큰이 없습니다..")
-                    return@launch
-                }
-
                 val response = RetrofitClient.mealApiService.patchFavoriteDelete(request, "Bearer $token")
-                if (!response.isSuccessful) {
-                    Log.e("MealLogging", "즐겨찾기 업데이트 실패: ${response.errorBody()?.string()}")
+                if (response.isSuccessful) {
+                    _isFavorited.value = false
+                } else {
+                    Log.e("MealLogging", "API 요청 실패: ${response.errorBody()?.string()}")
                 }
             } catch (e: Exception) {
                 Log.e("MealLogging", "오류 발생: ${e.message}")
@@ -144,19 +125,14 @@ class DietDetailViewModel(application: Application) : AndroidViewModel(applicati
         }
     }
 
-
-
     fun mealComplete(request: PostCompleteMealRequest, token: String) {
         viewModelScope.launch {
             try {
-                val token = getAuthToken()
-                if (token.isEmpty()) {
-                    Log.e("MealLogging", "토큰이 없습니다..")
-                    return@launch
-                }
                 val response = RetrofitClient.mealApiService.postCompleteMeal(request, "Bearer $token")
-                if (!response.isSuccessful) {
-                    Log.e("MealLogging", "식단 완료 업데이트 실패: ${response.errorBody()?.string()}")
+                if (response.isSuccessful) {
+                    _isCompleted.value = true
+                } else {
+                    Log.e("MealLogging", "API 요청 실패: ${response.errorBody()?.string()}")
                 }
             } catch (e: Exception) {
                 Log.e("MealLogging", "오류 발생: ${e.message}")

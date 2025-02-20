@@ -6,7 +6,7 @@ data class GetMealsDetailResponse(
     val success: GetMealsDetailSuccess
 )
 
-data class GetMealsDetailSuccess(
+data class GetMealsDetailMealDetail(
     val addedByUser: Boolean,
     val calorieDetail: String,
     val calorieTotal: Int,
@@ -18,8 +18,24 @@ data class GetMealsDetailSuccess(
     val recipe: String
 )
 
+data class GetMealsDetailSuccess(
+    val mealDetail: GetMealsDetailMealDetail,
+    val mealUser:  GetMealsDetailMealUser
+)
+
 data class GetMealsDetailError(
     val `data`: String,
     val errorCode: String,
     val reason: String
+)
+
+data class GetMealsDetailMealUser(
+    val isHate: Boolean,
+    val isLike: Boolean,
+    val isMark: Boolean,
+    val mealDate: String,
+    val mealId: Int,
+    val mealUserId: Int,
+    val time: String,
+    val userId: Int
 )

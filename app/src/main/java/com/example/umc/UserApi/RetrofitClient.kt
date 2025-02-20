@@ -15,12 +15,15 @@ import com.example.umc.UserApi.APi.OtpValidationApi
 import com.example.umc.UserApi.APi.UpdateUserApi
 import com.example.umc.UserApi.APi.UserApi
 import com.example.umc.model.service.ImageApiService
+import com.example.umc.model.service.KamisApiService
 import com.example.umc.model.service.MealApiService
-import com.google.gson.GsonBuilder
+import com.example.umc.model.service.MaterialApiService
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
+
+import com.google.gson.GsonBuilder
 
 // swagger 연결 http
 
@@ -67,7 +70,7 @@ import java.util.concurrent.TimeUnit
 //            .addConverterFactory(GsonConverterFactory.create())
 //            .client(okHttpClient)
 //            .build()
-//            .create(MealApiService::class.java)
+//            .create(MealApiService::class.java)ㅋ
 //    }
 //
 //    val getApiService: GetUserApi by lazy {
@@ -174,6 +177,8 @@ import java.util.concurrent.TimeUnit
 //}
 
 object RetrofitClient {
+
+    private const val KAMIS_URL = "http://www.kamis.or.kr/"
     private const val BASE_URL = "http://3.38.39.238:3000/"
     private lateinit var okHttpClient: OkHttpClient
 
@@ -253,5 +258,18 @@ object RetrofitClient {
 
     val naverLoginApi: NaverLoginApi by lazy {
         createRetrofit().create(NaverLoginApi::class.java)
+    }
+
+    val materialApiService: MaterialApiService by lazy {
+        createRetrofit().create(MaterialApiService::class.java)
+    }
+
+    val kamisService: KamisApiService by lazy {
+        Retrofit.Builder()
+            .baseUrl(KAMIS_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .client(RetrofitClient.okHttpClient)
+            .build()
+            .create(KamisApiService::class.java)
     }
 }

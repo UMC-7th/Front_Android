@@ -18,7 +18,6 @@ import com.example.umc.Diet.manual.DietAddManualFragment
 import com.example.umc.Main.MainActivity
 import com.example.umc.Mypage.MyFragment
 import com.example.umc.R
-import com.example.umc.UserApi.SharedPreferencesManager
 import com.example.umc.databinding.FragmentHomeContainerBinding
 import com.google.android.material.tabs.TabLayoutMediator
 
@@ -40,11 +39,7 @@ class HomeContainerFragment : Fragment() {
         setupViewPager()
         setupTabLayout()
         setupButtons()
-        // ✅ SharedPreferences에서 name 가져오기
-        val userName = SharedPreferencesManager.getUserName(requireContext()) ?: "사용자"
-
-        // ✅ name을 tv_serve에 적용
-        binding.tvServe.text = getString(R.string.serve).format(userName)
+        binding.tvServe.text = getString(R.string.serve).format("토미")
     }
 
     private fun setupViewPager() {

@@ -25,7 +25,6 @@ import com.example.umc.model.request.PatchMealsDislikeRequest
 import com.example.umc.model.request.PatchPreferenceRequest
 import com.example.umc.model.request.PostCompleteMealRequest
 import com.example.umc.model.response.GetMealsDetailSuccess
-import com.example.umc.model.response.PostCompleteMealResponse
 import kotlinx.coroutines.launch
 import retrofit2.Response
 import java.text.SimpleDateFormat
@@ -73,13 +72,13 @@ class DietDetailFragment : Fragment() {
     }
 
     private fun updateUI(mealDetail: GetMealsDetailSuccess) {
-        binding.tvRecipeTitle.text = mealDetail.food
-        binding.tvPrice.text = "약 ${mealDetail.price}원"
-        binding.tvCalories.text = "${mealDetail.calorieTotal} kcal"
-        binding.tvIngredients.text = mealDetail.material
-        binding.tvRecipe.text = mealDetail.recipe
+        binding.tvRecipeTitle.text = mealDetail.mealDetail.food
+        binding.tvPrice.text = "약 ${mealDetail.mealDetail.price}원"
+        binding.tvCalories.text = "${mealDetail.mealDetail.calorieTotal} kcal"
+        binding.tvIngredients.text = mealDetail.mealDetail.material
+        binding.tvRecipe.text = mealDetail.mealDetail.recipe
 
-        val nutritionList = mealDetail.calorieDetail.split(", ").map { item ->
+        val nutritionList = mealDetail.mealDetail.calorieDetail.split(", ").map { item ->
             val parts = item.split(": ")
             Nutrition(parts[0], parts[1])
         }
@@ -87,23 +86,24 @@ class DietDetailFragment : Fragment() {
         binding.recyclerNutrition.layoutManager = LinearLayoutManager(context)
         binding.recyclerNutrition.adapter = DietDetailAdapter(nutritionList)
 
-        // recipe 데이터를 숫자 앞에서 개행 처리하여 변환
-        val recipeSteps = mealDetail.recipe.split(Regex("(?=\\d\\.\\s)")).drop(1)
-
-        // 레시피 출력
+        val recipeSteps = mealDetail.mealDetail.recipe.split(Regex("(?=\\d\\.\\s)")).drop(1)
         binding.tvRecipe.text = recipeSteps.joinToString("\n")
 
-        // 이미지 로딩
-        binding.ratingBar.rating = mealDetail.difficulty.toFloat()
+        binding.ratingBar.rating = mealDetail.mealDetail.difficulty.toFloat()
 
-        // UI 업데이트
+        // Update the button states based on the fetched data
+        isLiked = mealDetail.mealUser.isLike
+        isDisliked = mealDetail.mealUser.isHate
+        isFavorited = mealDetail.mealUser.isMark
+
         binding.btLike.setColorFilter(ContextCompat.getColor(requireContext(), if (isLiked) R.color.Primary_Orange1 else R.color.Gray7))
         binding.btDislike.setColorFilter(ContextCompat.getColor(requireContext(), if (isDisliked) R.color.Primary_Orange1 else R.color.Gray7))
         binding.btFavorite.setColorFilter(ContextCompat.getColor(requireContext(), if (isFavorited) R.color.Primary_Orange1 else R.color.Gray7))
-        binding.btDietComplete.setBackgroundColor(ContextCompat.getColor(requireContext(), if (isCompleted) R.color.Primary_Orange1 else R.color.Gray7))
 
-        loadMealImage(mealDetail.food)
+        loadMealImage(mealDetail.mealDetail.food)
     }
+
+
 
     private fun setupButtons(mealId: Int, token: String) {
         // 좋아요 버튼 설정
@@ -229,7 +229,6 @@ class DietDetailFragment : Fragment() {
             }
         }
     }
-
 
     override fun onDestroyView() {
         super.onDestroyView()
