@@ -36,10 +36,12 @@ class SubAddressFragment : Fragment() {
     private lateinit var editTextAddress: EditText
     private lateinit var editTextPhone: EditText
     private lateinit var editTextMemo: EditText
-    private val addressList = mutableListOf(
-        Address("김태현", "[00000]", "서울시 송파구 송파동 송파아파트 101동 101호", "010-1234-5678", "문 앞(1234)"),
-        Address("양유진", "[00000]", "서울시 강남구 강남동 강남아파트 101동 101호", "010-1234-5678", "문 앞(5678)")
-    )
+    // 초기 데이터를 비우는 방법
+    private val addressList = mutableListOf<Address>()  // 빈 리스트로 초기화
+
+//        Address("김태현", "[00000]", "서울시 송파구 송파동 송파아파트 101동 101호", "010-1234-5678", "문 앞(1234)"),
+//        Address("양유진", "[00000]", "서울시 강남구 강남동 강남아파트 101동 101호", "010-1234-5678", "문 앞(5678)")
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

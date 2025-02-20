@@ -63,13 +63,20 @@ class OnboardingMyFragment : Fragment() {
         updateDots(dotsLayout, 4)
 
         // "회원가입" 버튼 클릭 시 SignUpFragment로 이동
+//        nextButton.setOnClickListener {
+//            nextButton.setBackgroundColor(Color.parseColor("#FF7300")) // 배경색 변경
+//            parentFragmentManager.beginTransaction()
+//                .replace(R.id.fragment_container, SignUpFragment())
+//                .addToBackStack(null)
+//                .commit()
+//        }
+        // 확인 버튼 클릭 시
         nextButton.setOnClickListener {
             nextButton.setBackgroundColor(Color.parseColor("#FF7300")) // 배경색 변경
-            parentFragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, SignUpFragment())
-                .addToBackStack(null)
-                .commit()
+            val intent = Intent(requireContext(), LoginActivity::class.java)
+            startActivity(intent)
         }
+
 
         // "로그인" 버튼 클릭 시 LoginActivity로 이동
         loginButton.setOnClickListener {
