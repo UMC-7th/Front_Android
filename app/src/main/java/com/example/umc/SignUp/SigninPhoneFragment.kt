@@ -141,7 +141,6 @@ class SigninPhoneFragment : Fragment() {
                     }
                 )
             } catch (e: Exception) {
-                showToast("오류가 발생했습니다: ${e.message}")
             }
         }
     }
