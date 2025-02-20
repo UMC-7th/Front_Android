@@ -1,7 +1,9 @@
 package com.example.umc.UserApi.Response
 
 data class HealthScoreResponse(
-    val success: HealthScoreData
+    val resultType: String,
+    val error: Any?,
+    val success: HealthScoreData?
 )
 
 data class HealthScoreData(

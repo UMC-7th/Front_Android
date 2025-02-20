@@ -33,6 +33,10 @@ import java.io.FileOutputStream
 import java.io.InputStream
 import java.net.HttpURLConnection
 import java.net.URL
+import java.text.SimpleDateFormat
+import java.util.Locale
+import java.util.TimeZone // ✅ 올바른 import
+
 
 class MyFragmentInfo : Fragment() {
 
@@ -169,6 +173,20 @@ class MyFragmentInfo : Fragment() {
         ActivityResultContracts.GetContent()
     ) { uri: Uri? ->
         uri?.let { uploadImage(it) }
+    }
+    private fun formatBirthDate(dateString: String?): String {
+        if (dateString.isNullOrEmpty()) return "생년월일 정보 없음"
+
+        return try {
+            val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.KOREA)
+            inputFormat.timeZone = TimeZone.getTimeZone("UTC") // 🔥 UTC 시간대 고려
+
+            val outputFormat = SimpleDateFormat("yyyy년 M월 d일", Locale.KOREA)
+            val date = inputFormat.parse(dateString)
+            date?.let { outputFormat.format(it) } ?: "형식 오류"
+        } catch (e: Exception) {
+            "날짜 변환 오류"
+        }
     }
 
     private fun selectImageFromGallery() {
@@ -353,9 +371,10 @@ class MyFragmentInfo : Fragment() {
         with(binding) {
             nickNameEdit.setText(profileData.nickname)
             nameEdit.setText(profileData.name)
-            birthEdit.setText(profileData.birth)
+            birthEdit.setText(formatBirthDate(profileData.birth))
             emailEdit.setText(profileData.email)
             phoneEdit.setText(profileData.phone)  // ✅ UserProfileData는 phone을 사용
+            textView48.setText(profileData.name)
         }
     }
 
