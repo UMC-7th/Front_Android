@@ -62,20 +62,20 @@
         android:layout_marginBottom="8dp"
         android:backgroundTint="#CDCDCD"
         android:text="다음"
+        android:layout_marginTop="320dp"
         android:textColor="#FFFFFF"
         android:textSize="18sp"
         app:layout_constraintBottom_toTopOf="@+id/dotsLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.494"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/dietImage"
-        app:layout_constraintVertical_bias="0.813" />
+        app:layout_constraintTop_toTopOf="@+id/dietImage" />
 
     <LinearLayout
         android:id="@+id/dotsLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="68dp"
+        android:layout_marginBottom="48dp"
         android:gravity="center"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
