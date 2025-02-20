@@ -11,7 +11,9 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/loginConstraintLayout">
+        android:id="@+id/loginConstraintLayout"
+
+        >
 
         <!-- Logo -->
 
@@ -240,13 +242,12 @@
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-
-    <!-- WebView를 match_parent로 수정 -->
     <WebView
-        android:id="@+id/kakaoWebView"
+        android:id="@+id/naverWebView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone" />
+        android:visibility="gone"
+        android:elevation="10dp"/>
 
 
 </FrameLayout>
