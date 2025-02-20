@@ -35,6 +35,7 @@ import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+import java.time.format.DateTimeParseException
 
 class FoodPriceFragment : Fragment() {
 
@@ -95,16 +96,19 @@ class FoodPriceFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // 데이터를 UI에 설정
+        // 데이터 설정
         binding.tvFoodName.text = foodName
         binding.tvFoodPrice.text = foodPrice
         binding.tvFoodUnit.text = foodUnit
         binding.tvPriceRate.text = priceRate
         binding.tvPricePercent.text = pricePercent
+
+        // 구매 링크 버튼 클릭
         binding.ibtBuy.setOnClickListener {
             foodName?.let { name ->
                 val encodedFoodName = URLEncoder.encode(name, StandardCharsets.UTF_8.toString())
-                val url = "https://www.coupang.com/np/search?component=&q=$encodedFoodName&channel=user"
+                val url =
+                    "https://www.coupang.com/np/search?component=&q=$encodedFoodName&channel=user"
 
                 val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
                 startActivity(intent)
@@ -116,29 +120,36 @@ class FoodPriceFragment : Fragment() {
             loadMaterialImage(foodName!!)
         }
 
-        /*
-                viewModel.priceData.observe(viewLifecycleOwner, Observer { response ->
-                    response?.let {
-                        val prices = listOf(
-                            FoodPriceViewModel.Price(LocalDate.parse(it.yyyy).toEpochDay(), it.d0.toFloat()),
-                            FoodPriceViewModel.Price(LocalDate.parse(it.yyyy).minusDays(10).toEpochDay(), it.d10.toFloat()),
-                            FoodPriceViewModel.Price(LocalDate.parse(it.yyyy).minusDays(20).toEpochDay(), it.d20.toFloat()),
-                            FoodPriceViewModel.Price(LocalDate.parse(it.yyyy).minusDays(30).toEpochDay(), it.d30.toFloat()),
-                            FoodPriceViewModel.Price(LocalDate.parse(it.yyyy).minusDays(40).toEpochDay(), it.d40.toFloat())
-                        )
-                        setChart(prices)
-                    }
-                })
-        // API 호출 변경 (올바른 메서드 사용)
-                viewModel.fetchRecentlyPriceTrendList(
-                    "20250201", // 검색일자
-                    "1177e9f8-8f03-45ec-9cef-318101246a8d", // 인증 키
-                    "rmarkdalswn@naver.com", // 요청자 id
-                    "XML", // return type
-                    "212" // 품목 코드
-                )
-        */
+        viewModel.fetchRecentlyPriceTrendList()
 
+        viewModel.priceData.observe(viewLifecycleOwner, Observer { response ->
+            response?.let { kamisResponse ->
+                val prices = kamisResponse.price.mapNotNull { priceItem ->
+                    if (priceItem.yyyy == "평년") {
+                        Log.e("DateParsing", "Skipping invalid date: ${priceItem.yyyy}")
+                        return@mapNotNull null // "평년" 데이터 제외
+                    }
+
+                    val formattedDate = if (priceItem.yyyy.length == 4) "${priceItem.yyyy}-01-01" else priceItem.yyyy
+
+                    val localDate = try {
+                        LocalDate.parse(formattedDate, DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+                    } catch (e: DateTimeParseException) {
+                        Log.e("DateParsing", "Failed to parse date: $formattedDate", e)
+                        return@mapNotNull null // 날짜 파싱 실패 시 제외
+                    }
+
+                    val d40Value = priceItem.d40.toString().toFloatOrNull() ?: 0f
+
+                    Log.d("ParsedPriceData", "Date: $formattedDate, Price: $d40Value")
+
+                    // ✅ 기존 Price 객체 대신 Pair<LocalDate, Float> 사용
+                    Pair(localDate, d40Value)
+                }
+
+                setChart(prices) // ✅ 이제 setChart()에 맞는 타입으로 전달됨
+            }
+        })
     }
 
     private fun loadMaterialImage(foodName: String) {
@@ -161,7 +172,8 @@ class FoodPriceFragment : Fragment() {
                     }
                 } else {
                     Log.e("FoodImage", "API 호출 실패: ${response.message()}")
-                    Toast.makeText(context, "API 호출 실패: ${response.message()}", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "API 호출 실패: ${response.message()}", Toast.LENGTH_SHORT)
+                        .show()
                 }
             } catch (e: Exception) {
                 Log.e("FoodImage", "네트워크 오류: ${e.message}")
@@ -170,58 +182,63 @@ class FoodPriceFragment : Fragment() {
         }
     }
 
-    /*
-        @RequiresApi(Build.VERSION_CODES.O)
-        private fun setChart(prices: List<FoodPriceViewModel.Price>) {
-            val lineChart: LineChart = binding.lineChart
-            lineChart.invalidate()
-            lineChart.clear()
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun setChart(prices: List<Pair<LocalDate, Float>>) {
+        val lineChart: LineChart = binding.lineChart
+        lineChart.invalidate()
+        lineChart.clear()
 
-            val values = prices.map { Entry(it.dateTime.toFloat(), it.price) }
-            val lineDataSet = LineDataSet(values, "가격 변동").apply {
-                color = ContextCompat.getColor(requireContext(), R.color.Blue)
-                setCircleColor(ContextCompat.getColor(requireContext(), R.color.Blue))
-                circleHoleColor = ContextCompat.getColor(requireContext(), R.color.white)
-                mode = LineDataSet.Mode.HORIZONTAL_BEZIER
-                lineWidth = 3f
-                circleRadius = 6f
-                circleHoleRadius = 3f
-            }
-
-            val lineData = LineData(lineDataSet).apply {
-                setValueTextColor(ContextCompat.getColor(requireContext(), R.color.black))
-                setValueTextSize(9f)
-            }
-
-            val xAxis = lineChart.xAxis.apply {
-                position = XAxis.XAxisPosition.BOTTOM
-                valueFormatter = object : ValueFormatter() {
-                    override fun getFormattedValue(value: Float): String {
-                        val date = LocalDate.ofEpochDay(value.toLong())
-                        return date.format(DateTimeFormatter.ofPattern("yyyy.MM.dd"))
-                    }
-                }
-                setLabelCount(7, true)
-                textColor = ContextCompat.getColor(requireContext(), R.color.black)
-                gridColor = ContextCompat.getColor(requireContext(), R.color.black)
-                labelRotationAngle = -30f
-                setDrawGridLines(false)
-            }
-
-            lineChart.axisLeft.setLabelCount(4, true)
-            lineChart.axisRight.apply {
-                setDrawLabels(false)
-                setDrawAxisLine(false)
-                setDrawGridLines(false)
-            }
-
-            lineChart.description = null
-            lineChart.legend.isEnabled = false
-            lineChart.data = lineData
+        val entries = prices.mapIndexed { index, (date, price) ->
+            Entry(index.toFloat(), price)
         }
 
-        override fun onDestroyView() {
-            super.onDestroyView()
-            _binding = null
-        }*/
+        val lineDataSet = LineDataSet(entries, "가격 변동").apply {
+            color = ContextCompat.getColor(requireContext(), R.color.Blue)
+            setCircleColor(ContextCompat.getColor(requireContext(), R.color.Blue))
+            circleHoleColor = ContextCompat.getColor(requireContext(), R.color.white)
+            mode = LineDataSet.Mode.HORIZONTAL_BEZIER
+            lineWidth = 3f
+            circleRadius = 6f
+            circleHoleRadius = 3f
+        }
+
+        val lineData = LineData(lineDataSet).apply {
+            setValueTextColor(ContextCompat.getColor(requireContext(), R.color.black))
+            setValueTextSize(9f)
+        }
+
+        val xAxis = lineChart.xAxis.apply {
+            position = XAxis.XAxisPosition.BOTTOM
+            valueFormatter = object : ValueFormatter() {
+                override fun getFormattedValue(value: Float): String {
+                    return prices.getOrNull(value.toInt())?.first?.format(
+                        DateTimeFormatter.ofPattern(
+                            "MM-dd"
+                        )
+                    ) ?: ""
+                }
+            }
+            setLabelCount(5, true)
+            textColor = ContextCompat.getColor(requireContext(), R.color.black)
+            gridColor = ContextCompat.getColor(requireContext(), R.color.black)
+            labelRotationAngle = -45f
+            setDrawGridLines(false)
+        }
+
+        lineChart.axisLeft.setLabelCount(4, true)
+        lineChart.axisRight.apply {
+            setDrawLabels(false)
+            setDrawAxisLine(false)
+            setDrawGridLines(false)
+        }
+
+        lineChart.description = null
+        lineChart.legend.isEnabled = false
+        lineChart.data = lineData
+    }
 }
+
+    data class Price(
+    val dateTime: Long,
+    val price: Float
+)
