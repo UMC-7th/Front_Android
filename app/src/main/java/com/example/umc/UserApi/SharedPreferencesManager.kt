@@ -6,24 +6,93 @@ object SharedPreferencesManager {
 
     private const val PREF_NAME = "UserPreferences"
     private const val KEY_USER_ID = "userId"
+    private const val KEY_USER_NAME = "userName"
+    private const val KEY_EMAIL = "userEmail"
+    private const val KEY_PHONE_NUMBER = "userPhoneNumber"
+    private const val KEY_PROFILE_IMAGE = "userProfileImage"  // ✅ 프로필 이미지 저장 추가
+    private const val KEY_ACCESS_TOKEN = "accessToken"  // ✅ 액세스 토큰 저장 추가
+    private const val KEY_REFRESH_TOKEN = "refreshToken"  // ✅ 리프레시 토큰 저장 추가
 
-    // SharedPreferences에 userId 저장하는 메서드
+    // ✅ SharedPreferences에 userId 저장
     fun saveUserId(context: Context, userId: Int) {
         val sharedPreferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
-        val editor = sharedPreferences.edit()
-        editor.putInt(KEY_USER_ID, userId)  // userId 저장
-        editor.apply()  // 비동기적으로 저장
+        sharedPreferences.edit().putInt(KEY_USER_ID, userId).apply()
     }
 
-    // SharedPreferences에서 userId 불러오는 메서드
     fun getUserId(context: Context): Int {
         val sharedPreferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
-        return sharedPreferences.getInt(KEY_USER_ID, -1)  // 기본값 -1
+        return sharedPreferences.getInt(KEY_USER_ID, -1)
     }
 
-    // SharedPreferences에 값 저장 여부 체크
-    fun hasUserId(context: Context): Boolean {
+    // ✅ SharedPreferences에 name 저장
+    fun saveUserName(context: Context, userName: String) {
         val sharedPreferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
-        return sharedPreferences.contains(KEY_USER_ID)  // userId가 저장되어 있는지 여부 반환
+        sharedPreferences.edit().putString(KEY_USER_NAME, userName).apply()
+    }
+
+    fun getUserName(context: Context): String? {
+        val sharedPreferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
+        return sharedPreferences.getString(KEY_USER_NAME, null)
+    }
+
+    // ✅ SharedPreferences에 email 저장
+    fun saveUserEmail(context: Context, email: String) {
+        val sharedPreferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
+        sharedPreferences.edit().putString(KEY_EMAIL, email).apply()
+    }
+
+    fun getUserEmail(context: Context): String? {
+        val sharedPreferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
+        return sharedPreferences.getString(KEY_EMAIL, null)
+    }
+
+    // ✅ SharedPreferences에 phoneNumber 저장
+    fun saveUserPhoneNumber(context: Context, phoneNumber: String) {
+        val sharedPreferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
+        sharedPreferences.edit().putString(KEY_PHONE_NUMBER, phoneNumber).apply()
+    }
+
+    fun getUserPhoneNumber(context: Context): String? {
+        val sharedPreferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
+        return sharedPreferences.getString(KEY_PHONE_NUMBER, null)
+    }
+
+    // ✅ SharedPreferences에 프로필 이미지 저장
+    fun saveUserProfileImage(context: Context, profileImage: String) {
+        val sharedPreferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
+        sharedPreferences.edit().putString(KEY_PROFILE_IMAGE, profileImage).apply()
+    }
+
+    fun getUserProfileImage(context: Context): String? {
+        val sharedPreferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
+        return sharedPreferences.getString(KEY_PROFILE_IMAGE, null)
+    }
+
+    // ✅ SharedPreferences에 액세스 토큰 저장
+    fun saveAccessToken(context: Context, accessToken: String) {
+        val sharedPreferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
+        sharedPreferences.edit().putString(KEY_ACCESS_TOKEN, accessToken).apply()
+    }
+
+    fun getAccessToken(context: Context): String? {
+        val sharedPreferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
+        return sharedPreferences.getString(KEY_ACCESS_TOKEN, null)
+    }
+
+    // ✅ SharedPreferences에 리프레시 토큰 저장
+    fun saveRefreshToken(context: Context, refreshToken: String) {
+        val sharedPreferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
+        sharedPreferences.edit().putString(KEY_REFRESH_TOKEN, refreshToken).apply()
+    }
+
+    fun getRefreshToken(context: Context): String? {
+        val sharedPreferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
+        return sharedPreferences.getString(KEY_REFRESH_TOKEN, null)
+    }
+
+    // ✅ SharedPreferences에서 모든 데이터 삭제 (로그아웃 시 사용 가능)
+    fun clearUserData(context: Context) {
+        val sharedPreferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
+        sharedPreferences.edit().clear().apply()
     }
 }

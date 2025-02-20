@@ -14,6 +14,7 @@ import com.example.umc.databinding.FragmentSubBinding
 import com.example.umc.model.SubItem
 import com.example.umc.Subscribe.SubAdapter
 import com.example.umc.Subscribe.SubscriptionManageFragment
+import com.example.umc.UserApi.SharedPreferencesManager
 
 class SubFragment : Fragment() {
 
@@ -33,6 +34,11 @@ class SubFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        // ✅ SharedPreferences에서 저장된 name 가져오기
+        val userName = SharedPreferencesManager.getUserName(requireContext()) ?: "사용자"
+
+        // ✅ name을 tv_user_name에 적용
+        binding.tvUserName.text = getString(R.string.serve).format(userName)
 
         subList = listOf(
             SubItem("맛있는 일상 음식 구독", "누구나 좋아하는 맛있는 일상 음식을 구독해보세요!"),
