@@ -8,10 +8,29 @@ object SharedPreferencesManager {
     private const val KEY_USER_ID = "userId"
     private const val KEY_USER_NAME = "userName"
     private const val KEY_EMAIL = "userEmail"
+    private const val KEY_BIRTH = "birth"
+    private const val KEY_LOGIN_METHOD = "loginMethod"
     private const val KEY_PHONE_NUMBER = "userPhoneNumber"
     private const val KEY_PROFILE_IMAGE = "userProfileImage"  // ✅ 프로필 이미지 저장 추가
     private const val KEY_ACCESS_TOKEN = "accessToken"  // ✅ 액세스 토큰 저장 추가
     private const val KEY_REFRESH_TOKEN = "refreshToken"  // ✅ 리프레시 토큰 저장 추가
+
+    fun saveUserData(
+        context: Context,
+        userId: Int,
+        accessToken: String,
+        refreshToken: String? = null,
+        email: String? = null
+    ) {
+        val sharedPreferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
+        sharedPreferences.edit().apply {
+            putInt(KEY_USER_ID, userId)
+            putString(KEY_ACCESS_TOKEN, accessToken)
+            refreshToken?.let { putString(KEY_REFRESH_TOKEN, it) }
+            email?.let { putString(KEY_EMAIL, it) }
+            apply()
+        }
+    }
 
     // ✅ SharedPreferences에 userId 저장
     fun saveUserId(context: Context, userId: Int) {
@@ -95,4 +114,7 @@ object SharedPreferencesManager {
         val sharedPreferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
         sharedPreferences.edit().clear().apply()
     }
+
 }
+
+

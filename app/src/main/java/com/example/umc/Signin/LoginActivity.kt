@@ -1,4 +1,5 @@
 package com.example.umc.Signin
+import android.content.ContentValues.TAG
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
@@ -8,17 +9,24 @@ import android.text.method.PasswordTransformationMethod
 import android.util.Log
 import android.view.View
 import android.content.Context
+import android.net.Uri
 import android.webkit.CookieManager
 import android.webkit.WebView
+import android.webkit.WebViewClient
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.commit
+import androidx.lifecycle.lifecycleScope
 import com.example.umc.Main.MainActivity
 import com.example.umc.R
 import com.example.umc.SignUp.SignUpFragment
 import com.example.umc.Survey.SurveyGoalFragment
+import com.example.umc.UserApi.APi.KakaoAuthService
+import com.example.umc.UserApi.Kakao.AuthResponse
+import com.example.umc.UserApi.KakaoLoginManager
 import com.example.umc.UserApi.NaverLoginManager
 import com.example.umc.UserApi.Response.LoginResponse
+import com.example.umc.UserApi.Response.LoginResult
 import com.example.umc.UserApi.RetrofitClient
 import com.example.umc.UserApi.RetrofitClient.naverLoginApi
 import com.example.umc.UserApi.SharedPreferencesManager
@@ -33,12 +41,13 @@ import retrofit2.Response
 import retrofit2.awaitResponse
 
 
-//login 로직 처리
+
 
 class LoginActivity : AppCompatActivity() {
 
     private lateinit var binding: FragmentSigninBinding
-    private lateinit var naverLoginManager: NaverLoginManager  // ✅ lateinit으로 선언
+    private lateinit var naverLoginManager: NaverLoginManager
+    private lateinit var kakaoLoginManager: KakaoLoginManager
     private var isPasswordVisible = false // 비밀번호 표시 상태
     private val userRepository = UserRepository() // UserRepository 인스턴스 생성
 
@@ -50,9 +59,18 @@ class LoginActivity : AppCompatActivity() {
         // ViewBinding 설정
         binding = FragmentSigninBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        // KakaoLoginManager 초기화
+        kakaoLoginManager = KakaoLoginManager(
+            authService = KakaoAuthService.create(),
+            context = applicationContext
+        )
+
         if (savedInstanceState == null) {
             clearBackStack()
         }
+
+
         val naverLoginApi = RetrofitClient.naverLoginApi  // Retrofit API 인스턴스
         naverLoginManager = NaverLoginManager(naverLoginApi, this, binding.naverWebView)
 
@@ -97,11 +115,9 @@ class LoginActivity : AppCompatActivity() {
         // 이메일과 비밀번호 입력 감지
         val textWatcher = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 updateLoginButtonState()
             }
-
             override fun afterTextChanged(s: Editable?) {}
         }
 
@@ -129,10 +145,18 @@ class LoginActivity : AppCompatActivity() {
         binding.loginButton2.setOnClickListener {
             navigateToSignUpFragment()
         }
-
+        // 카카오 로그인 버튼
+        binding.kakaologin.setOnClickListener {
+            startKakaoLogin()
+        }
 
     }
 
+    private fun showError(message: String) {
+        runOnUiThread {
+            Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+        }
+    }
 
     private fun updateLoginButtonState() {
         val email = binding.emailLoginEditText.text.toString().trim()
@@ -149,7 +173,18 @@ class LoginActivity : AppCompatActivity() {
         )
     }
 
-
+//    private fun updateLoginButtonState() {
+//        val email = binding.emailLoginEditText.text.toString().trim()
+//        val password = binding.passwordLoginEditText.text.toString().trim()
+//
+//        val isInputValid = email.isNotEmpty() && password.isNotEmpty()
+//        binding.loginButton.apply {
+//            isEnabled = isInputValid
+//            setBackgroundColor(
+//                getColor(if (isInputValid) R.color.Primary_Orange1 else R.color.Gray8)
+//            )
+//        }
+//    }
         private fun navigateToSignUpFragment() {
         val fragment = SignUpFragment()
         supportFragmentManager.commit {
@@ -172,6 +207,23 @@ class LoginActivity : AppCompatActivity() {
         isPasswordVisible = !isPasswordVisible
         binding.passwordLoginEditText.text?.let { binding.passwordLoginEditText.setSelection(it.length) } // 커서를 끝으로 이동
     }
+//    private fun togglePasswordVisibility() {
+//        binding.passwordLoginEditText.apply {
+//            transformationMethod = if (isPasswordVisible) {
+//                PasswordTransformationMethod.getInstance()
+//            } else {
+//                HideReturnsTransformationMethod.getInstance()
+//            }
+//            text?.let { setSelection(it.length) }
+//        }
+//
+//        binding.signinvisible.setImageResource(
+//            if (isPasswordVisible) R.drawable.ic_eye_visible
+//            else R.drawable.ic_eye_invisible
+//        )
+//        isPasswordVisible = !isPasswordVisible
+//    }
+
 
     // 설문조사 임시코드
 //    private fun performLogin(email: String, password: String) {
@@ -310,6 +362,185 @@ class LoginActivity : AppCompatActivity() {
             navigateToMain(accessToken)
         }
     }
+    // 카카오 로그인 메서드
+    private fun startKakaoLogin() {
+        binding.apply {
+            loginConstraintLayout.visibility = View.GONE
+            kakaoWebView.apply {
+                visibility = View.VISIBLE
+                settings.apply {
+                    javaScriptEnabled = true
+                    domStorageEnabled = true
+                }
+                webViewClient = createKakaoWebViewClient()
+                loadUrl(kakaoLoginManager.getKakaoAuthUrl())
+            }
+        }
+    }
+
+    private fun createKakaoWebViewClient(): WebViewClient {
+        return object : WebViewClient() {
+            override fun onReceivedError(
+                view: WebView?,
+                errorCode: Int,
+                description: String?,
+                failingUrl: String?
+            ) {
+                Log.e(TAG, "WebView Error: $errorCode - $description")
+                view?.let { webView ->
+                    loadErrorPage(
+                        webView,
+                        errorCode,
+                        description ?: "알 수 없는 오류",
+                        failingUrl ?: "알 수 없는 URL"
+                    )
+                }
+                restoreLoginLayout()
+            }
+
+            override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
+                url?.let {
+                    // 리다이렉트 URI를 정확히 일치시킴
+                    val redirectUri = "http://3.38.39.238:3000/auth/kakao/callback"
+
+                    if (url.startsWith(redirectUri)) {
+                        val uri = Uri.parse(url)
+                        val authCode = uri.getQueryParameter("code")
+
+                        authCode?.let { code ->
+                            lifecycleScope.launch {
+                                handleKakaoAuthCode(code)
+                            }
+                        }
+                        hideWebView()
+                        return true
+                    }
+                }
+                return false
+            }
+
+            private fun loadErrorPage(
+                view: WebView,
+                errorCode: Int,
+                description: String,
+                failingUrl: String
+            ) {
+                val htmlData = """
+                    <html>
+                    <body style="text-align: center; font-family: Arial, sans-serif; padding-top: 50px;">
+                        <h1>네트워크 오류</h1>
+                        <p>페이지를 로드할 수 없습니다.</p>
+                        <p>오류 코드: $errorCode</p>
+                        <p>설명: $description</p>
+                        <p>URL: $failingUrl</p>
+                        <button onclick="window.location.reload()">다시 시도</button>
+                    </body>
+                    </html>
+                """.trimIndent()
+
+                view.loadDataWithBaseURL(
+                    null,
+                    htmlData,
+                    "text/html",
+                    "UTF-8",
+                    null
+                )
+            }
+
+            private fun restoreLoginLayout() {
+                binding.loginConstraintLayout.visibility = View.VISIBLE
+            }
+
+            private fun hideWebView() {
+                binding.apply {
+                    kakaoWebView.visibility = View.GONE
+                    loginConstraintLayout.visibility = View.VISIBLE
+                }
+            }
+        }
+    }
+
+
+    private suspend fun handleKakaoAuthCode(authCode: String) {
+        try {
+            // API 호출 결과를 받아옵니다
+            val result = withContext(Dispatchers.IO) {
+                kakaoLoginManager.handleKakaoLogin(authCode)
+            }
+
+            // when 표현식으로 결과를 처리합니다
+            when (result) {
+                is LoginResult.Success -> {
+                    processSuccessfulKakaoLogin(result.data)
+                }
+                is LoginResult.Error -> {
+                    handleKakaoLoginError(result)
+                }
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "예상치 못한 카카오 로그인 오류", e)
+            showError("로그인 중 오류 발생")
+        }
+    }
+
+    private fun processSuccessfulKakaoLogin(authResponse: AuthResponse) {
+        // 로그를 남깁니다
+        Log.d(TAG, "Full Auth Response: $authResponse")
+
+        // null 체크를 통해 안전하게 액세스 토큰을 추출합니다
+        val accessToken = authResponse.accessToken
+        if (accessToken == null) {
+            Log.e(TAG, "Access token is missing")
+            showError("로그인 토큰을 받지 못했습니다.")
+            return
+        }
+
+        // refreshToken은 null일 수 있으므로 orEmpty()를 사용합니다
+        val refreshToken = authResponse.refreshToken.orEmpty()
+
+        // 사용자 ID를 안전하게 추출합니다
+        val userId = authResponse.user?.let { user ->
+            user.userId ?: user.id
+        }
+
+        if (userId == null) {
+            Log.e(TAG, "No user ID found in auth response")
+            showError("사용자 정보를 찾을 수 없습니다.")
+            return
+        }
+
+        try {
+            // 사용자 데이터를 저장합니다
+            SharedPreferencesManager.saveUserData(
+                context = this,
+                userId = userId.toInt(),
+                accessToken = accessToken,
+                refreshToken = refreshToken
+            )
+
+            // 성공 로그를 남깁니다
+            Log.d(TAG, "Login Success - User ID: $userId")
+
+            // 메인 화면으로 이동합니다
+            navigateToMain(accessToken)
+        } catch (e: Exception) {
+            Log.e(TAG, "Error saving user data", e)
+            showError("사용자 데이터 저장 중 오류가 발생했습니다.")
+        }
+    }
+
+
+    private fun handleKakaoLoginError(error: LoginResult.Error) {
+        // 에러 로그를 남깁니다
+        Log.e(TAG, "Login Error: ${error.exception.message}", error.exception)
+        showError("로그인 실패: ${error.exception.message}")
+
+        // 에러 코드가 있다면 로그에 남깁니다
+        error.code?.let { errorCode ->
+            Log.e(TAG, "Error Code: $errorCode")
+        }
+    }
+
 
     private fun navigateToSurvey() {
         // 기존 프래그먼트들을 모두 제거
