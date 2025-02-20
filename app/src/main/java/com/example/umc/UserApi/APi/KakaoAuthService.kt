@@ -1,27 +1,47 @@
 package com.example.umc.UserApi.APi
 
-import com.example.umc.UserApi.Request.KakaoAuthRequest
+import android.util.Log
 import com.example.umc.UserApi.Response.AuthResponse
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.http.Body
-import retrofit2.http.POST
+import retrofit2.http.GET
+import retrofit2.http.Query
+import java.util.concurrent.TimeUnit
 
 interface KakaoAuthService {
-    @POST("auth/kakao")
+    @GET("auth/kakao/callback")
     suspend fun loginWithKakao(
-        @Body kakaoAuthRequest: KakaoAuthRequest
+        @Query("code") code: String,
+        @Query("device") device: String
     ): Response<AuthResponse>
 
     companion object {
-        // create() 메서드가 KakaoAuthService를 반환하도록 수정
+        // 네트워크 통신 설정을 강화하는 create 메서드
         fun create(): KakaoAuthService {
-            return Retrofit.Builder()
-                .baseUrl("http://3.38.39.238:3000/")
-                .addConverterFactory(GsonConverterFactory.create())
+            // 로깅 인터셉터 생성 (네트워크 요청/응답 디버깅)
+            val loggingInterceptor = HttpLoggingInterceptor { message ->
+                Log.d("KakaoAuthNetwork", message)
+            }.apply {
+                level = HttpLoggingInterceptor.Level.BODY
+            }
+
+            // OkHttpClient 설정 - 타임아웃 및 로깅 인터셉터 추가
+            val okHttpClient = OkHttpClient.Builder()
+                .addInterceptor(loggingInterceptor)  // 네트워크 로깅
+                .connectTimeout(30, TimeUnit.SECONDS)  // 연결 타임아웃 설정
+                .readTimeout(30, TimeUnit.SECONDS)     // 읽기 타임아웃 설정
+                .writeTimeout(30, TimeUnit.SECONDS)    // 쓰기 타임아웃 설정
                 .build()
-                // KakaoAuthService로 수정
+
+            // Retrofit 빌더 - 강화된 네트워크 클라이언트와 함께 생성
+            return Retrofit.Builder()
+                .baseUrl("http://3.38.39.238:3000/")  // 서버 베이스 URL
+                .client(okHttpClient)                 // 강화된 OkHttpClient 적용
+                .addConverterFactory(GsonConverterFactory.create())  // JSON 변환기
+                .build()
                 .create(KakaoAuthService::class.java)
         }
     }

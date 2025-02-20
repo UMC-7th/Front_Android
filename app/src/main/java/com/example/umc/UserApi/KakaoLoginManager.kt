@@ -2,25 +2,22 @@ package com.example.umc.UserApi
 
 import android.content.Context
 import android.provider.Settings
+import android.util.Log
 import com.example.umc.Signin.LoginResult
 import com.example.umc.UserApi.APi.KakaoAuthService
-import com.example.umc.UserApi.Request.KakaoAuthRequest
 import com.example.umc.UserApi.Response.AuthResponse
 
-// KakaoLoginManager는 카카오 로그인 프로세스를 관리하는 클래스입니다.
-// 인증 URL 생성, 로그인 처리, 토큰 저장 등의 기능을 담당합니다.
 class KakaoLoginManager(
     private val authService: KakaoAuthService,
     private val context: Context
 ) {
     companion object {
-        // 카카오 개발자 콘솔에서 받은 네이티브 앱 키
+        private const val TAG = "KakaoLoginManager"  // 명시적 TAG 선언
         private const val KAKAO_NATIVE_APP_KEY = "3467c5d19149e86652d623f529cc95c1"
-        // 서버의 카카오 로그인 콜백 처리 엔드포인트
         private const val REDIRECT_URI = "http://3.38.39.238:3000/auth/kakao/callback"
     }
 
-    // 카카오 로그인 인증 페이지 URL을 생성합니다.
+    // 카카오 로그인 인증 페이지 URL 생성
     fun getKakaoAuthUrl(): String {
         return "https://kauth.kakao.com/oauth/authorize" +
                 "?client_id=$KAKAO_NATIVE_APP_KEY" +
@@ -28,42 +25,71 @@ class KakaoLoginManager(
                 "&response_type=code"
     }
 
-    // 사용자 인증 후 카카오가 리다이렉트할 URI를 반환합니다.
-    private fun getRedirectUri(): String {
-        return REDIRECT_URI
+    // 디바이스 ID를 안전하게 가져오는 메서드
+    private fun getDeviceId(): String {
+        return Settings.Secure.getString(
+            context.contentResolver,
+            Settings.Secure.ANDROID_ID
+        ) ?: "unknown_device"  // 널 대비 기본값 제공
     }
 
-    // 카카오 로그인 프로세스를 처리합니다.
-    // 인증 코드를 받아 서버에 전송하고, 응답으로 받은 토큰을 저장합니다.
+    // 카카오 로그인 프로세스 처리
     suspend fun handleKakaoLogin(authCode: String): LoginResult<AuthResponse> {
         return try {
-            // 기기의 고유 식별자를 가져옵니다.
-            val deviceId = Settings.Secure.getString(
-                context.contentResolver,
-                Settings.Secure.ANDROID_ID
-            )
+            // 1. 인증 코드 유효성 검사
+            require(authCode.isNotBlank()) { "유효하지 않은 인증 코드" }
 
+            // 2. 디버깅을 위한 상세 로깅
+            Log.d(TAG, "Kakao Login Request - Code Length: ${authCode.length}")
+
+            // 3. 네트워크 요청 처리
+            val deviceId = getDeviceId()  // 디바이스 ID 명시적 획득
             val result = authService.loginWithKakao(
-                KakaoAuthRequest(
-                    authCode = authCode,
-                    deviceId = deviceId
-                )
+                code = authCode,
+                device = deviceId  // 문자열 디바이스 ID 전달
             )
 
-            if (result.isSuccessful) {
-                result.body()?.let {
-                    saveAuthTokens(it)
-                    LoginResult.Success(it)
-                } ?: LoginResult.Error(Exception("Empty response body"))
-            } else {
-                LoginResult.Error(Exception("Login failed: ${result.code()}"))
+            // 4. 응답 상세 분석
+            when {
+                result.isSuccessful -> {
+                    result.body()?.let { authResponse ->
+                        // 사용자 ID 추출 로직 변경
+                        val userId = authResponse.success?.user?.userId
+                            ?: authResponse.success?.user?.id
+
+                        Log.d(TAG, "Login Success - User ID: $userId")
+
+                        // 토큰 저장 메서드 호출
+                        saveAuthTokens(authResponse)
+
+                        LoginResult.Success(authResponse)
+                    } ?: LoginResult.Error(
+                        Exception("Empty response body"),
+                        result.code()
+                    )
+                }
+                else -> {
+                    // 서버 오류 상세 로깅
+                    val errorBody = result.errorBody()?.string() ?: "Unknown Error"
+                    Log.e(TAG, "Login Error - Status: ${result.code()}, Body: $errorBody")
+
+                    LoginResult.Error(
+                        Exception("로그인 실패: ${result.code()}"),
+                        result.code()
+                    )
+                }
             }
         } catch (e: Exception) {
-            LoginResult.Error(e)
+            // 예외 상황 종합 처리
+            Log.e(TAG, "Unexpected Kakao Login Error", e)
+            LoginResult.Error(
+                Exception("로그인 중 예상치 못한 오류 발생: ${e.message}"),
+                500
+            )
         }
     }
 
-    // 서버로부터 받은 인증 토큰을 SharedPreferences에 저장합니다.
+    // 인증 토큰 안전하게 저장
     private fun saveAuthTokens(authResponse: AuthResponse) {
         val prefs = context.getSharedPreferences("auth_prefs", Context.MODE_PRIVATE)
         with(prefs.edit()) {
