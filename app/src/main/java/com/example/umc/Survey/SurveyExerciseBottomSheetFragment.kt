@@ -136,7 +136,7 @@ class SurveyExerciseBottomSheetFragment(private val onSelectionDone: (String?) -
             onSuccess = {
                 dismiss() // ✅ BottomSheet 먼저 닫기
 //                showAnimationAndNavigateToMain()
-                goToMainActivity()
+                showAnimationAndNavigateToMain()
             },
             onError = { errorMessage ->
                 Toast.makeText(requireContext(), "서버 전송 실패: $errorMessage", Toast.LENGTH_SHORT).show()
@@ -144,22 +144,26 @@ class SurveyExerciseBottomSheetFragment(private val onSelectionDone: (String?) -
         )
     }
 
-    // ✅ 애니메이션 완료 후 MainActivity로 이동
-//    private fun showAnimationAndNavigateToMain() {
-//        val animationFragment = AnimationFragment()
-//        animationFragment.setAnimationCompleteListener(object : AnimationFragment.AnimationCompleteListener {
-//            override fun onAnimationComplete() {
-//                val intent = Intent(requireContext(), MainActivity::class.java)
-//                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-//                startActivity(intent)
-//            }
-//        })
-//
-//        requireActivity().supportFragmentManager.beginTransaction()
-//            .replace(R.id.survey_container, animationFragment)
-//            .addToBackStack(null)
-//            .commit()
-//    }
+   //  ✅ 애니메이션 완료 후 MainActivity로 이동
+   private fun showAnimationAndNavigateToMain() {
+       val animationFragment = AnimationFragment()
+       animationFragment.setAnimationCompleteListener(object : AnimationFragment.AnimationCompleteListener {
+           override fun onAnimationComplete() {
+               // Fragment가 Activity에 연결되어 있는지 확인
+               if (isAdded) {
+                   val intent = Intent(requireContext(), MainActivity::class.java)
+                   intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                   startActivity(intent)
+               }
+           }
+       })
+
+       requireActivity().supportFragmentManager.beginTransaction()
+           .replace(R.id.survey_container, animationFragment)
+           .addToBackStack(null)
+           .commit()
+   }
+
 
 
     // SurveyGoalFragment로 이동 대신 MainActivity로 이동하도록 변경

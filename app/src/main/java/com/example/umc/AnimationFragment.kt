@@ -5,6 +5,7 @@ import android.animation.AnimatorListenerAdapter
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
+import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -15,6 +16,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import com.example.umc.Main.MainActivity
 import com.example.umc.databinding.FragmentAnimationBinding
 
 class AnimationFragment : Fragment(R.layout.fragment_animation) {
@@ -26,7 +28,6 @@ class AnimationFragment : Fragment(R.layout.fragment_animation) {
     private var _binding: FragmentAnimationBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var dots: List<View>
     private lateinit var texts: List<TextView>
     private lateinit var imageViews: List<ImageView>
     private lateinit var linearLayout: View
@@ -52,7 +53,7 @@ class AnimationFragment : Fragment(R.layout.fragment_animation) {
         _binding = FragmentAnimationBinding.inflate(inflater, container, false)
 
         // View 초기화
-        dots = listOf(binding.dot1, binding.dot2, binding.dot3)
+
         texts = listOf(binding.textView1, binding.textView2, binding.textView3)
         imageViews = listOf(binding.icAnima2, binding.icAnima3, binding.icAnima4, binding.icAnima5)
         linearLayout = binding.textlinear // LinearLayout의 ID를 확인하고 바인딩해주세요
@@ -60,10 +61,18 @@ class AnimationFragment : Fragment(R.layout.fragment_animation) {
         // 1단계: 초기 설정
         initializeStep1()
 
+        binding.completeButton.setOnClickListener {
+            navigateToMainActivity()
+        }
+
         // 애니메이션 시작
         startAnimation()
+        binding.lotti.setAnimation(R.raw.loading)  // 직접 경로를 지정하여 애니메이션 로드
+        binding.lotti.playAnimation()  // 애니메이션 시작
+
 
         return binding.root
+
     }
 
     fun setAnimationCompleteListener(listener: AnimationCompleteListener) {
@@ -72,7 +81,6 @@ class AnimationFragment : Fragment(R.layout.fragment_animation) {
 
     private fun initializeStep1() {
         // 1단계: dot 숨기기, 텍스트 색상 초기화, 이미지 위치 초기화
-        dots.forEach { it.visibility = View.INVISIBLE }
         texts.forEach { it.setTextColor(ContextCompat.getColor(requireContext(), R.color.Gray7)) }
         imageViews.forEach { it.translationY = 0f }
         binding.completeButton.visibility = View.GONE
@@ -95,36 +103,15 @@ class AnimationFragment : Fragment(R.layout.fragment_animation) {
     }
 
     private fun createStep2Animation(): AnimatorSet {
-        // 2단계: 첫 번째 dot 표시, 첫 번째 텍스트 색상 변경, 이미지 첫 이동
-
-        // dot 색상 변경 애니메이션 (Primary_Orange1로 변경)
-        val dotColorAnimation = ValueAnimator.ofArgb(
-            ContextCompat.getColor(requireContext(), R.color.Gray7),
-            ContextCompat.getColor(requireContext(), R.color.Primary_Orange1)
-        ).apply {
-            duration = ANIMATION_STEP_DURATION
-            addListener(object : AnimatorListenerAdapter() {
-                override fun onAnimationEnd(animation: Animator) {
-                    dots[0].setBackgroundResource(R.drawable.dot_active) // 색 변경
-                }
-            })
-        }
-
-
-        // dot 나타나는 애니메이션
-        val dotFadeInAnimation = ObjectAnimator.ofFloat(dots[0], "alpha", 0f, 1f).apply {
-            duration = ANIMATION_STEP_DURATION
-        }
 
         // 텍스트 색상 변경 애니메이션
         val textColorAnimation = ValueAnimator.ofArgb(
             ContextCompat.getColor(requireContext(), R.color.Gray7),
-            ContextCompat.getColor(requireContext(), R.color.Gray6)
+            ContextCompat.getColor(requireContext(), R.color.Gray3)
         ).apply {
             duration = ANIMATION_STEP_DURATION
             addUpdateListener { texts[0].setTextColor(it.animatedValue as Int) }
         }
-
         // 이미지 이동 애니메이션
         val imageAnimation = ObjectAnimator.ofFloat(
             imageViews[0],
@@ -136,20 +123,17 @@ class AnimationFragment : Fragment(R.layout.fragment_animation) {
         }
 
         return AnimatorSet().apply {
-            playTogether(dotColorAnimation, dotFadeInAnimation, textColorAnimation, imageAnimation)
+            playTogether(textColorAnimation, imageAnimation)
         }
     }
 
 
     private fun createStep3Animation(): AnimatorSet {
-        // 3단계: 두 번째 dot 표시, 두 번째 텍스트 색상 변경, 이미지 추가 이동
-        val dotAnimation = ObjectAnimator.ofFloat(dots[1], "alpha", 0f, 1f).apply {
-            duration = ANIMATION_STEP_DURATION
-        }
+
 
         val textColorAnimation = ValueAnimator.ofArgb(
             ContextCompat.getColor(requireContext(), R.color.Gray7),
-            ContextCompat.getColor(requireContext(), R.color.Gray6)
+            ContextCompat.getColor(requireContext(), R.color.Gray3)
         ).apply {
             duration = ANIMATION_STEP_DURATION
             addUpdateListener { texts[1].setTextColor(it.animatedValue as Int) }
@@ -165,7 +149,7 @@ class AnimationFragment : Fragment(R.layout.fragment_animation) {
         }
 
         return AnimatorSet().apply {
-            play(dotAnimation).with(textColorAnimation).with(imageAnimation)
+            play(textColorAnimation).with(imageAnimation)
         }
     }
 
@@ -193,13 +177,19 @@ class AnimationFragment : Fragment(R.layout.fragment_animation) {
         return AnimatorSet().apply {
             play(imageAnimation).before(fadeOutAnimation)
             play(fadeOutAnimation).before(buttonAnimation)
-            addListener(object : android.animation.AnimatorListenerAdapter() {
-                override fun onAnimationEnd(animation: android.animation.Animator) {
+            addListener(object : AnimatorListenerAdapter() {
+                override fun onAnimationEnd(animation: Animator) {
+                    binding.lotti.visibility = View.INVISIBLE
                     binding.completeButton.visibility = View.VISIBLE
                     animationCompleteListener?.onAnimationComplete()
                 }
             })
         }
+    }
+    private fun navigateToMainActivity() {
+        val intent = Intent(requireContext(), MainActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        startActivity(intent)
     }
 
     override fun onDestroyView() {

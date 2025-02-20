@@ -194,31 +194,34 @@ class UserRepository {
     suspend fun getHealthScore(context: Context): HealthScoreData? {
         val token = getAuthToken(context)
         if (token.isNullOrEmpty()) {
-            Log.e("UserRepository", "액세스 토큰이 없습니다.")
+            Log.e("UserRepository", "🚨 액세스 토큰이 없습니다.")
             return null
         }
 
         return try {
+            Log.d("UserRepository", "📢 건강 점수 API 요청: Bearer $token")
+
             val response = RetrofitClient.healthScoreApi.getHealthScore("Bearer $token")
 
             if (response.isSuccessful) {
                 val body = response.body()
-                Log.d("UserRepository", "서버 응답 성공: $body")
+                Log.d("UserRepository", "✅ 서버 응답 성공: $body")
 
                 body?.success?.let {
-                    Log.d("UserRepository", "건강 점수 데이터: healthScore=${it.healthScore}, comparison=${it.comparison}, updatedAt=${it.updateAt}")
+                    Log.d("UserRepository", "📊 건강 점수 데이터: healthScore=${it.healthScore}, comparison=${it.comparison}, updatedAt=${it.updateAt}")
                     return it
                 } ?: run {
-                    Log.e("UserRepository", "success 필드가 null입니다.")
+                    Log.e("UserRepository", "❌ success 필드가 null입니다.")
                     return null
                 }
             } else {
-                Log.e("UserRepository", "서버 응답 실패: HTTP ${response.code()}")
-                Log.e("UserRepository", "에러 메시지: ${response.errorBody()?.string() ?: "없음"}")
+                val errorBody = response.errorBody()?.string()
+                Log.e("UserRepository", "❌ 서버 응답 실패: HTTP ${response.code()}")
+                Log.e("UserRepository", "🚨 에러 메시지: $errorBody")
                 return null
             }
         } catch (e: Exception) {
-            Log.e("UserRepository", "네트워크 오류 발생", e)
+            Log.e("UserRepository", "⚠️ 네트워크 오류 발생: ${e.localizedMessage}", e)
             return null
         }
     }
