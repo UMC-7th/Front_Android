@@ -1,7 +1,10 @@
 package com.example.umc.UserApi
 
 import android.content.Context
+import android.net.http.HttpException
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresExtension
 import com.example.umc.UserApi.APi.OtpApi
 import com.example.umc.UserApi.Request.LoginRequest
 import com.example.umc.UserApi.Request.OtpRequest
@@ -10,14 +13,20 @@ import com.example.umc.UserApi.Request.SignUpRequest
 import com.example.umc.UserApi.Request.UpdateUserNameRequest
 import com.example.umc.UserApi.Request.UpdateUserRequest
 import com.example.umc.UserApi.Response.DiagnosisResponse
+import com.example.umc.UserApi.Response.HealthScoreData
 import com.example.umc.UserApi.Response.HealthScoreResponse
 import com.example.umc.UserApi.Response.LoginResponse
 import com.example.umc.UserApi.Response.MypageGoalResponse
+import com.example.umc.UserApi.Response.NaverLoginResponse
 import com.example.umc.UserApi.Response.OtpResponse
 import com.example.umc.UserApi.Response.OtpValidationResponse
 import com.example.umc.UserApi.Response.SignUpResponse
 import com.example.umc.UserApi.Response.UpdateNicknameResponse
 import com.example.umc.UserApi.Response.UserProfileResponse
+import com.google.gson.Gson
+import com.google.gson.JsonSyntaxException
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
@@ -26,6 +35,7 @@ import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import retrofit2.awaitResponse
 import java.io.File
 
 class UserRepository {
@@ -55,23 +65,39 @@ class UserRepository {
     }
 
 
-    // 회원가입 처리
+    // 회원가입 처리 로직 수정
+    // 회원가입 처리 로직
     fun signUp(request: SignUpRequest, callback: (Boolean, String) -> Unit) {
+        Log.d("UserRepository", "회원가입 요청 보냄: $request")  // ✅ 요청 로그 추가
+
         api.signUp(request).enqueue(object : Callback<SignUpResponse> {
             override fun onResponse(call: Call<SignUpResponse>, response: Response<SignUpResponse>) {
                 if (response.isSuccessful) {
                     val result = response.body()
-                    callback(result?.success ?: false, result?.message ?: "응답 없음")
+                    Log.d("UserRepository", "회원가입 성공 응답: ${response.body()}")  // ✅ 응답 로그 추가
+
+                    // ✅ success 내부에서 user 정보 확인
+                    if (result?.success?.user != null) {
+                        callback(true, "회원가입 성공")
+                    } else {
+                        Log.e("UserRepository", "회원가입 실패: user 필드가 null")
+                        callback(false, "회원가입 실패: user 필드가 null")
+                    }
                 } else {
-                    callback(false, "서버 오류")
+                    val errorBody = response.errorBody()?.string()
+                    Log.e("UserRepository", "회원가입 실패: HTTP ${response.code()}, 오류: $errorBody")
+                    callback(false, "서버 오류: $errorBody")
                 }
             }
 
             override fun onFailure(call: Call<SignUpResponse>, t: Throwable) {
+                Log.e("UserRepository", "네트워크 오류 발생: ${t.message}", t)  // ✅ 네트워크 오류 로그 추가
                 callback(false, "네트워크 오류: ${t.message}")
             }
         })
     }
+
+
 
     // 로그인 요청을 Call<LoginResponse>로 반환 (callback 제거)
     fun login(email: String, password: String): Call<LoginResponse> {
@@ -164,8 +190,8 @@ class UserRepository {
         }
     }
 
-    // 건강 점수 확인 롲ㄱ
-    suspend fun getHealthScore(context: Context): HealthScoreResponse? {
+    // 건강 점수 확인 로직
+    suspend fun getHealthScore(context: Context): HealthScoreData? {
         val token = getAuthToken(context)
         if (token.isNullOrEmpty()) {
             Log.e("UserRepository", "액세스 토큰이 없습니다.")
@@ -174,18 +200,33 @@ class UserRepository {
 
         return try {
             val response = RetrofitClient.healthScoreApi.getHealthScore("Bearer $token")
-            if (response.isSuccessful && response.body() != null) {
-                response.body()
+
+            if (response.isSuccessful) {
+                val body = response.body()
+                Log.d("UserRepository", "서버 응답 성공: $body")
+
+                body?.success?.let {
+                    Log.d("UserRepository", "건강 점수 데이터: healthScore=${it.healthScore}, comparison=${it.comparison}, updatedAt=${it.updateAt}")
+                    return it
+                } ?: run {
+                    Log.e("UserRepository", "success 필드가 null입니다.")
+                    return null
+                }
             } else {
-                Log.e("UserRepository", "서버 응답 실패: ${response.code()}")
-                Log.e("UserRepository", "에러 메시지: ${response.errorBody()?.string()}")
-                null
+                Log.e("UserRepository", "서버 응답 실패: HTTP ${response.code()}")
+                Log.e("UserRepository", "에러 메시지: ${response.errorBody()?.string() ?: "없음"}")
+                return null
             }
         } catch (e: Exception) {
-            Log.e("UserRepository", "네트워크 오류 발생: ${e.message}")
-            null
+            Log.e("UserRepository", "네트워크 오류 발생", e)
+            return null
         }
     }
+
+
+
+
+
 
     suspend fun getDiagnosisResult(context: Context): DiagnosisResponse? {
         val token = getAuthToken(context)
@@ -300,6 +341,43 @@ class UserRepository {
                 callback(false, "네트워크 오류: ${t.message}")
             }
         })
+    }
+
+    @RequiresExtension(extension = Build.VERSION_CODES.S, version = 7)
+    suspend fun loginWithNaver(): NaverLoginResponse? {
+        return withContext(Dispatchers.IO) { // 네트워크 호출은 IO 스레드에서 실행
+            try {
+                val response = RetrofitClient.naverLoginApi.loginWithNaver().execute() // 동기 호출
+                if (response.isSuccessful) {
+                    val responseBody = response.body()?.string()
+                    Log.d("NAVER_LOGIN", "네이버 로그인 응답: $responseBody")
+
+                    if (!responseBody.isNullOrBlank() && responseBody.startsWith("{")) {
+                        val gson = Gson()
+                        try {
+                            val loginResponse = gson.fromJson(responseBody, NaverLoginResponse::class.java)
+                            Log.d("NAVER_LOGIN", "네이버 로그인 성공: ${loginResponse.success.accessToken}")
+                            loginResponse
+                        } catch (e: JsonSyntaxException) {
+                            Log.e("NAVER_LOGIN", "JSON 파싱 오류: ${e.message}", e)
+                            null
+                        }
+                    } else {
+                        Log.e("NAVER_LOGIN", "서버에서 JSON이 아닌 응답을 반환했습니다: $responseBody")
+                        null
+                    }
+                } else {
+                    Log.e("NAVER_LOGIN", "네이버 로그인 실패: HTTP ${response.code()}, 오류: ${response.errorBody()?.string()}")
+                    null
+                }
+            } catch (e: HttpException) {
+                Log.e("NAVER_LOGIN", "HTTP 예외 발생: ${e.message}", e)
+                null
+            } catch (e: Exception) {
+                Log.e("NAVER_LOGIN", "네트워크 오류 발생: ${e.message}", e)
+                null
+            }
+        }
     }
 
 

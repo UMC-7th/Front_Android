@@ -41,6 +41,7 @@
                     android:layout_marginEnd="16dp">
 
                     <TextView
+                        android:id="@+id/tv_name_sub"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="김태현"
@@ -63,6 +64,7 @@
                         android:layout_marginBottom="4dp"/>
 
                     <TextView
+                        android:id="@+id/tv_phone_sub"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
@@ -70,6 +72,7 @@
                         android:textColor="@color/Gray3" />
 
                     <TextView
+                        android:id="@+id/tv_email_sub"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"

@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import android.widget.PopupWindow
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.umc.Diet.DietDetailFragment
@@ -20,6 +21,8 @@ import com.example.umc.Quote.FoodPriceFragment
 import com.example.umc.Quote.MaterialFavoriteFragment
 import com.example.umc.Quote.PriceAdapter
 import com.example.umc.Quote.PriceDetailFragment
+import com.example.umc.Quote.PriceViewModel
+import com.example.umc.Quote.QuoteDetailFragment
 import com.example.umc.Quote.Sub.QuoteFragmentSub
 import com.example.umc.databinding.FragmentPriceBinding
 import com.example.umc.model.Category
@@ -165,45 +168,48 @@ class PriceFragment : Fragment() {
 
 
     private fun setupBestRecyclerView() {
-        val bestProducts = listOf(
-            Product(1, "쌀", 31658, "kg", ""),
-            Product(2, "배추", 32658, "kg", ""),
-            Product(3, "콩", 32658, "kg", ""),
-            Product(4, "김치", 32658, "kg", "")
+        val priceViewModel = ViewModelProvider(this).get(PriceViewModel::class.java)
 
-        )
+        val bestAdapter = PriceAdapter(emptyList()) { product ->
+            navigateToFoodPriceFragment(product)
+        }
 
-        val bestAdapter = PriceAdapter(bestProducts) { product ->
-            val mainActivity = activity as? MainActivity
-            mainActivity?.showTitle(product.name, true)
-            mainActivity?.hideBottomBar()
-//            기존 코드
-            val foodPriceFragment = FoodPriceFragment()
-            val bundle = Bundle().apply {
-                putString("food_name", product.name)
-                putString("food_price", product.price.toString())
-                putString("price_unit", product.unit)
-                putString("price_percent", "")
+        binding.bestRecyclerView.apply {
+            layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+            adapter = bestAdapter
+        }
+
+        // ViewModel의 데이터를 관찰하여 RecyclerView 업데이트
+        priceViewModel.hotMaterialList.observe(viewLifecycleOwner) { rankingItems ->
+            val productList = rankingItems.map { rankingItem ->
+                Product(
+                    id = rankingItem.rank.toInt(),
+                    name = rankingItem.name,
+                    price = 0, // 실제 가격 데이터가 있다면 반영
+                    unit = "kg",
+                    imageUrl = rankingItem.imgUrl
+                )
             }
-            foodPriceFragment.arguments = bundle
+            bestAdapter.updateData(productList)
+        }
 
-            val transaction = parentFragmentManager.beginTransaction()
-            transaction.replace(R.id.main_container, foodPriceFragment)
-            transaction.addToBackStack(null)
-          transaction.commit()
+        // 데이터 가져오기
+        priceViewModel.fetchHotMaterialList()
+    }
 
+    /*
 
- /*           val dietDetailFragment = DietDetailFragment()
-            val bundle = Bundle().apply {
-                putString("name", product.name)
-                putString("calories", product.price.toString())  // 가격을 칼로리 값으로 전달
-            }
-            dietDetailFragment.arguments = bundle
+        *//*           val dietDetailFragment = DietDetailFragment()
+               val bundle = Bundle().apply {
+                   putString("name", product.name)
+                   putString("calories", product.price.toString())  // 가격을 칼로리 값으로 전달
+               }
+               dietDetailFragment.arguments = bundle
 
-            val transaction = parentFragmentManager.beginTransaction()
-            transaction.replace(R.id.main_container, dietDetailFragment)
-            transaction.addToBackStack(null)
-            transaction.commit()*/
+               val transaction = parentFragmentManager.beginTransaction()
+               transaction.replace(R.id.main_container, dietDetailFragment)
+               transaction.addToBackStack(null)
+               transaction.commit()*//*
 
         }
 
@@ -211,14 +217,11 @@ class PriceFragment : Fragment() {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
             adapter = bestAdapter
         }
-    }
+    }*/
 
     private fun setupHotRecyclerView() {
         val hotProducts = listOf(
-            Product(1, "어묵류 김말이피", 0, "kg", ""),
-            Product(2, "급식재료 부세피", 0, "kg", ""),
-            Product(3, "우리아이 영양간식", 0, "kg", ""),
-            Product(4, "혼밥 레시피", 0, "kg", "")
+            Product(1, "이모카세 김", 0, "kg", "")
         )
 
         val hotAdapter = PriceAdapter(hotProducts) { product ->
@@ -226,15 +229,15 @@ class PriceFragment : Fragment() {
             mainActivity?.showTitle(product.name, true)
             mainActivity?.hideBottomBar()
 
-            val dietDetailFragment = DietDetailFragment()
+            val quoteDetailFragment = QuoteDetailFragment()
             val bundle = Bundle().apply {
                 putString("name", product.name)
                 putString("calories", product.price.toString())  // 가격을 칼로리 값으로 전달
             }
-            dietDetailFragment.arguments = bundle
+            quoteDetailFragment.arguments = bundle
 
             val transaction = parentFragmentManager.beginTransaction()
-            transaction.replace(R.id.main_container, dietDetailFragment)
+            transaction.replace(R.id.main_container, quoteDetailFragment)
             transaction.addToBackStack(null)
             transaction.commit()
         }
@@ -244,6 +247,27 @@ class PriceFragment : Fragment() {
             adapter = hotAdapter
         }
     }
+
+    private fun navigateToFoodPriceFragment(product: Product) {
+        val mainActivity = activity as? MainActivity
+        mainActivity?.showTitle(product.name, true)
+        mainActivity?.hideBottomBar()
+
+        val foodPriceFragment = FoodPriceFragment().apply {
+            arguments = Bundle().apply {
+                putString("food_name", product.name)
+                putString("food_price", product.price.toString())
+                putString("price_unit", product.unit)
+                putString("price_percent", "")
+            }
+        }
+
+        parentFragmentManager.beginTransaction()
+            .replace(R.id.main_container, foodPriceFragment)
+            .addToBackStack(null)
+            .commit()
+    }
+
 
     private fun setupListeners() {
 

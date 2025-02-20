@@ -16,9 +16,14 @@ import com.example.umc.UserApi.RetrofitClient
 import kotlinx.coroutines.launch
 
 class PriceAdapter(
-    private val productList: List<Product>,
+    private var productList: List<Product>,
     private val onClick: (Product) -> Unit
 ) : RecyclerView.Adapter<PriceAdapter.ViewHolder>() {
+
+    fun updateData(newProductList: List<Product>) {
+        productList = newProductList
+        notifyDataSetChanged()  // 변경된 데이터 적용
+    }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val productImage: ImageView = itemView.findViewById(R.id.productImage)
@@ -26,7 +31,7 @@ class PriceAdapter(
         val productPrice: TextView = itemView.findViewById(R.id.productPrice)
 
         fun bind(product: Product) {
-            productName.text = product.name
+            productName.text = product.name.split("/")[0]
             productPrice.text = "${product.price} ${product.unit}"
 
             // 이미지 로딩

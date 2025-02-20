@@ -16,6 +16,8 @@ import com.example.umc.R
 import com.example.umc.Subscribe.Repository.AddressRepository
 import com.example.umc.Subscribe.Repository.DeliveryAddressRepository
 import com.example.umc.Subscribe.SubscribeRequest.DeliveryAddressputRequest
+import com.example.umc.Subscribe.SubscribeResponse.Get.DeliveryGetResponse
+import com.example.umc.UserApi.SharedPreferencesManager
 import com.google.android.material.card.MaterialCardView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -24,7 +26,7 @@ import kotlinx.coroutines.withContext
 
 class AddressAdapter(
     private val context: Context,  // context 추가
-    private val addressList: List<Address>
+    private var addressList: MutableList<Address>
 ) : RecyclerView.Adapter<AddressAdapter.ViewHolder>() {
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -60,6 +62,18 @@ class AddressAdapter(
         holder.phoneEditText.setText(address.phone)
         holder.memoTextView.text = address.memo
         holder.memoEditText.setText(address.memo)
+
+        val savedAddress = AddressRepository.getDefaultAddress(context)
+
+        if (savedAddress != null && savedAddress.address == address.address) {
+            holder.ivCheck.setImageResource(R.drawable.ic_orange_check)
+            holder.cardView.strokeColor = ContextCompat.getColor(context, R.color.Primary_Orange1)
+            holder.ivCheck.tag = "checked"
+        } else {
+            holder.ivCheck.setImageResource(R.drawable.ic_gray_check)
+            holder.cardView.strokeColor = ContextCompat.getColor(context, R.color.Gray7)
+            holder.ivCheck.tag = "unchecked"
+        }
 
         // EditText 숨기기  (원래 코드)
 //        holder.nameEditText.visibility = View.GONE
@@ -150,7 +164,12 @@ class AddressAdapter(
                 ).forEach { it.visibility = View.GONE }
 
                 holder.editSaveButton.text = "저장"
-                holder.editSaveButton.setBackgroundColor(ContextCompat.getColor(holder.itemView.context, R.color.Primary_Orange1))
+                holder.editSaveButton.setBackgroundColor(
+                    ContextCompat.getColor(
+                        holder.itemView.context,
+                        R.color.Primary_Orange1
+                    )
+                )
             } else {
                 // 저장소에서 addressId 가져오기
                 val addressIdFromStorage = AddressRepository.getAddressId(context)  // context 전달
@@ -165,7 +184,8 @@ class AddressAdapter(
                     addressId = addressIdFromStorage,
                     name = holder.nameEditText.text.toString(),
                     address = holder.addressEditText.text.toString(),
-                    postNum = holder.postcodeEditText.text.toString().replace("[^0-9]".toRegex(), "").toInt(),
+                    postNum = holder.postcodeEditText.text.toString()
+                        .replace("[^0-9]".toRegex(), "").toInt(),
                     phoneNum = holder.phoneEditText.text.toString(),
                     memo = holder.memoEditText.text.toString()
                 )
@@ -228,54 +248,161 @@ class AddressAdapter(
                 ).forEach { it.visibility = View.VISIBLE }
 
                 holder.editSaveButton.text = "수정"
-                holder.editSaveButton.setBackgroundColor(ContextCompat.getColor(holder.itemView.context, R.color.Gray7))
+                holder.editSaveButton.setBackgroundColor(
+                    ContextCompat.getColor(
+                        holder.itemView.context,
+                        R.color.Gray7
+                    )
+                )
 
             }
         }
 
 
-
-
+//        holder.ivCheck.setOnClickListener {
+//            val addressId = AddressRepository.getAddressId(context)?.toIntOrNull()
+//
+//            if (addressId == null) {
+//                Toast.makeText(context, "기본 배송지 ID를 찾을 수 없습니다.", Toast.LENGTH_SHORT).show()
+//                return@setOnClickListener
+//            }
+//
+//            if (holder.ivCheck.tag == "unchecked") {
+//                holder.ivCheck.setImageResource(R.drawable.ic_orange_check)
+//                holder.cardView.strokeColor = ContextCompat.getColor(context, R.color.Primary_Orange1)
+//                holder.ivCheck.tag = "checked"
+//
+//                // 🚀 API 요청 (기본 배송지 설정)
+//                CoroutineScope(Dispatchers.IO).launch {
+//                    val result = DeliveryAddressRepository.Patch.setDefaultDeliveryAddress(context, addressId)
+//
+//                    withContext(Dispatchers.Main) {
+//                        if (result.isSuccess) {
+//                            Toast.makeText(context, "기본 배송지가 설정되었습니다.", Toast.LENGTH_SHORT).show()
+//
+//// 🚀 SharedPreferences에서 userId 가져오기
+//                            val storedUserId = SharedPreferencesManager.getUserId(context)
+//
+//// 🚀 SharedPreferences에서 addressId 가져오기
+//                            val storedAddressId = AddressRepository.getAddressId(context)?.toIntOrNull()
+//
+//                            if (storedUserId == -1 || storedAddressId == null) {
+//                                Toast.makeText(context, "userId 또는 addressId를 찾을 수 없습니다.", Toast.LENGTH_SHORT).show()
+//                                return@withContext
+//                            }
+//
+//// 🚀 기본 배송지 정보를 포함한 객체 생성
+//                            val defaultAddress = DeliveryGetResponse(
+//                                addressId = storedAddressId,  // ✅ addressId 추가
+//                                userId = storedUserId,  // ✅ userId 추가
+//                                isDefault = true,  // ✅ 기본 배송지 설정
+//                                name = address.name,
+//                                address = address.address,
+//                                postNum = address.postcode.replace("[^0-9]".toRegex(), "").toIntOrNull() ?: 0, // 숫자로 변환, 기본값 0
+//                                phoneNum = address.phone,
+//                                memo = address.memo
+//                            )
+//
+//// ✅ SharedPreferences에 기본 배송지 저장
+//                            AddressRepository.saveDefaultAddress(context, defaultAddress)
+//
+//
+//
+//
+//                            // ✅ UI 업데이트 (다른 체크 해제)
+//                            notifyDataSetChanged()
+//                        } else {
+//                            Toast.makeText(context, "기본 배송지 설정 실패", Toast.LENGTH_SHORT).show()
+//                            holder.ivCheck.setImageResource(R.drawable.ic_gray_check)
+//                            holder.cardView.strokeColor = ContextCompat.getColor(context, R.color.Gray7)
+//                            holder.ivCheck.tag = "unchecked"
+//                        }
+//                    }
+//                }
+//            } else {
+//                holder.ivCheck.setImageResource(R.drawable.ic_gray_check)
+//                holder.cardView.strokeColor = ContextCompat.getColor(context, R.color.Gray7)
+//                holder.ivCheck.tag = "unchecked"
+//            }
+//        }
+        // 이것이 원래 코드
         holder.ivCheck.setOnClickListener {
-            val savedAddressId = AddressRepository.getAddressId(context)
+            // 🚀 현재 클릭한 주소 정보를 가져옴
+            val clickedAddress = addressList[position]
 
-            if (savedAddressId.isNullOrEmpty()) {
+            // 🚀 저장된 기본 배송지 ID 확인, 없으면 클릭한 주소의 addressId 사용
+            val addressId = AddressRepository.getAddressId(context)?.toIntOrNull()
+                ?: (clickedAddress as? DeliveryGetResponse)?.addressId
+
+            if (addressId == null) {
                 Toast.makeText(context, "기본 배송지 ID를 찾을 수 없습니다.", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
-            val addressId = savedAddressId.toInt()
-
             if (holder.ivCheck.tag == "unchecked") {
                 holder.ivCheck.setImageResource(R.drawable.ic_orange_check)
-                holder.cardView.strokeColor = ContextCompat.getColor(holder.itemView.context, R.color.Primary_Orange1)
+                holder.cardView.strokeColor =
+                    ContextCompat.getColor(context, R.color.Primary_Orange1)
                 holder.ivCheck.tag = "checked"
 
-                // 🚀 PATCH 요청: 기본 배송지 설정
+                // 🚀 API 요청 (기본 배송지 설정)
                 CoroutineScope(Dispatchers.IO).launch {
-                    val result = DeliveryAddressRepository.Patch.setDefaultDeliveryAddress(context, addressId)
+                    val result = DeliveryAddressRepository.Patch.setDefaultDeliveryAddress(
+                        context,
+                        addressId
+                    )
 
                     withContext(Dispatchers.Main) {
                         if (result.isSuccess) {
                             Toast.makeText(context, "기본 배송지가 설정되었습니다.", Toast.LENGTH_SHORT).show()
 
-                            // ✅ UI 업데이트 (다른 체크 해제)
+                            // 🚀 SharedPreferences에서 userId 가져오기
+                            val storedUserId = SharedPreferencesManager.getUserId(context)
+
+                            // 🚀 기본 배송지 정보를 포함한 객체 생성
+                            val defaultAddress = DeliveryGetResponse(
+                                addressId = addressId,
+                                userId = storedUserId,
+                                isDefault = true, // ✅ 기본 배송지 설정
+                                name = clickedAddress.name,
+                                address = clickedAddress.address,
+                                postNum = clickedAddress.postcode.replace("[^0-9]".toRegex(), "")
+                                    .toIntOrNull() ?: 0,
+                                phoneNum = clickedAddress.phone,
+                                memo = clickedAddress.memo
+                            )
+
+                            // ✅ SharedPreferences에 기본 배송지 저장
+                            AddressRepository.saveDefaultAddress(context, defaultAddress)
+
+                            // ✅ 기존 기본 배송지가 있으면 체크 해제
+                            // 🚀 기존 기본 배송지가 있으면 체크 해제
+                            addressList.forEachIndexed { index, item ->
+                                val deliveryItem = item as? DeliveryGetResponse // 안전한 타입 변환
+                                if (deliveryItem != null && deliveryItem.addressId != addressId) {
+                                    notifyItemChanged(index)
+                                }
+                            }
+
+
+                            // ✅ UI 업데이트
                             notifyDataSetChanged()
                         } else {
                             Toast.makeText(context, "기본 배송지 설정 실패", Toast.LENGTH_SHORT).show()
                             holder.ivCheck.setImageResource(R.drawable.ic_gray_check)
-                            holder.cardView.strokeColor = ContextCompat.getColor(holder.itemView.context, R.color.Gray7)
+                            holder.cardView.strokeColor =
+                                ContextCompat.getColor(context, R.color.Gray7)
                             holder.ivCheck.tag = "unchecked"
                         }
                     }
                 }
             } else {
                 holder.ivCheck.setImageResource(R.drawable.ic_gray_check)
-                holder.cardView.strokeColor = ContextCompat.getColor(holder.itemView.context, R.color.Gray7)
+                holder.cardView.strokeColor = ContextCompat.getColor(context, R.color.Gray7)
                 holder.ivCheck.tag = "unchecked"
             }
         }
 
-    }
-    override fun getItemCount() = addressList.size
+
+    }override fun getItemCount() = addressList.size
 }

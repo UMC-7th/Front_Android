@@ -19,10 +19,13 @@ import androidx.lifecycle.lifecycleScope
 import com.example.umc.Main.MainActivity
 import com.example.umc.R
 import com.example.umc.Survey.SurveyGoalFragment
+import com.example.umc.Survey.SurveyMealFragment
 import com.example.umc.UserApi.Response.HealthScoreData
 import com.example.umc.UserApi.Response.SuccessData
+import com.example.umc.UserApi.SharedPreferencesManager
 import com.example.umc.UserApi.UserRepository
 import com.example.umc.databinding.FragmentMyBinding
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
 
@@ -56,15 +59,19 @@ class MyFragment : Fragment() {
 
         initializeViews()
         setupListeners()
+
+            // 개별 호출
         fetchHealthScore()
         fetchAiDiagnosis() // AI 진단 데이터 조회
         fetchMypageGoal() // 목표 정보 조회
+
 
     }
     private fun fetchAiDiagnosis() {
         lifecycleScope.launch {
             try {
                 val response = userRepository.getDiagnosisResult(requireContext())
+
                 if (response == null) {
                     Log.e("MyFragment", "서버 응답이 null입니다.")
                     binding.tvAiDiagnosisDiet.text = "서버 응답이 없습니다."
@@ -72,51 +79,91 @@ class MyFragment : Fragment() {
                     return@launch
                 }
 
-                // 응답에서 성공적인 데이터가 있을 경우, UI 업데이트
-                if (response.success != null) {
-                    updateAiDiagnosisInfo(response.success)
-                } else {
-                    Log.e("MyFragment", "진단 결과가 없습니다.")
-                    binding.tvAiDiagnosisDiet.text = "진단 결과가 없습니다."
-                    binding.tvAiDiagnosisHealth.text = "조언 정보가 없습니다."
+                Log.d("MyFragment", "AI 진단 응답 데이터: $response")
+
+                response.success?.let {
+                    Log.d("MyFragment", "Diagnosis: ${it.diagnosis}, Advice: ${it.advice}")
+                    updateAiDiagnosisInfo(it)
+                } ?: run {
+                    Log.e("MyFragment", "success 필드가 null입니다.")
                 }
             } catch (e: Exception) {
                 Log.e("MyFragment", "AI 진단 조회 실패: ${e.message}", e)
-                binding.tvAiDiagnosisDiet.text = "AI 진단 조회 실패"
-                binding.tvAiDiagnosisHealth.text = "AI 진단 조회 실패"
             }
         }
     }
+
+
 
 
     private fun fetchMypageGoal() {
         lifecycleScope.launch {
             try {
-                // 목표 정보를 가져오는 API 호출
                 val response = userRepository.getMypageGoal(requireContext())
-                response?.let { mypageGoalResponse ->
-                    // goal 값 화면에 업데이트
-                    updateGoalInfo(mypageGoalResponse.user.goal)
+
+                if (response == null) {
+                    Log.e("MyFragment", "[마이페이지 목표] 서버 응답이 null입니다.")
+                    return@launch
                 }
+
+                Log.d("MyFragment", "[마이페이지 목표] 응답 데이터: $response")
+
+                response.user?.let {
+                    Log.d("MyFragment", "[마이페이지 목표] 유저 목표: ${it.goal}")
+                    updateGoalInfo(it.goal)
+                } ?: Log.e("MyFragment", "[마이페이지 목표] 데이터 없음")
             } catch (e: Exception) {
-                Log.e("MyFragment", "목표 정보 조회 실패: ${e.message}")
-                // 에러 처리 필요시 여기에 추가
+                Log.e("MyFragment", "[마이페이지 목표] 조회 실패: ${e.message}", e)
             }
         }
     }
+
     private fun fetchHealthScore() {
         lifecycleScope.launch {
             try {
-                val response = userRepository.getHealthScore(requireContext())
-                response?.let { healthScoreResponse ->
-                    updateHealthInfo(healthScoreResponse.success)
+                val healthScoreData = userRepository.getHealthScore(requireContext())
+
+                if (healthScoreData != null) {
+                    updateHealthInfo(healthScoreData)
+                } else {
+                    Log.e("MyFragment", "[건강 점수] 데이터 없음")
                 }
             } catch (e: Exception) {
-                Log.e("MyFragment", "건강 점수 조회 실패: ${e.message}")
-                // 에러 처리 필요시 여기에 추가
+                Log.e("MyFragment", "건강 점수 조회 실패: ${e.message}", e)
             }
         }
     }
+
+    //병렬 적으로 불러오는 로직
+
+//    private fun fetchAllData() {
+//        lifecycleScope.launch {
+//            try {
+//                // ✅ 병렬로 API 요청 실행
+//                val healthScoreDeferred = async { userRepository.getHealthScore(requireContext()) }
+//                val aiDiagnosisDeferred = async { userRepository.getDiagnosisResult(requireContext()) }
+//                val mypageGoalDeferred = async { userRepository.getMypageGoal(requireContext()) }
+//
+//                // ✅ API 응답 대기
+//                val healthScoreResponse = healthScoreDeferred.await()
+//                val aiDiagnosisResponse = aiDiagnosisDeferred.await()
+//                val mypageGoalResponse = mypageGoalDeferred.await()
+//
+//                // ✅ 건강 점수 업데이트
+//                healthScoreResponse?.success?.let { updateHealthInfo(it) } ?: Log.e("MyFragment", "[건강 점수] 데이터 없음")
+//
+//                // ✅ AI 진단 업데이트
+//                aiDiagnosisResponse?.success?.let { updateAiDiagnosisInfo(it) } ?: Log.e("MyFragment", "[AI 진단] 데이터 없음")
+//
+//                // ✅ 마이페이지 목표 업데이트
+//                mypageGoalResponse?.user?.let { updateGoalInfo(it.goal) } ?: Log.e("MyFragment", "[마이페이지 목표] 데이터 없음")
+//
+//            } catch (e: Exception) {
+//                Log.e("MyFragment", "데이터 가져오기 실패: ${e.message}", e)
+//            }
+//        }
+//    }
+
     private fun updateGoalInfo(goal: String) {
         binding.apply {
             // goal 값이 업데이트되면 goalmeal TextView에 값 설정
@@ -178,7 +225,8 @@ class MyFragment : Fragment() {
     private fun initializeViews() {
         binding.apply {
             // 기존 코드
-            tvName.text = "토미"
+            val userName = SharedPreferencesManager.getUserName(requireContext())
+            tvName.text = userName ?: "이름 없음"
             tvProfileManage.text = "내 정보 관리"
 
             // AI 텍스트 색상 변경을 위한 SpannableString 설정
@@ -254,10 +302,10 @@ class MyFragment : Fragment() {
             // 여기에 변경 버튼 클릭시 수행할 로직 추가
             dialog.dismiss()
             // SurveyGoalFragment로 전환
-            parentFragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, SurveyGoalFragment())  // fragment_container는 메인 액티비티의 프래그먼트 컨테이너 ID입니다
-                .addToBackStack(null)  // 뒤로 가기 동작을 위해 백스택에 추가
-                .commit()
+            val fragmentTransaction = requireActivity().supportFragmentManager.beginTransaction()
+            fragmentTransaction.replace(R.id.fragment_my_container, SurveyMealFragment())
+            fragmentTransaction.addToBackStack(null)
+            fragmentTransaction.commit()
         }
 
         // 다이얼로그 크기 설정
