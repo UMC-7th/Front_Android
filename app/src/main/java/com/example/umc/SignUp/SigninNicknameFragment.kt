@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,6 +13,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.example.umc.R
 import com.example.umc.Signin.LoginActivity
+import com.example.umc.UserApi.Request.SignUpRequest
 import com.example.umc.UserApi.Viewmodel.SignUpViewModel
 import com.example.umc.databinding.FragmentSigninNicknameBinding
 // nickname 처리
@@ -36,13 +38,39 @@ class SigninNicknameFragment : Fragment() {
         setupNicknameValidation()
 
         // NextButton 클릭 시 Fragment 전환  -> 일단 다시 login쪽으로 넘어가게했습니다.
+//        binding.NextButton.setOnClickListener {
+//            signUpViewModel.name = binding.editText.text.toString()
+//            Toast.makeText(requireContext(), "회원가입에 성공하셨습니다", Toast.LENGTH_SHORT).show()
+//            val intent = Intent(requireContext(), LoginActivity::class.java)
+//            startActivity(intent)
+//            requireActivity().finish() // 현재 Fragment가 포함된 Activity 종료 (필요에 따라 유지 가능)
+//        }
+        //원래 코드
         binding.NextButton.setOnClickListener {
             signUpViewModel.name = binding.editText.text.toString()
-            Toast.makeText(requireContext(), "회원가입에 성공하셨습니다", Toast.LENGTH_SHORT).show()
-            val intent = Intent(requireContext(), LoginActivity::class.java)
-            startActivity(intent)
-            requireActivity().finish() // 현재 Fragment가 포함된 Activity 종료 (필요에 따라 유지 가능)
+
+            // 🔥 `purpose`가 아직 설정되지 않았다면 기본값 할당
+            if (signUpViewModel.purpose.isNullOrEmpty()) {
+                signUpViewModel.purpose = "운동"
+            }
+
+            Log.d("SignUpRequest", "회원가입 요청 데이터: $signUpViewModel")
+
+            signUpViewModel.sendSignUpRequest { success, message ->
+                if (success) {
+                    Log.d("SignUpResponse", "회원가입 성공")
+                    Toast.makeText(requireContext(), "회원가입 성공!", Toast.LENGTH_SHORT).show()
+                     val intent = Intent(requireContext(), LoginActivity::class.java)
+                     startActivity(intent)
+                     requireActivity().finish() // 현재 Fragment가 포함된 Activity 종료 (필요에 따라 유지 가능)
+                } else {
+                    Log.e("SignUpResponse", "회원가입 실패: $message")
+                    Toast.makeText(requireContext(), "회원가입 실패: $message", Toast.LENGTH_SHORT).show()
+                }
+            }
         }
+
+
 
 
         return view
