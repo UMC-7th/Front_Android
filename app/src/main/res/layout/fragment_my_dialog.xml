@@ -51,7 +51,7 @@
 
             <Button
                 android:id="@+id/btnConfirm"
-                android:layout_marginLeft="@dimen/spacing_32"
+                android:layout_marginLeft="28sp"
                 android:layout_width="100dp"
                 android:backgroundTint="@color/Primary_Orange1"
                 android:layout_height="wrap_content"

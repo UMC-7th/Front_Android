@@ -138,25 +138,25 @@
             app:layout_constraintTop_toTopOf="@+id/passwordLoginInputLayout" />
 
 
-        <ImageView
-            android:id="@+id/imageView18"
-            android:layout_width="14sp"
-            android:layout_height="14sp"
-            android:layout_marginStart="300dp"
-            android:layout_marginTop="10dp"
-            android:src="@drawable/auto_login"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/passwordLoginInputLayout" />
+<!--        <ImageView-->
+<!--            android:id="@+id/imageView18"-->
+<!--            android:layout_width="14sp"-->
+<!--            android:layout_height="14sp"-->
+<!--            android:layout_marginStart="300dp"-->
+<!--            android:layout_marginTop="10dp"-->
+<!--            android:src="@drawable/auto_login"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintTop_toBottomOf="@+id/passwordLoginInputLayout" />-->
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="2sp"
-            android:layout_marginTop="6sp"
-            android:text="자동 로그인"
-            android:textColor="@color/Gray4"
-            app:layout_constraintStart_toEndOf="@+id/imageView18"
-            app:layout_constraintTop_toBottomOf="@id/passwordLoginInputLayout" />
+<!--        <TextView-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginLeft="2sp"-->
+<!--            android:layout_marginTop="6sp"-->
+<!--            android:text="자동 로그인"-->
+<!--            android:textColor="@color/Gray4"-->
+<!--            app:layout_constraintStart_toEndOf="@+id/imageView18"-->
+<!--            app:layout_constraintTop_toBottomOf="@id/passwordLoginInputLayout" />-->
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/loginButton2"

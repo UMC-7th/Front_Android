@@ -205,7 +205,7 @@
                             android:layout_height="wrap_content"
                             android:textColor="@color/Gray3"
                             android:layout_marginLeft="@dimen/spacing_16"
-                            android:text="생년월일"/>
+                            android:text="생년월일    "/>
                         <EditText
                             android:id="@+id/birthEdit"
                             android:background="@color/transparent"
@@ -229,7 +229,7 @@
                             android:layout_height="wrap_content"
                             android:textColor="@color/Gray3"
                             android:layout_marginLeft="@dimen/spacing_16"
-                            android:text="이메일"/>
+                            android:text="이메일    "/>
                         <EditText
                             android:id="@+id/emailEdit"
                             android:background="@color/transparent"
@@ -252,7 +252,7 @@
                             android:layout_height="wrap_content"
                             android:textColor="@color/Gray3"
                             android:layout_marginLeft="@dimen/spacing_16"
-                            android:text="전화번호"/>
+                            android:text="전화번호    "/>
                         <EditText
                             android:id="@+id/phoneEdit"
                             android:background="@color/transparent"
