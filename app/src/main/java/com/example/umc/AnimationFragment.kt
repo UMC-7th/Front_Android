@@ -17,6 +17,7 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.example.umc.Main.MainActivity
+import com.example.umc.UserApi.SharedPreferencesManager
 import com.example.umc.databinding.FragmentAnimationBinding
 
 class AnimationFragment : Fragment(R.layout.fragment_animation) {
@@ -27,6 +28,8 @@ class AnimationFragment : Fragment(R.layout.fragment_animation) {
 
     private var _binding: FragmentAnimationBinding? = null
     private val binding get() = _binding!!
+
+    private lateinit var aniNameTextView: TextView
 
     private lateinit var texts: List<TextView>
     private lateinit var imageViews: List<ImageView>
@@ -53,11 +56,14 @@ class AnimationFragment : Fragment(R.layout.fragment_animation) {
         _binding = FragmentAnimationBinding.inflate(inflater, container, false)
 
         // View 초기화
-
+        aniNameTextView = binding.aniName
         texts = listOf(binding.textView1, binding.textView2, binding.textView3)
         imageViews = listOf(binding.icAnima2, binding.icAnima3, binding.icAnima4, binding.icAnima5)
         linearLayout = binding.textlinear // LinearLayout의 ID를 확인하고 바인딩해주세요
+        val userName = SharedPreferencesManager.getUserName(requireContext())
 
+        // 3. userName이 존재하면 텍스트에 설정
+        aniNameTextView.text = userName ?: "사용자"
         // 1단계: 초기 설정
         initializeStep1()
 
@@ -107,7 +113,7 @@ class AnimationFragment : Fragment(R.layout.fragment_animation) {
         // 텍스트 색상 변경 애니메이션
         val textColorAnimation = ValueAnimator.ofArgb(
             ContextCompat.getColor(requireContext(), R.color.Gray7),
-            ContextCompat.getColor(requireContext(), R.color.Gray3)
+            ContextCompat.getColor(requireContext(), R.color.Gray2)
         ).apply {
             duration = ANIMATION_STEP_DURATION
             addUpdateListener { texts[0].setTextColor(it.animatedValue as Int) }
@@ -133,7 +139,7 @@ class AnimationFragment : Fragment(R.layout.fragment_animation) {
 
         val textColorAnimation = ValueAnimator.ofArgb(
             ContextCompat.getColor(requireContext(), R.color.Gray7),
-            ContextCompat.getColor(requireContext(), R.color.Gray3)
+            ContextCompat.getColor(requireContext(), R.color.Gray2)
         ).apply {
             duration = ANIMATION_STEP_DURATION
             addUpdateListener { texts[1].setTextColor(it.animatedValue as Int) }

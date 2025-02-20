@@ -10,7 +10,7 @@
         android:layout_marginLeft="@dimen/spacing_8"
         android:layout_width="180sp"
         android:layout_height="180sp"
-        android:layout_marginTop="210sp"
+        android:layout_marginTop="200sp"
         android:src="@drawable/ic_anima_1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -18,7 +18,7 @@
 
     <LinearLayout
         android:id="@+id/textlinear"
-        android:layout_marginTop="@dimen/spacing_12"
+        android:layout_marginTop="@dimen/spacing_16"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
@@ -61,12 +61,27 @@
     </LinearLayout>
 
     <TextView
+        android:id="@+id/ani_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="25dp"
+        android:fontFamily="@font/pretendard_bold"
+        android:text="토미"
+        android:textColor="@color/Primary_Orange1"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@+id/textView20"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView10" />
+
+    <TextView
         android:id="@+id/textView20"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="@font/pretendard_bold"
-        android:layout_marginTop="@dimen/spacing_32"
-        android:text="토미님의"
+        android:layout_marginTop="28sp"
+        android:text="님의"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView10" />
@@ -84,8 +99,9 @@
 
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/lotti"
-        android:layout_marginTop="@dimen/spacing_8"
-        android:layout_width="150sp"
+        android:rotation="90"
+        android:layout_marginTop="@dimen/spacing_16"
+        android:layout_width="130sp"
         android:layout_height="30sp"
         android:scaleY="1.5"
         android:scaleX="1.4"
