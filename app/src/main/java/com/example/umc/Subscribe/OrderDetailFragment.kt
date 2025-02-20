@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.umc.Main.MainActivity
 import com.example.umc.databinding.FragmentOrderDetailBinding
@@ -12,6 +13,8 @@ import com.example.umc.databinding.FragmentOrderDetailBinding
 class OrderDetailFragment : Fragment() {
     private var _binding: FragmentOrderDetailBinding? = null
     private val binding get() = _binding!!
+
+    private lateinit var viewModel: SubscribeViewModel
     private val orderMenuAdapter = OrderMenuAdapter()
 
     override fun onCreateView(
@@ -23,15 +26,15 @@ class OrderDetailFragment : Fragment() {
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        setupToolbar()
-        setupRecyclerView()
-        loadOrderData()
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        viewModel = ViewModelProvider(requireActivity()).get(SubscribeViewModel::class.java)
     }
 
-    private fun setupToolbar() {
-        // 필요한 경우 툴바 설정
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setupRecyclerView()
+        loadOrderData()
     }
 
     private fun setupRecyclerView() {
@@ -42,35 +45,65 @@ class OrderDetailFragment : Fragment() {
     }
 
     private fun loadOrderData() {
-        // 기존 데이터 로딩 로직 그대로 유지
-        val orderItems = listOf(
-            OrderMenuItem(
-                menuDate = "1/22 (수) 식단 - 배송 완료",
-                breakfastName = "하루 시작 포케 - 2인분",
-                breakfastKcal = 420,
-                breakfastPrice = 20000,
-                lunchName = "고등어 조림 한상 - 1인분",
-                lunchKcal = 840,
-                lunchPrice = 12000
+        // ViewModel의 선택된 식단 데이터를 기반으로 OrderDetails 생성
+        val selectedDiets = viewModel.selectedDiets.value ?: emptyList()
+
+        // 선택된 식단 정보로 OrderMenuItem 생성
+        val orderItems = if (selectedDiets.isEmpty()) {
+            listOf(
+                OrderMenuItem(
+                    menuDate = "1/22 (수) 식단 - 배송 완료",
+                    breakfastName = "하루 시작 포케 - 2인분",
+                    breakfastKcal = 420,
+                    breakfastPrice = 20000,
+                    lunchName = "고등어 조림 한상 - 1인분",
+                    lunchKcal = 840,
+                    lunchPrice = 12000
+                )
             )
+        } else {
+            selectedDiets.map { diet ->
+                OrderMenuItem(
+                    menuDate = "${diet.mealDate} (${diet.week}) 식단 - 배송 예정",
+                    breakfastName = diet.food,
+                    breakfastKcal = 420,
+                    breakfastPrice = 12000,
+                    lunchName = "추가 메뉴",
+                    lunchKcal = 840,
+                    lunchPrice = 12000
+                )
+            }
+        }
+
+        // 주문 상세 정보 설정
+        val orderDetails = OrderDetails(
+            orderDate = "2025. 1. 1 결제건",
+            recipientName = "김태현",
+            address = "서울시 송파구 송파동 송파아파트 101동 101호",
+            phoneNumber = "010-1234-5678",
+            deliveryMemo = "문 앞 (1234)",
+            orderItems = orderItems
         )
+
+        // ViewModel에 주문 상세 정보 저장
+        viewModel.setOrderDetails(orderDetails)
+
+        // UI 업데이트
         orderMenuAdapter.submitList(orderItems)
 
         binding.apply {
-            orderDateTv.text = "2025. 1. 1 결제건"
-            recipientNameTv.text = "김태현"
-            addressDetailTv.text = "서울시 송파구 송파동 송파아파트 101동 101호"
-            phoneTv.text = "010-1234-5678"
-            deliveryMemoTv.text = "문 앞 (1234)"
+            orderDateTv.text = orderDetails.orderDate
+            recipientNameTv.text = orderDetails.recipientName
+            addressDetailTv.text = orderDetails.address
+            phoneTv.text = orderDetails.phoneNumber
+            deliveryMemoTv.text = orderDetails.deliveryMemo
 
-            productPriceTv.text = "32,000원"
+            // 총 가격 계산 로직 추가
+            val totalPrice = orderItems.sumOf { it.breakfastPrice + it.lunchPrice }
+            productPriceTv.text = "${totalPrice}원"
             deliveryFeeTv.text = "0원"
-            kakaoPayTv.text = "32,000원"
-            totalPriceTv.text = "32,000원"
-
-            editDeliveryBtn.setOnClickListener {
-                // TODO: 배송지 변경 기능 구현
-            }
+            kakaoPayTv.text = "${totalPrice}원"
+            totalPriceTv.text = "${totalPrice}원"
         }
     }
 

@@ -548,7 +548,8 @@
                             android:backgroundTint="@color/Primary_Orange1"
                             android:text="56,000결제하기"
                             android:textStyle="bold"
-
+                            android:layout_marginBottom="@dimen/spacing_48"
+                            app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@+id/NaverPay" />

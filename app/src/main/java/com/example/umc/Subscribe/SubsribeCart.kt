@@ -8,11 +8,13 @@ import android.view.ViewGroup
 import android.widget.PopupWindow
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.umc.Main.MainActivity
 import com.example.umc.R
 import com.example.umc.Subscribe.Retrofit.RetrofitClient
 import com.example.umc.Subscribe.SubscribeCartAdapter
+import com.example.umc.Subscribe.SubscribeViewModel
 import com.example.umc.Subscribe.Subscribecredit
 import com.example.umc.databinding.FragmentSubscribeCartBinding
 import com.example.umc.model.CartItem
@@ -26,6 +28,7 @@ class SubscribeCart : Fragment() {
     private var isAllSelected = false
     private val itemChecked = mutableListOf(false, false, false, false)
     private val itemCounts = mutableListOf(1, 1, 1, 1)
+    private lateinit var viewModel: SubscribeViewModel
 
     private val cartItems = mutableListOf(
         CartItem("01.01", "아침", "콩나물 김치찌개 외 3개", 1),
@@ -36,6 +39,11 @@ class SubscribeCart : Fragment() {
     private lateinit var adapter: SubscribeCartAdapter
     private var popupWindow: PopupWindow? = null
     private var isTooltipVisible = false
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        viewModel = ViewModelProvider(requireActivity()).get(SubscribeViewModel::class.java)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -48,6 +56,17 @@ class SubscribeCart : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // ViewModel에서 선택된 식단 아이템 가져오기
+        viewModel.selectedDiets.observe(viewLifecycleOwner) { selectedDiets ->
+            if (selectedDiets.isNotEmpty()) {
+                // 선택된 식단을 CartItem으로 변환
+                cartItems.clear()
+                cartItems.addAll(viewModel.convertToCartItems(selectedDiets))
+                adapter.notifyDataSetChanged()
+                updateTotalPrice()
+                updateServingSummary()
+            }
+        }
         // 어댑터 초기화
         adapter = SubscribeCartAdapter(cartItems, { cartItem ->
             updateButtonColor()

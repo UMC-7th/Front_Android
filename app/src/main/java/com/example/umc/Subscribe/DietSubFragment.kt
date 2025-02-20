@@ -11,6 +11,7 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.umc.Diet.DietItem
 import com.example.umc.Main.MainActivity
@@ -33,6 +34,7 @@ class DietSubFragment : Fragment(), OnDietCheckedChangeListener {
 
     private lateinit var dailyDietAdapter: SubscribeDietAdapter
     private lateinit var dietList: List<DietItem>
+    private lateinit var viewModel: SubscribeViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -40,6 +42,11 @@ class DietSubFragment : Fragment(), OnDietCheckedChangeListener {
     ): View {
         _binding = FragmentDietSubBinding.inflate(inflater, container, false)
         return binding.root
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        viewModel = ViewModelProvider(requireActivity()).get(SubscribeViewModel::class.java)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -98,7 +105,12 @@ class DietSubFragment : Fragment(), OnDietCheckedChangeListener {
     }
 
 
+
     private fun navigateToSubscribeCart() {
+        // 선택된 아이템만 필터링하여 ViewModel에 저장
+        val selectedDiets = dietList.filter { it.isChecked }
+        viewModel.setSelectedDiets(selectedDiets)
+
         val transaction: FragmentTransaction = parentFragmentManager.beginTransaction()
         transaction.replace(R.id.main_container, SubscribeCart())
         transaction.addToBackStack(null)
