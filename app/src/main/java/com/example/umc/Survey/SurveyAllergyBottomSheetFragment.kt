@@ -8,18 +8,16 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageButton
-import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.Fragment
 import com.example.umc.R
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.button.MaterialButton
 
-class SurveyAllergyBottomSheetFragment(private val onSelectionDone: (List<String>) -> Unit) : BottomSheetDialogFragment() {
+class SurveyAllergyBottomSheetFragment(private val onSelectionDone: (Boolean) -> Unit) : BottomSheetDialogFragment() {
 
     private val selectedAllergyButtons = mutableSetOf<MaterialButton>()
     private lateinit var nextButton: Button
     private lateinit var previousButton: Button
-
-    private val viewModel: SurveyViewModel by activityViewModels() // ✅ ViewModel 연동
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -61,18 +59,9 @@ class SurveyAllergyBottomSheetFragment(private val onSelectionDone: (List<String
             goToSurveyMealFragment()
         }
 
-        // "다음" 버튼 클릭 시 ViewModel에 저장 후 SurveyDiseaseFragment로 이동
+        // "다음" 버튼 클릭 시 SurveyDiseaseFragment로 이동
         nextButton.setOnClickListener {
-            val selectedAllergies = selectedAllergyButtons.map { it.text.toString() }
-
-            // ✅ 선택된 알레르기 정보를 ViewModel에 저장
-            viewModel.updateSurveyData(
-                viewModel.surveyData.value!!.copy(
-                    allergyDetails = selectedAllergies.joinToString(", ") // 쉼표로 구분
-                )
-            )
-
-            onSelectionDone(selectedAllergies) // 선택된 목록 전달
+            onSelectionDone(selectedAllergyButtons.isNotEmpty()) // 선택된 항목이 있는지 전달
             dismiss()  // BottomSheet 닫기
             goToSurveyDiseaseFragment()
         }
@@ -122,7 +111,7 @@ class SurveyAllergyBottomSheetFragment(private val onSelectionDone: (List<String
         fragmentTransaction.commit()
     }
 
-    // 이전 버튼 클릭 시
+    // SurveyMealFragment로 이동
     private fun goToSurveyMealFragment() {
         val fragmentTransaction = requireActivity().supportFragmentManager.beginTransaction()
         fragmentTransaction.replace(R.id.survey_container, SurveyMealFragment())

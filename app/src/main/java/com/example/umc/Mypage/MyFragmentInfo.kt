@@ -21,7 +21,6 @@ import com.example.umc.R
 import com.example.umc.UserApi.Request.UpdateUserRequest
 import com.example.umc.UserApi.UserRepository
 import com.example.umc.UserApi.Response.UserProfileData  // 프로필 조회용
-import com.example.umc.UserApi.SharedPreferencesManager
 import com.example.umc.databinding.FragmentMyInfoBinding
 import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -73,52 +72,22 @@ class MyFragmentInfo : Fragment() {
             Log.e("MyFragmentInfo", "토큰이 존재하지 않습니다.")
         }
 
-        //이거 원래코드
-//        binding.change.setOnClickListener {
-//            isEditMode = !isEditMode
-//            setEditableMode(isEditMode)
-//            updateChangeButton()
-//
-//            if (!isEditMode) {
-//                val updatedProfileData = UpdateUserRequest(  // ✅ UpdateUserRequest로 변경
-//                    nickname = binding.nickNameEdit.text.toString(),
-//                    email = binding.emailEdit.text.toString(),
-//                    birth = binding.birthEdit.text.toString(),
-//                    name = binding.nameEdit.text.toString(),
-//                    phoneNum = binding.phoneEdit.text.toString()
-//                )
-//                updateUserProfile(updatedProfileData)  // ✅ 올바른 타입으로 전달
-//            }
-//        }
         binding.change.setOnClickListener {
             isEditMode = !isEditMode
             setEditableMode(isEditMode)
             updateChangeButton()
 
-            val userId = SharedPreferencesManager.getUserId(requireContext())
-
             if (!isEditMode) {
-                // 이름만 수정하는 경우
-                val updatedName = binding.nameEdit.text.toString()
-
-                if (updatedName != "") {
-                    // name 수정 (POST 요청)
-                    updateUserName(userId, updatedName)
-                } else {
-                    // name을 제외한 모든 정보 수정 (PUT 요청)
-                    val updatedProfileData = UpdateUserRequest(
-                        nickname = binding.nickNameEdit.text.toString(),
-                        email = binding.emailEdit.text.toString(),
-                        birth = binding.birthEdit.text.toString(),
-                        name = binding.nameEdit.text.toString(),
-                        phoneNum = binding.phoneEdit.text.toString()
-                    )
-                    updateUserProfile(updatedProfileData)
-                }
+                val updatedProfileData = UpdateUserRequest(  // ✅ UpdateUserRequest로 변경
+                    nickname = binding.nickNameEdit.text.toString(),
+                    email = binding.emailEdit.text.toString(),
+                    birth = binding.birthEdit.text.toString(),
+                    name = binding.nameEdit.text.toString(),
+                    phoneNum = binding.phoneEdit.text.toString()
+                )
+                updateUserProfile(updatedProfileData)  // ✅ 올바른 타입으로 전달
             }
         }
-
-
         // 이미지 클릭 리스너 추가
         binding.imageView8.setOnClickListener {
             showImageDialog()
@@ -144,23 +113,6 @@ class MyFragmentInfo : Fragment() {
             editText.isFocusable = editable
             if (!editable) {
                 editText.clearFocus()
-            }
-        }
-    }
-    // 이름 수정만 POST 요청
-    private fun updateUserName(userId: Int, newName: String) {
-        lifecycleScope.launch {
-            try {
-                userRepository.updateUserName(userId, newName) { success, message ->
-                    if (success) {
-                        Toast.makeText(context, "이름이 성공적으로 수정되었습니다.", Toast.LENGTH_SHORT).show()
-                    } else {
-                        Toast.makeText(context, "이름 수정 실패: $message", Toast.LENGTH_SHORT).show()
-                    }
-                }
-            } catch (e: Exception) {
-                Toast.makeText(context, "이름 수정 중 오류 발생", Toast.LENGTH_SHORT).show()
-                Log.e("MyFragmentInfo", "이름 수정 실패: ${e.message}")
             }
         }
     }

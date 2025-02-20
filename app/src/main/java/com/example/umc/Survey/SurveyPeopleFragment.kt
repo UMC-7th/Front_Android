@@ -1,6 +1,7 @@
 package com.example.umc.Survey
 
 import android.animation.ObjectAnimator
+import android.annotation.SuppressLint
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Bundle
@@ -15,7 +16,6 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import com.example.umc.R
 import com.google.android.material.button.MaterialButton
 
@@ -25,7 +25,6 @@ class SurveyPeopleFragment : Fragment() {
     private var selectedButton: MaterialButton? = null  // 단 하나의 버튼만 선택 가능
     private lateinit var progressBar: ProgressBar
     private var progressValue = 50  // SurveyDiseaseFragment에서 증가된 값 유지
-    private val viewModel: SurveyViewModel by activityViewModels() // ✅ ViewModel 연동
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -66,7 +65,6 @@ class SurveyPeopleFragment : Fragment() {
         // "다음 버튼" 클릭 시 선택 여부 확인 후 이동
         nextButton.setOnClickListener {
             if (selectedButton != null) {
-                saveGenderToViewModel() // ✅ 선택한 성별을 ViewModel에 저장
                 updateProgressBar()
                 goToSurveyYearFragment()
             } else {
@@ -80,12 +78,6 @@ class SurveyPeopleFragment : Fragment() {
         }
 
         return view
-    }
-
-    // ✅ 선택한 성별을 ViewModel에 저장하는 메서드
-    private fun saveGenderToViewModel() {
-        val selectedGender = selectedButton?.text.toString()
-        viewModel.updateSurveyData(viewModel.surveyData.value!!.copy(gender = selectedGender))
     }
 
     // 버튼 하나만 선택되도록 설정

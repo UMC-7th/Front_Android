@@ -1,4 +1,4 @@
-11115# Front
+# Front
 
 ## <UMC 7th - 팀 이거먹자>
 

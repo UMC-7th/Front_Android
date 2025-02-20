@@ -16,7 +16,6 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import com.example.umc.R
 import com.google.android.material.button.MaterialButton
 
@@ -26,8 +25,6 @@ class SurveyMealFragment : Fragment() {
     private val selectedButtons = mutableSetOf<MaterialButton>()
     private lateinit var progressBar: ProgressBar
     private var progressValue = 10  // SurveyGoalFragment에서 증가된 값 유지
-
-    private val viewModel: SurveyViewModel by activityViewModels() // ✅ ViewModel 연결
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -70,9 +67,9 @@ class SurveyMealFragment : Fragment() {
         }
 
         // "다음 버튼" 클릭 시 ProgressBar 증가 및 SurveyAllergyFragment로 이동
+        // "다음 버튼" 클릭 시 선택 여부 확인 후 이동
         nextButton.setOnClickListener {
             if (selectedButtons.isNotEmpty()) {
-                saveMealsToViewModel() // ✅ ViewModel에 데이터 저장
                 updateProgressBar()
                 goToSurveyAllergyFragment()
             } else {
@@ -82,16 +79,10 @@ class SurveyMealFragment : Fragment() {
 
         // "이전 버튼" 클릭 시 SurveyGoalFragment로 이동
         previousButton.setOnClickListener {
-            goToSurveyGoalFragment()
+            //goToSurveyGoalFragment()
         }
 
         return view
-    }
-
-    // ✅ 선택한 식사 정보를 ViewModel에 저장
-    private fun saveMealsToViewModel() {
-        val selectedMeals = selectedButtons.map { it.text.toString() } // 선택한 버튼의 텍스트 리스트
-        viewModel.updateSurveyData(viewModel.surveyData.value!!.copy(meals = selectedMeals)) // ✅ ViewModel에 저장
     }
 
     private fun updateProgressBar() {
@@ -136,7 +127,8 @@ class SurveyMealFragment : Fragment() {
         )
     }
 
-    // 이전 버튼 클릭 시
+
+    // 이게 이전 버튼인가욤?
     private fun goToSurveyGoalFragment() {
         val fragmentTransaction = requireActivity().supportFragmentManager.beginTransaction()
         fragmentTransaction.replace(R.id.survey_container, SurveyGoalFragment())
@@ -144,8 +136,16 @@ class SurveyMealFragment : Fragment() {
         fragmentTransaction.commit()
     }
 
-    // 다음 버튼 클릭 시
+//    private fun goToSurveyGoalFragment() {
+//        val fragmentTransaction = requireActivity().supportFragmentManager.beginTransaction()
+//        fragmentTransaction.replace(R.id.main_container, SurveyGoalFragment())
+//        fragmentTransaction.addToBackStack(null)
+//        fragmentTransaction.commit()
+//    }
+
+
     private fun goToSurveyAllergyFragment() {
+        // survey_container를 사용하도록 변경
         val fragmentTransaction = requireActivity().supportFragmentManager.beginTransaction()
         fragmentTransaction.replace(R.id.survey_container, SurveyAllergyFragment())
         fragmentTransaction.addToBackStack(null)

@@ -1,7 +1,6 @@
 package com.example.umc.Subscribe
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.umc.Diet.DietItem
@@ -18,11 +17,9 @@ class SubscribeDietAdapter(
         notifyDataSetChanged()
     }
 
-    private val groupedDietList = dietList.groupBy { it.mealDate }
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DietViewHolder {
         val binding = ItemDietSubBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return DietViewHolder(binding, listener)
+        return DietViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: DietViewHolder, position: Int) {
@@ -32,12 +29,11 @@ class SubscribeDietAdapter(
 
     override fun getItemCount(): Int = items.size // dietList를 items로 변경
 
-        private lateinit var items: List<DietItem> // 클래스 멤버 변수로 선언
+    inner class DietViewHolder(private val binding: ItemDietSubBinding) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(date: String, items: List<DietItem>) {
-            this.items = items // 초기화
-            binding.tvDate.text = date
-            binding.tvWeek.text = items.firstOrNull()?.week ?: ""
+        private var isBreakfastChecked = false
+        private var isLunchChecked = false
+        private var isDinnerChecked = false
 
         fun bind(dietItem: DietItem) {
             binding.tvDate.text = dietItem.date
@@ -84,11 +80,12 @@ class SubscribeDietAdapter(
         }
 
         private fun updateBackground() {
-            val isAnyChecked = items.any { it.isChecked }
+            val isAnyChecked = isBreakfastChecked || isLunchChecked || isDinnerChecked
             binding.root.setBackgroundResource(
                 if (isAnyChecked) R.drawable.bg_diet_sub_selected
                 else R.drawable.bg_diet_sub_unselected
             )
+            listener.onDietCheckedChanged(isAnyChecked)
         }
     }
 }

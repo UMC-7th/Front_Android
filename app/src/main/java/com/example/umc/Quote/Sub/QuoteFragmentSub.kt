@@ -1,66 +1,76 @@
 package com.example.umc.Quote.Sub
 
+import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.style.ForegroundColorSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.viewpager2.widget.ViewPager2
-import com.bumptech.glide.Glide
-import com.example.umc.Main.MainActivity
-import com.example.umc.R
+import com.example.pricefruit.FoodPriceReFragment
+
 import com.example.umc.databinding.FragmentQuoteSubBinding
-import com.google.android.material.tabs.TabLayout
-import com.google.android.material.tabs.TabLayoutMediator
+import com.example.umc.R
 
 class QuoteFragmentSub : Fragment() {
+
     private var _binding: FragmentQuoteSubBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var viewPager: ViewPager2
-    private lateinit var tabLayout: TabLayout
-
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // 뷰바인딩 사용하여 레이아웃을 반환
+    ): View {
         _binding = FragmentQuoteSubBinding.inflate(inflater, container, false)
+
+        // SpannableString을 사용하여 특정 텍스트 색상 변경
+        val fullText = "제철 중 과일의 시세를 순위로 확인하세요"
+        val spannableString = SpannableString(fullText)
+
+        // "과일의 시세" 텍스트의 시작과 끝 위치 찾기
+        val startIndex = fullText.indexOf("과일의 시세")
+        val endIndex = startIndex + "과일의 시세".length
+
+        // Primary_Orange1 색상 적용
+        val colorSpan = ForegroundColorSpan(resources.getColor(R.color.Primary_Orange1))
+        spannableString.setSpan(
+            colorSpan,
+            startIndex,
+            endIndex,
+            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+
+        // 변경된 텍스트를 TextView에 설정
+        binding.textView36.text = spannableString
+
+        // 바나나 이미지 클릭 이벤트
+        binding.banana.setOnClickListener {
+            // 현재 Fragment에서 다른 Fragment로 전환
+            val fragmentTransaction = parentFragmentManager.beginTransaction()
+
+            // 새로운 Fragment 생성
+            val foodPriceFragment = FoodPriceReFragment()
+
+            // Fragment 교체
+            fragmentTransaction.replace(R.id.main_container, foodPriceFragment)
+
+            // 백 스택에 추가 (뒤로 가기 기능을 위해)
+            fragmentTransaction.addToBackStack(null)
+
+            // 트랜잭션 실행
+            fragmentTransaction.commit()
+        }
+
+
         return binding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        viewPager = view.findViewById(R.id.viewPager)
-        tabLayout = view.findViewById(R.id.tabLayout)
-
-
-
-        // Adapter 설정
-        val pagerAdapter = TabPagerAdapter(this)
-        viewPager.adapter = pagerAdapter
-
-        // TabLayout과 ViewPager2 연동
-        TabLayoutMediator(tabLayout, viewPager) { tab, position ->
-            when (position) {
-                0 -> tab.text = "채소"
-                1 -> tab.text = "육류"
-                2 -> tab.text = "과일"
-                3 -> tab.text = "어류/수산물"
-            }
-        }.attach()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        (activity as? MainActivity)?.showTitle("제철", true)
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        _binding = null  // 뷰바인딩 참조 해제
+        _binding = null
     }
 }

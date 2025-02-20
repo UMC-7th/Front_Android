@@ -4,9 +4,6 @@ import ApiResponse
 import SubMealList
 import com.example.umc.Subscribe.SubscribeRequest.DeliveryAddressRequest
 import com.example.umc.Subscribe.SubscribeRequest.DeliveryAddressputRequest
-import com.example.umc.Subscribe.SubscribeResponse.Get.CalendarResponse
-import com.example.umc.Subscribe.SubscribeResponse.Get.DeliveryAddressGetresponse
-import com.example.umc.Subscribe.SubscribeResponse.Patch.DeliveryAddressPatchresponse
 import com.example.umc.Subscribe.SubscribeResponse.Post.DeliveryAddressresponse
 import retrofit2.Response
 import retrofit2.http.Body
@@ -30,17 +27,17 @@ interface DeliveryAddressApi {
         @Body request: DeliveryAddressRequest
     ): Response<DeliveryAddressresponse>
 
-    @PUT("api/v1/deliveryAddress/")
+    @PUT("api/v1/deliveryAddress/{addressId}")
     suspend fun updateDeliveryAddress(
         @Header("Authorization") token: String,
         @Path("addressId") addressId: String?,  // addressId를 URL 경로에 포함시킴
         @Body request: DeliveryAddressputRequest
     ): Response<DeliveryAddressresponse>
 
-    @PATCH("api/v1/deliveryAddress/default")
+    @PATCH("api/v1/deliveryAddress/default/{addressId}")
     suspend fun setDefaultDeliveryAddress(
         @Header("Authorization") token: String,
-        @Body request: DefaultDeliveryAddressRequest // ✅ Body로 전달
+        @Path("addressId") addressId: Int
     ): Response<DeliveryAddressresponse>
 
     @GET("api/v1/deliveryAddress/default")

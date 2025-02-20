@@ -16,7 +16,6 @@ import com.example.umc.SignUp.SignUpFragment
 import com.example.umc.Survey.SurveyGoalFragment
 import com.example.umc.UserApi.Response.LoginResponse
 import com.example.umc.UserApi.RetrofitClient
-import com.example.umc.UserApi.SharedPreferencesManager
 import com.example.umc.UserApi.UserRepository
 import com.example.umc.databinding.FragmentSigninBinding
 import retrofit2.Call
@@ -214,14 +213,10 @@ class LoginActivity : AppCompatActivity() {
 
                 if (response.isSuccessful) {
                     val accessToken = response.body()?.success?.accessToken
-                    val userId = response.body()?.success?.user?.userId  // userId 받아오기
 
                     if (accessToken != null) {
                         UserRepository.saveAuthToken(this@LoginActivity, accessToken)
-                        if (userId != null) {
-                            SharedPreferencesManager.saveUserId(this@LoginActivity, userId)
-                        }  // userId 저장
-                        Log.d("LoginAuthToken", "토큰과 userId가 저장되었습니다: $accessToken, $userId")
+                        Log.d("LoginAuthToken", "토큰이 저장되었습니다: $accessToken")
 
                         navigateToMain(accessToken) //코드가 중복된 같아서 이렇게 바꿨습니다.
                     } else {

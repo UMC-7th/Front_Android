@@ -77,18 +77,12 @@ class SigninPhoneFragment : Fragment() {
             } else if (isCodeValid) {
                 // 2단계: 인증확인 후 다음 Fragment로 이동
 
-//                signUpViewModel.phoneNum = binding.editText.text.toString()
-                val phoneNumber = binding.editText.text.toString()
-                val code = binding.editText2.text.toString()
+                signUpViewModel.phoneNum = binding.editText.text.toString()
 
-
-                // OTP 코드 검증
-                verifyOtpCode(phoneNumber, code)
-
-//                val transaction = requireActivity().supportFragmentManager.beginTransaction()
-//                transaction.replace(R.id.fragmentContainer, SigninInfoFragment())
-//                transaction.addToBackStack(null) // 뒤로 가기 지원
-//                transaction.commit()
+                val transaction = requireActivity().supportFragmentManager.beginTransaction()
+                transaction.replace(R.id.fragmentContainer, SigninInfoFragment())
+                transaction.addToBackStack(null) // 뒤로 가기 지원
+                transaction.commit()
             }
         }
 
@@ -149,12 +143,10 @@ class SigninPhoneFragment : Fragment() {
     private fun verifyOtpCode(phoneNumber: String, code: String) {
         lifecycleScope.launch {
             try {
-                // OTP 검증 API 호출
                 val result = signUpViewModel.verifyOtp(phoneNumber, code) // 인증번호 확인 API 호출
                 result.fold(
                     onSuccess = { response ->
                         if (response.resultType == "SUCCESS") {
-                            // 인증 성공 시, phoneNum을 ViewModel에 저장하고, 다음 화면으로 이동
                             signUpViewModel.phoneNum = phoneNumber
                             navigateToNextFragment()
                         } else {
@@ -170,7 +162,6 @@ class SigninPhoneFragment : Fragment() {
             }
         }
     }
-
 
 
 

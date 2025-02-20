@@ -1,5 +1,7 @@
 package com.example.umc.Survey
 
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
 import android.animation.ObjectAnimator
 import android.content.Intent
 import android.content.res.ColorStateList
@@ -18,7 +20,6 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import com.example.umc.AnimationFragment
 import com.example.umc.Main.MainActivity
 import com.example.umc.R
@@ -32,8 +33,6 @@ class SurveyWorkFragment : Fragment() {
     private var selectedWorkButton: MaterialButton? = null
     private var selectedExercise: String? = null
     private var handler: Handler? = null
-
-    private val viewModel: SurveyViewModel by activityViewModels() // ✅ ViewModel 연동 추가
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,6 +57,7 @@ class SurveyWorkFragment : Fragment() {
         val fullText = "현재 하시는 일과 운동 횟수를 알려주세요!"
         val spannable = SpannableString(fullText)
 
+        // "일" 하이라이트
         fullText.indexOf("일").let { startIndex ->
             if (startIndex >= 0) {
                 spannable.setSpan(
@@ -69,6 +69,7 @@ class SurveyWorkFragment : Fragment() {
             }
         }
 
+        // "운동 횟수" 하이라이트
         fullText.indexOf("운동 횟수").let { startIndex ->
             if (startIndex >= 0) {
                 spannable.setSpan(
@@ -117,7 +118,8 @@ class SurveyWorkFragment : Fragment() {
 
         nextButton.setOnClickListener {
             if (selectedWorkButton != null && selectedExercise != null) {
-                saveWorkDataToViewModel()
+                updateProgressBar()
+                showAnimationAndNavigateToMain()
             } else {
                 Toast.makeText(requireContext(), "하나의 항목을 선택해주세요.", Toast.LENGTH_SHORT).show()
             }
@@ -155,12 +157,6 @@ class SurveyWorkFragment : Fragment() {
                 setTextColor(Color.parseColor("#FF7300"))
                 strokeColor = ColorStateList.valueOf(Color.parseColor("#FF7300"))
             }
-
-            // ✅ 일을 선택하면 즉시 ViewModel에 저장
-            val selectedJob = button.text.toString()
-            viewModel.updateSurveyData(viewModel.surveyData.value!!.copy(
-                job = selectedJob
-            ))
         }
 
         updateNextButtonState()
@@ -174,15 +170,36 @@ class SurveyWorkFragment : Fragment() {
         )
     }
 
-    private fun saveWorkDataToViewModel() {
-        val selectedJob = selectedWorkButton?.text.toString()
-        val exerciseFrequency = selectedExercise?.toIntOrNull() ?: 0
+    private fun updateProgressBar() {
+        if (progressValue < 100) {
+            progressValue += 10
+            setProgressWithAnimation(progressBar, progressValue)
+        }
+    }
 
-        // ✅ "다음" 버튼을 누를 때 최신 데이터 저장
-//        viewModel.updateSurveyData(viewModel.surveyData.value!!.copy(
-//            job = selectedJob,
-//            //exerciseFrequency = exerciseFrequency
-//        ))
+    private fun setProgressWithAnimation(progressBar: ProgressBar, progress: Int) {
+        ObjectAnimator.ofInt(progressBar, "progress", progressBar.progress, progress).apply {
+            duration = 500
+            start()
+        }
+    }
+
+    private fun showAnimationAndNavigateToMain() {
+        val animationFragment = AnimationFragment()
+        animationFragment.setAnimationCompleteListener(object : AnimationFragment.AnimationCompleteListener {
+            override fun onAnimationComplete() {
+                handler?.post {
+                    val intent = Intent(requireContext(), MainActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    startActivity(intent)
+                }
+            }
+        })
+
+        requireActivity().supportFragmentManager.beginTransaction()
+            .replace(R.id.survey_container, animationFragment)
+            .addToBackStack(null)
+            .commit()
     }
 
     private fun goToSurveyBmiFragment() {

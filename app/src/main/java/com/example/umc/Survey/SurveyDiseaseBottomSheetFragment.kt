@@ -9,18 +9,16 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageButton
-import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.Fragment
 import com.example.umc.R
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.button.MaterialButton
 
-class SurveyDiseaseBottomSheetFragment(private val onSelectionDone: (List<String>) -> Unit) : BottomSheetDialogFragment() {
+class SurveyDiseaseBottomSheetFragment(private val onSelectionDone: (Boolean) -> Unit) : BottomSheetDialogFragment() {
 
     private val selectedDiseaseButtons = mutableSetOf<MaterialButton>()
     private lateinit var nextButton: Button
     private lateinit var previousButton: Button
-
-    private val viewModel: SurveyViewModel by activityViewModels() // ✅ ViewModel 연동
 
     @SuppressLint("MissingInflatedId")
     override fun onCreateView(
@@ -30,7 +28,7 @@ class SurveyDiseaseBottomSheetFragment(private val onSelectionDone: (List<String
         val view = inflater.inflate(R.layout.fragment_survey_disease_bottom_sheet, container, false)
 
         // 지병 선택 버튼들
-        val diseaseButtons = listOf(
+        val allergyButtons = listOf(
             view.findViewById<MaterialButton>(R.id.disease_diabetes),
             view.findViewById<MaterialButton>(R.id.disease_high),
             view.findViewById<MaterialButton>(R.id.disease_cancer),
@@ -47,30 +45,29 @@ class SurveyDiseaseBottomSheetFragment(private val onSelectionDone: (List<String
         nextButton.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#CDCDCD"))
 
         // 지병 선택 버튼 이벤트
-        for (button in diseaseButtons) {
+        for (button in allergyButtons) {
             button.setOnClickListener {
                 toggleDiseaseButton(button)
             }
         }
 
-        // "이전" 버튼 클릭 시 닫기
+        // "이전" 버튼 클릭 시 SurveyAllergyFragment로 이동
         previousButton.setOnClickListener {
-            dismiss()
+            dismiss()  // BottomSheet 닫기
             goToSurveyAllergyFragment()
         }
 
-        // "다음" 버튼 클릭 시 선택한 지병을 리스트로 전달
+        // "다음" 버튼 클릭 시 SurveyPeopleFragment로 이동
         nextButton.setOnClickListener {
-            val selectedDiseases = selectedDiseaseButtons.map { it.text.toString() }
-            onSelectionDone(selectedDiseases) // ✅ 리스트 전달
-            dismiss()
+            onSelectionDone(selectedDiseaseButtons.isNotEmpty()) // 선택된 항목이 있는지 전달
+            dismiss()  // BottomSheet 닫기
             goToSurveyPeopleFragment()
         }
 
-        // "X(닫기)" 버튼 클릭 시 닫기
+        // "X(닫기)" 버튼 클릭 시 SurveyDiseaseFragment로 이동
         closeButton.setOnClickListener {
-            dismiss()
-            goToSurveyDiseaseFragment()
+            dismiss() // 현재 BottomSheet 닫기
+            goToSurveyDiseaseFragment() // SurveyDiseaseFragment로 이동
         }
 
         return view
@@ -79,11 +76,13 @@ class SurveyDiseaseBottomSheetFragment(private val onSelectionDone: (List<String
     // 버튼 선택/해제 기능
     private fun toggleDiseaseButton(button: MaterialButton) {
         if (selectedDiseaseButtons.contains(button)) {
+            // 선택 해제
             button.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#F0F0F0"))
             button.setTextColor(Color.parseColor("#9A9A9A"))
             button.strokeColor = ColorStateList.valueOf(Color.parseColor("#F0F0F0"))
             selectedDiseaseButtons.remove(button)
         } else {
+            // 선택됨
             button.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#FFEAD9"))
             button.setTextColor(Color.parseColor("#FF7300"))
             button.strokeColor = ColorStateList.valueOf(Color.parseColor("#FF7300"))

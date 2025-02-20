@@ -17,7 +17,6 @@ import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import com.example.umc.R
 
 class SurveyBmiFragment : Fragment() {
@@ -27,8 +26,6 @@ class SurveyBmiFragment : Fragment() {
     private lateinit var muscleEditText: EditText
     private lateinit var fatEditText: EditText
     private var progressValue = 90  // SurveyGoalWeightFragment에서 증가된 값 유지
-
-    private val viewModel: SurveyViewModel by activityViewModels() // ✅ ViewModel 연동
 
     @SuppressLint("MissingInflatedId")
     override fun onCreateView(
@@ -85,7 +82,6 @@ class SurveyBmiFragment : Fragment() {
 
         // "다음 버튼" 클릭 시 ProgressBar 증가 및 SurveyWorkFragment로 이동
         nextButton.setOnClickListener {
-            saveBmiDataToViewModel() // ✅ 체성분 수치를 ViewModel에 저장 (추가된 코드)
             updateProgressBar()
             goToSurveyWorkFragment()
         }
@@ -96,17 +92,6 @@ class SurveyBmiFragment : Fragment() {
         }
 
         return view
-    }
-
-    // ✅ 체성분 수치를 ViewModel에 저장하는 코드 (추가된 부분)
-    private fun saveBmiDataToViewModel() {
-        val skeletalMuscleMass = muscleEditText.text.toString().toDoubleOrNull() ?: return
-        val bodyFatPercentage = fatEditText.text.toString().toDoubleOrNull() ?: return
-
-        viewModel.updateSurveyData(viewModel.surveyData.value!!.copy(
-            skeletalMuscleMass = skeletalMuscleMass,
-            bodyFatPercentage = bodyFatPercentage
-        ))
     }
 
     // 입력값 확인 함수
@@ -138,7 +123,7 @@ class SurveyBmiFragment : Fragment() {
         animator.start()
     }
 
-    // 다음 페이지
+    //다음 페이지
     private fun goToSurveyWorkFragment() {
         val fragmentTransaction = requireActivity().supportFragmentManager.beginTransaction()
         fragmentTransaction.replace(R.id.survey_container, SurveyWorkFragment())
@@ -146,7 +131,7 @@ class SurveyBmiFragment : Fragment() {
         fragmentTransaction.commit()
     }
 
-    // 이전 페이지
+    //이전 페이지
     private fun goToSurveyGoalWeightFragment() {
         val fragmentTransaction = requireActivity().supportFragmentManager.beginTransaction()
         fragmentTransaction.replace(R.id.survey_container, SurveyGoalWeightFragment())

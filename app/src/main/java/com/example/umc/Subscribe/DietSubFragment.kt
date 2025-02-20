@@ -1,5 +1,3 @@
-
-
 package com.example.umc.Subscribe
 
 import SubRepository
@@ -150,50 +148,6 @@ class DietSubFragment : Fragment(), OnDietCheckedChangeListener {
         }
     }
 
-    private fun loadDataFromServer() {
-        CoroutineScope(Dispatchers.IO).launch {
-            val token = UserRepository.getAuthToken(requireContext()) // SharedPreferences에서 토큰을 가져옴
-            try {
-                val response = RetrofitClient.subMealService.getSubMealsList("맛있는 일상 구독", "Bearer $token")
-                if (response.isSuccessful) {
-                    val data = response.body()?.success ?: emptyList()
-                    withContext(Dispatchers.Main) {
-                        val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-                        val outputFormat = SimpleDateFormat("MM.dd", Locale.getDefault())
-                        val weekFormat = SimpleDateFormat("E", Locale.KOREAN) // 요일 포맷
-
-                        dietList = data.map {
-                            val mealDate = it.mealSubs.firstOrNull()?.mealDate ?: ""
-                            val parsedDate = dateFormat.parse(mealDate)
-                            val formattedDate = if (parsedDate != null) outputFormat.format(parsedDate) else ""
-                            val weekDay = if (parsedDate != null) weekFormat.format(parsedDate) else ""
-
-                            DietItem(
-                                mealDate = formattedDate,
-                                week = weekDay,
-                                time = it.mealSubs.firstOrNull()?.time ?: "",
-                                food = it.food,
-                                isChecked = false // 초기 체크 상태 설정
-                            )
-                        }
-                        dailyDietAdapter = SubscribeDietAdapter(dietList, this@DietSubFragment)
-                        binding.recyclerDailyDiet.layoutManager = LinearLayoutManager(requireContext())
-                        binding.recyclerDailyDiet.adapter = dailyDietAdapter
-                    }
-                } else {
-                    withContext(Dispatchers.Main) {
-                        Toast.makeText(requireContext(), "서버 연결 실패: ${response.code()}", Toast.LENGTH_SHORT).show()
-                    }
-                }
-            } catch (e: Exception) {
-                withContext(Dispatchers.Main) {
-                    Toast.makeText(requireContext(), "서버 연결 중 오류 발생: ${e.message}", Toast.LENGTH_SHORT).show()
-                }
-            }
-        }
-    }
-
-
     private fun navigateToSubscribeCart() {
         parentFragmentManager.beginTransaction()
             .replace(R.id.main_container, SubscribeCart())
@@ -215,7 +169,7 @@ class DietSubFragment : Fragment(), OnDietCheckedChangeListener {
         mainActivity?.showBottomBar()
     }
 
-    override fun onDietCheckedChange(isAnyChecked: Boolean) {
+    override fun onDietCheckedChanged(isAnyChecked: Boolean) {
         val color = if (isAnyChecked) R.color.Primary_Orange1 else R.color.Gray7
         binding.btCart.setBackgroundColor(ContextCompat.getColor(requireContext(), color))
     }

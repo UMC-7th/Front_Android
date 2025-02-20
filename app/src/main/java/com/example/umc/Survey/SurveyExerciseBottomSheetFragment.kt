@@ -10,9 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageButton
-import android.widget.Toast
 import androidx.fragment.app.activityViewModels
-import com.example.umc.AnimationFragment
 import com.example.umc.Main.MainActivity
 import com.example.umc.R
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -23,8 +21,6 @@ class SurveyExerciseBottomSheetFragment(private val onSelectionDone: (String?) -
     private var selectedExerciseButton: MaterialButton? = null
     private lateinit var nextButton: Button
     private lateinit var previousButton: Button
-
-    private val viewModel: SurveyViewModel by activityViewModels() // ✅ ViewModel 연동
 
 
     @SuppressLint("MissingInflatedId")
@@ -68,19 +64,12 @@ class SurveyExerciseBottomSheetFragment(private val onSelectionDone: (String?) -
             goToSurveyBmiFragment()
         }
 
-        // "다음" 버튼 클릭 시 운동 횟수 저장 후 서버 전송
+        // "다음" 버튼 클릭 시 선택 완료 후 BottomSheet 닫기
         nextButton.setOnClickListener {
-            if (selectedExerciseButton != null) {
-                val exerciseCount = selectedExerciseButton!!.text.toString().toIntOrNull() ?: 0
-
-                // ✅ 최신 데이터 저장 후 서버 전송
-                viewModel.updateSurveyData(viewModel.surveyData.value!!.copy(
-                    exerciseFrequency = exerciseCount
-                ))
-
-                // ✅ 최신 ViewModel 데이터를 반영한 후 서버에 전송
-                sendSurveyDataToServer()
+            selectedExerciseButton?.text?.toString()?.let { selectedExercise ->
+                onSelectionDone(selectedExercise)
             }
+            dismiss()
         }
 
         // "X(닫기)" 버튼 클릭 시 SurveyWorkFragment로 이동
@@ -107,15 +96,6 @@ class SurveyExerciseBottomSheetFragment(private val onSelectionDone: (String?) -
             button.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#FFEAD9")) // 선택된 배경
             button.setTextColor(Color.parseColor("#FF7300")) // 선택된 글씨 색
             button.strokeColor = ColorStateList.valueOf(Color.parseColor("#FF7300")) // 선택된 테두리
-
-            // ✅ 선택한 운동 횟수를 즉시 ViewModel에 반영
-            val selectedExercise = button.text.toString().toIntOrNull() ?: 0
-            viewModel.updateSurveyData(viewModel.surveyData.value!!.copy(
-                exerciseFrequency = selectedExercise
-            ))
-
-            // ✅ SurveyWorkFragment에도 선택된 값 반영
-            onSelectionDone(selectedExercise.toString())
         }
 
         // "다음 버튼" 활성화/비활성화 업데이트
@@ -130,35 +110,23 @@ class SurveyExerciseBottomSheetFragment(private val onSelectionDone: (String?) -
             ColorStateList.valueOf(Color.parseColor("#CDCDCD"))
     }
 
-    private fun sendSurveyDataToServer() {
-        viewModel.submitSurveyData(
-            isUpdate = false,
-            onSuccess = {
-                dismiss() // ✅ BottomSheet 먼저 닫기
-//                showAnimationAndNavigateToMain()
-                goToMainActivity()
-            },
-            onError = { errorMessage ->
-                Toast.makeText(requireContext(), "서버 전송 실패: $errorMessage", Toast.LENGTH_SHORT).show()
-            }
-        )
+
+    // 다음 페이지는 일단 식단으로 넘어가게 하겠습니다
+    // SurveyGoalFragment로 이동
+    private fun goToSurveyGoalFragment() {
+        val fragmentTransaction = requireActivity().supportFragmentManager.beginTransaction()
+        fragmentTransaction.replace(R.id.main_container, SurveyGoalFragment())
+        fragmentTransaction.addToBackStack(null)
+        fragmentTransaction.commit()
     }
 
-    // ✅ 애니메이션 완료 후 MainActivity로 이동
-//    private fun showAnimationAndNavigateToMain() {
-//        val animationFragment = AnimationFragment()
-//        animationFragment.setAnimationCompleteListener(object : AnimationFragment.AnimationCompleteListener {
-//            override fun onAnimationComplete() {
-//                val intent = Intent(requireContext(), MainActivity::class.java)
-//                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-//                startActivity(intent)
-//            }
-//        })
-//
-//        requireActivity().supportFragmentManager.beginTransaction()
-//            .replace(R.id.survey_container, animationFragment)
-//            .addToBackStack(null)
-//            .commit()
+//    // 다음 페잊 -> 여기도 나중에 고쳐야 됨..!
+//    // SurveyGoalFragment로 이동
+//    private fun goToSurveyGoalFragment() {
+//        val fragmentTransaction = requireActivity().supportFragmentManager.beginTransaction()
+//        fragmentTransaction.replace(R.id.main_container, SurveyGoalFragment())
+//        fragmentTransaction.addToBackStack(null)
+//        fragmentTransaction.commit()
 //    }
 
 
