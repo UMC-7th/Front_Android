@@ -62,6 +62,7 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
+    implementation(libs.protolite.well.known.types)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -125,6 +126,9 @@ dependencies {
     implementation ("com.google.android.material:material:1.11.0")
 
 
+    implementation ("androidx.browser:browser:1.5.0") // 최신 버전 사용 가능
+
+
     // Lottie
     implementation ("com.airbnb.android:lottie:5.0.2")
 
@@ -132,6 +136,9 @@ dependencies {
     implementation ("com.github.skydoves:balloon:1.4.6")
 
     //implementation ("com.kakao.sdk:v2-user:2.14.0")  // 카카오 로그인 SDK
+
+    implementation ("com.navercorp.nid:oauth:5.2.0")  // 네이버 로그인 SDK 추가
+
 
 
 
