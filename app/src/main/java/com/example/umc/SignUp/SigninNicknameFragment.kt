@@ -51,7 +51,7 @@ class SigninNicknameFragment : Fragment() {
 
             // 🔥 `purpose`가 아직 설정되지 않았다면 기본값 할당
             if (signUpViewModel.purpose.isNullOrEmpty()) {
-                signUpViewModel.purpose = "운동"
+                signUpViewModel.purpose = "체중 감량"
             }
 
             Log.d("SignUpRequest", "회원가입 요청 데이터: $signUpViewModel")

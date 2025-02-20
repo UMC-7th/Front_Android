@@ -314,7 +314,7 @@
                                 android:fontFamily="@font/pretendard_regular"
                                 android:layout_marginTop="@dimen/spacing_48"
                                 android:textColor="@color/Gray7"
-                                android:text="25/01/01 기준" />
+                                android:text="25/02/21 기준" />
 
                             <ImageView
                                 android:layout_width="50dp"
