@@ -42,10 +42,42 @@
         <LinearLayout
             android:layout_marginHorizontal="16dp"
             android:layout_marginBottom="10dp"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:orientation="horizontal"
             app:layout_constraintBottom_toBottomOf="@id/img_price_food">
+
+            <!-- 좋아요 및 싫어요 버튼 묶음 -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_horizontal"
+                android:background="@drawable/bg_like"
+                android:paddingVertical="3dp">
+
+                <!-- 좋아요 버튼 -->
+                <ImageButton
+                    android:id="@+id/bt_like"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/bt_like"
+                    android:backgroundTint="@color/transparent"/>
+
+                <!-- 싫어요 버튼 -->
+                <ImageButton
+                    android:id="@+id/bt_dislike"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/bt_unlike"
+                    android:backgroundTint="@color/transparent"/>
+            </LinearLayout>
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
             <!-- 즐겨찾기 버튼 -->
             <ImageButton
                 android:id="@+id/bt_favorite"

@@ -190,7 +190,6 @@ import com.example.umc.Subscribe.Repository.AddressRepository
 import com.example.umc.Subscribe.Repository.DeliveryAddressRepository
 import com.example.umc.Subscribe.SubscribeResponse.Get.DeliveryGetResponse
 import com.example.umc.Subscribe.SubscriptionHistoryFragment
-import com.example.umc.UserApi.SharedPreferencesManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -220,7 +219,6 @@ class SubscriptionManageFragment : Fragment() {
 
         loadCalendarData(view)  // 캘린더 데이터 로드
         loadDefaultAddress(view)
-        updateUserInfo(view)  // ✅ 사용자 정보 업데이트
     }
 
     private fun setupDetailButton(view: View) {
@@ -338,20 +336,6 @@ class SubscriptionManageFragment : Fragment() {
             }
         }
     }
-    private fun updateUserInfo(view: View) {
-        val context = requireContext()
-
-        // ✅ SharedPreferences에서 저장된 사용자 정보 가져오기
-        val userName = SharedPreferencesManager.getUserName(context) ?: "이름 없음"
-        val userPhone = SharedPreferencesManager.getUserPhoneNumber(context) ?: "전화번호 없음"
-        val userEmail = SharedPreferencesManager.getUserEmail(context) ?: "이메일 없음"
-
-        // ✅ UI 업데이트
-        view.findViewById<TextView>(R.id.tv_name_sub).text = userName
-        view.findViewById<TextView>(R.id.tv_phone_sub).text = userPhone
-        view.findViewById<TextView>(R.id.tv_email_sub).text = userEmail
-    }
-
 
     private fun navigateToHistory() {
         parentFragmentManager.beginTransaction()

@@ -1,4 +1,3 @@
-/*
 package com.example.umc.Quote
 
 import android.view.LayoutInflater
@@ -27,4 +26,3 @@ class FoodPriceAdapter(private val items: List<FoodPriceViewModel.MidQuality>) :
         }
     }
 }
-*/

@@ -1,6 +1,5 @@
 package com.example.umc.UserApi.Viewmodel
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.example.umc.UserApi.Request.SignUpRequest
 import com.example.umc.UserApi.Request.OtpRequest
@@ -22,24 +21,16 @@ class SignUpViewModel : ViewModel() {
 
     // 기존 회원가입 요청 함수
     fun sendSignUpRequest(callback: (Boolean, String) -> Unit) {
-        if (email.isNullOrEmpty() || password.isNullOrEmpty() || birth.isNullOrEmpty() ||
-            name.isNullOrEmpty() || phoneNum.isNullOrEmpty()) {
-
-            Log.e("SignUpViewModel", "회원가입 데이터 누락됨")
-            callback(false, "회원가입 필수 정보가 부족합니다.")
-            return
-        }
-
-        // 🔥 `purpose`가 비어있으면 기본값 설정
-        val fixedPurpose = if (purpose.isNullOrEmpty()) "기본 목적" else purpose!!
-
-        val request = SignUpRequest(email!!, password!!, birth!!, name!!, phoneNum!!, fixedPurpose)
-
-        Log.d("SignUpViewModel", "회원가입 요청 데이터: $request")  // ✅ 요청 데이터 확인 로그 추가
-
+        val request = SignUpRequest(
+            email ?: "",
+            password ?: "",
+            birth ?: "",
+            name ?: "",
+            phoneNum ?: "",
+            purpose ?: ""
+        )
         userRepository.signUp(request, callback)
     }
-
 
     // OTP 요청 함수 추가
     suspend fun requestOtp(phoneNumber: String): Result<OtpResponse> {

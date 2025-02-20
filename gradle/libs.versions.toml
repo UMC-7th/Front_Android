@@ -44,7 +44,6 @@ coil="2.7.0"
 
 # Timber
 timber = "5.0.1"
-protoliteWellKnownTypes = "18.0.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -78,7 +77,6 @@ timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }
 coil = {module = "io.coil-kt:coil", version.ref = "coil"}
 glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide" }
 glide-compiler = { module = "com.github.bumptech.glide:compiler", version.ref = "glide" }
-protolite-well-known-types = { group = "com.google.firebase", name = "protolite-well-known-types", version.ref = "protoliteWellKnownTypes" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
