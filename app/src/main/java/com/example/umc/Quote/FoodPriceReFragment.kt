@@ -64,6 +64,7 @@ class FoodPriceReFragment : Fragment() {
         // 세로 RecyclerView 설정
         val recyclerView: RecyclerView = binding.findViewById(R.id.recyclerView)
         recyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
+/*
 
         // itemList를 실제 과일 이름으로 변경
         val itemList = listOf(
@@ -74,12 +75,13 @@ class FoodPriceReFragment : Fragment() {
             FoodItem("귤", "16,000원", "1kg", "https://example.com/tangerine.jpg",""),
             FoodItem("수박", "22,000원", "1개", "https://example.com/watermelon.jpg","")
         )
+*//*
 
         // 이 Fragment에서 RecyclerView에 Adapter 설정
         recyclerView.adapter = GridRecyclerViewAdapter(itemList, this)  // 'this'는 현재 Fragment를 가리킴
 
 
-
+*/
 
         return binding
     }

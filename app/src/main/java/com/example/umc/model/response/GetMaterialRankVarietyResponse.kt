@@ -10,6 +10,7 @@ data class GetMaterialRankVarietyData(
     val itemId: Int,
     val materialId: Int,
     val name: String,
+    val delta: Double,
     val unit: String,
     val variety: Variety
 )

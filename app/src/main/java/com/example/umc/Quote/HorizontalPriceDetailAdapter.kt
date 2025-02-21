@@ -41,24 +41,22 @@ class HorizontalPriceDetailAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val foodItem = itemList[position]
-        holder.itemPrice.text = foodItem.price
-        holder.itemText.text = foodItem.name
+        holder.itemPrice.text = foodItem.price  // 가격을 표시
+        holder.itemText.text = foodItem.name  // 품목명 표시
 
-        // Use loadMaterialImage to load the image
+        // 이미지 로드를 위한 함수 호출
         loadMaterialImage(foodItem.name, holder.itemImage)
     }
-
 
     override fun getItemCount(): Int {
         return if (itemList.size > 5) 5 else itemList.size
     }
 
-
-    // Function to load images dynamically using the food name
+    // 이미지 동적으로 로드하는 함수
     private fun loadMaterialImage(foodName: String, imageView: ImageView) {
         imageView.setImageDrawable(null)
 
-        // Network call to fetch image URL
+        // 네트워크 호출로 이미지 URL 가져오기
         fragment.lifecycleScope.launch {
             try {
                 val response = RetrofitClient.imageApiService.getMaterialImage(foodName)
@@ -66,10 +64,10 @@ class HorizontalPriceDetailAdapter(
                 if (response.isSuccessful) {
                     val imageUrl = response.body()?.success?.imageUrl
                     if (!imageUrl.isNullOrEmpty()) {
-                        // Load the image using Glide
+                        // Glide를 사용하여 이미지 로드
                         Glide.with(fragment.requireContext())
                             .load(imageUrl)
-                            .into(imageView)  // Set the image into the ImageView
+                            .into(imageView)  // ImageView에 이미지 설정
                         Log.d("FoodImage", "이미지 로드 성공: $imageUrl")
                     } else {
                         Log.e("FoodImage", "이미지 URL이 비어 있음")

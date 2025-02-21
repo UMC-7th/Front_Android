@@ -1,7 +1,6 @@
-package com.example.umc.Quote
+package com.example.umc.Quote.Sub
 
 import android.content.Intent
-import android.graphics.PorterDuff
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -17,10 +16,10 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
+import com.example.umc.Quote.FoodPriceViewModel
 import com.example.umc.R
 import com.example.umc.databinding.FragmentFoodPriceBinding
 import com.example.umc.UserApi.RetrofitClient
-import com.example.umc.model.response.KamisPriceResponse
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.Entry
@@ -28,9 +27,6 @@ import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.formatter.ValueFormatter
 import kotlinx.coroutines.launch
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
 import java.time.LocalDate
@@ -76,7 +72,7 @@ class FoodPriceFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            foodName = it.getString(ARG_FOOD_NAME)
+            foodName = it.getString(ARG_FOOD_NAME)?.split("/")?.get(0)
             foodPrice = it.getString(ARG_FOOD_PRICE)
             foodUnit = it.getString(ARG_FOOD_UNIT)
             priceRate = it.getString(ARG_PRICE_RATE)
@@ -96,14 +92,24 @@ class FoodPriceFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // 데이터 설정
+        val itemId = arguments?.getString("item_id")
+
+        itemId?.let {
+            viewModel.setSelectedItemId(it)
+            viewModel.fetchRecentlyPriceTrendList()
+        } ?: run {
+            Log.e("FoodPriceFragment", "itemId is null")
+        }
+
         binding.tvFoodName.text = foodName
         binding.tvFoodPrice.text = foodPrice
-        binding.tvFoodUnit.text = foodUnit
-        binding.tvPriceRate.text = priceRate
-        binding.tvPricePercent.text = pricePercent
-
-        // 구매 링크 버튼 클릭
+        binding.tvFoodUnit.text = "($foodUnit)"
+        binding.tvPriceRate.text = pricePercent?.toFloatOrNull().toString()
+        binding.tvPricePercent.text = (pricePercent?.toFloatOrNull() ?: 0f * 100).toString()
+        binding.tvPercent.text = (pricePercent?.toFloatOrNull() ?: 0f * 100).toString() + "%"
+        binding.tvGraphUnit.text = foodUnit
+        binding.tvGraphName.text = foodName
+        // Buy link button click
         binding.ibtBuy.setOnClickListener {
             foodName?.let { name ->
                 val encodedFoodName = URLEncoder.encode(name, StandardCharsets.UTF_8.toString())
@@ -115,39 +121,47 @@ class FoodPriceFragment : Fragment() {
             } ?: Toast.makeText(requireContext(), "상품명이 없습니다.", Toast.LENGTH_SHORT).show()
         }
 
-        // 이미지 로드 호출
+        // Load image
         if (!foodName.isNullOrEmpty()) {
             loadMaterialImage(foodName!!)
         }
 
-        viewModel.fetchRecentlyPriceTrendList()
-
-        viewModel.priceData.observe(viewLifecycleOwner, Observer { response ->
-            response?.let { kamisResponse ->
-                val prices = kamisResponse.price.mapNotNull { priceItem ->
+        viewModel.priceData.observe(viewLifecycleOwner, Observer { priceResponse ->
+            priceResponse?.let {
+                val prices = it.price.mapNotNull { priceItem ->
                     if (priceItem.yyyy == "평년") {
-                        Log.e("DateParsing", "Skipping invalid date: ${priceItem.yyyy}")
-                        return@mapNotNull null // "평년" 데이터 제외
+                        Log.e("DateParsing", "Skipping invalid year: ${priceItem.yyyy}")
+                        return@mapNotNull null // Skip "평년" data
                     }
 
-                    val formattedDate = if (priceItem.yyyy.length == 4) "${priceItem.yyyy}-01-01" else priceItem.yyyy
+                    val formattedDate =
+                        if (priceItem.yyyy.length == 4) "${priceItem.yyyy}-01-01" else priceItem.yyyy
+                    Log.d("DateParsing", "Processing date: $formattedDate")
 
                     val localDate = try {
                         LocalDate.parse(formattedDate, DateTimeFormatter.ofPattern("yyyy-MM-dd"))
                     } catch (e: DateTimeParseException) {
-                        Log.e("DateParsing", "Failed to parse date: $formattedDate", e)
-                        return@mapNotNull null // 날짜 파싱 실패 시 제외
+                        return@mapNotNull null
                     }
 
                     val d40Value = priceItem.d40.toString().toFloatOrNull() ?: 0f
+                    val d30Value = priceItem.d30.toString().toFloatOrNull() ?: 0f
+                    val d20Value = priceItem.d20.toString().toFloatOrNull() ?: 0f
+                    val d10Value = priceItem.d10.toString().toFloatOrNull() ?: 0f
+                    val d0Value = priceItem.d0.toString().toFloatOrNull() ?: 0f
 
-                    Log.d("ParsedPriceData", "Date: $formattedDate, Price: $d40Value")
-
-                    // ✅ 기존 Price 객체 대신 Pair<LocalDate, Float> 사용
-                    Pair(localDate, d40Value)
+                    if (d40Value != 0f || d30Value != 0f || d20Value != 0f || d10Value != 0f || d0Value != 0f) {
+                        return@mapNotNull Pair(localDate, d40Value)
+                    } else {
+                        return@mapNotNull null
+                    }
                 }
 
-                setChart(prices) // ✅ 이제 setChart()에 맞는 타입으로 전달됨
+                if (prices.isNotEmpty()) {
+                    setChart(prices)
+                } else {
+                    Log.e("FoodPriceFragment", "No valid price data available")
+                }
             }
         })
     }
@@ -164,7 +178,7 @@ class FoodPriceFragment : Fragment() {
                     if (!imageUrl.isNullOrEmpty()) {
                         Glide.with(requireContext())
                             .load(imageUrl)
-                            .into(binding.imgPriceFood) // 이미지 뷰에 적용
+                            .into(binding.imgPriceFood)
                         Log.d("FoodImage", "이미지 로드 성공: $imageUrl")
                     } else {
                         Log.e("FoodImage", "이미지 URL이 비어 있음")
@@ -185,12 +199,17 @@ class FoodPriceFragment : Fragment() {
     @RequiresApi(Build.VERSION_CODES.O)
     private fun setChart(prices: List<Pair<LocalDate, Float>>) {
         val lineChart: LineChart = binding.lineChart
+        lineChart.visibility = View.VISIBLE // Make sure the chart is visible
         lineChart.invalidate()
         lineChart.clear()
 
-        val entries = prices.mapIndexed { index, (date, price) ->
-            Entry(index.toFloat(), price)
-        }
+        val entries = listOf(
+            Entry(0f, prices.getOrNull(0)?.second ?: 0f),
+            Entry(1f, prices.getOrNull(1)?.second ?: 0f),
+            Entry(2f, prices.getOrNull(prices.size - 2)?.second ?: 0f),
+            Entry(3f, prices.getOrNull(prices.size - 1 )?.second ?: 0f),
+            Entry(4f, prices.getOrNull(4 )?.second ?: 0f)
+        )
 
         val lineDataSet = LineDataSet(entries, "가격 변동").apply {
             color = ContextCompat.getColor(requireContext(), R.color.Blue)
@@ -207,24 +226,25 @@ class FoodPriceFragment : Fragment() {
             setValueTextSize(9f)
         }
 
+        // XAxis에 고정된 날짜 넣기
         val xAxis = lineChart.xAxis.apply {
             position = XAxis.XAxisPosition.BOTTOM
             valueFormatter = object : ValueFormatter() {
+                // 고정된 날짜 리스트
+                private val dates = listOf("01-12", "01-22", "02-01", "02-11", "02-21")
+
                 override fun getFormattedValue(value: Float): String {
-                    return prices.getOrNull(value.toInt())?.first?.format(
-                        DateTimeFormatter.ofPattern(
-                            "MM-dd"
-                        )
-                    ) ?: ""
+                    return dates.getOrNull(value.toInt()) ?: ""
                 }
             }
-            setLabelCount(5, true)
+            setLabelCount(5, true) // 정확히 5개의 레이블 표시
             textColor = ContextCompat.getColor(requireContext(), R.color.black)
             gridColor = ContextCompat.getColor(requireContext(), R.color.black)
             labelRotationAngle = -45f
             setDrawGridLines(false)
         }
 
+        // YAxis는 가격에 맞춰서 기본 설정
         lineChart.axisLeft.setLabelCount(4, true)
         lineChart.axisRight.apply {
             setDrawLabels(false)
@@ -237,8 +257,3 @@ class FoodPriceFragment : Fragment() {
         lineChart.data = lineData
     }
 }
-
-    data class Price(
-    val dateTime: Long,
-    val price: Float
-)

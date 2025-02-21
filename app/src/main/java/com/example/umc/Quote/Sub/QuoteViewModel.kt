@@ -31,6 +31,10 @@ class QuoteViewModel : ViewModel() {
                             variety = item.variety.name,
                             name = item.name,
                             rank = (index + 1).toString(),
+                            itemId = "123",
+                            unit = "kg",
+                            price = "",
+                            delta = 10.0,
                             imgUrl = "https://example.com/default.jpg"
                         )
                     }

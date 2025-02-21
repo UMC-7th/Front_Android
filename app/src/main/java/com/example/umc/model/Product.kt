@@ -4,7 +4,9 @@ package com.example.umc.model
 data class Product(
     val id: Int,
     val name: String,
-    val price: Int,
+    val price: String,
     val unit: String,
-    val imageUrl: String
+    val imageUrl: String,
+    val itemId: String,
+    val delta: Double
 )
