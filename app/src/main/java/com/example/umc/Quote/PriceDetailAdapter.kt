@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.example.umc.Quote.Sub.FoodPriceFragment
 import com.example.umc.R
 import com.example.umc.UserApi.RetrofitClient
 import kotlinx.coroutines.launch

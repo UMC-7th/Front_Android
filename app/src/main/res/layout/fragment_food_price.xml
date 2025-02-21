@@ -21,13 +21,14 @@
 
         <ImageView
             android:id="@+id/bg_price_percent"
-            android:layout_width="wrap_content"
+            android:layout_width="80dp"
             android:layout_height="wrap_content"
             android:background="@drawable/bg_price_percent"
             app:layout_constraintStart_toStartOf="@id/img_price_food"
             app:layout_constraintTop_toTopOf="@id/img_price_food"/>
 
         <TextView
+            android:id="@+id/tv_percent"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="%d%"
@@ -195,20 +196,7 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/pretendard_bold"
-                    android:text="과일류"
-                    android:textSize="14sp" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/pretendard_bold"
-                    android:text="/"
-                    android:textSize="14sp" />
-
-                <TextView
+                    android:id="@+id/tv_graph_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/pretendard_bold"
@@ -252,6 +240,7 @@
                     android:textSize="14sp" />
 
                 <TextView
+                    android:id="@+id/tv_graph_unit"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/pretendard_bold"

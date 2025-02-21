@@ -11,8 +11,10 @@ data class GetMaterialRankAllData(
     val materialId: Int,
     val name: String,
     val unit: String,
+    val delta: Double,
     val variety: GetMaterialRankAllVariety
 )
+
 
 data class GetMaterialRankAllSuccess(
     val `data`: List<GetMaterialRankAllData>,

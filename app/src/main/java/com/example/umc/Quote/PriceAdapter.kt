@@ -31,10 +31,9 @@ class PriceAdapter(
         val productPrice: TextView = itemView.findViewById(R.id.productPrice)
 
         fun bind(product: Product) {
+            Log.d("PriceAdapter", "Delta Value: ${product.price}") // delta 값 로그로 확인
             productName.text = product.name.split("/")[0]
-            productPrice.text = "${product.price} ${product.unit}"
-
-            // 이미지 로딩
+            productPrice.text = "${product.price}원 / ${product.unit}"
             loadProductImage(product.name, productImage)
 
             itemView.setOnClickListener {

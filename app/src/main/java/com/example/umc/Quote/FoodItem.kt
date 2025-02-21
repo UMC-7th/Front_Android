@@ -5,5 +5,7 @@ data class FoodItem(
     val name: String,
     val price: String,
     val unit: String,
-    val imageUrl: String
+    val imageUrl: String,
+    val itemId: String,
+    val delta: Double
 )

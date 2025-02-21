@@ -1,4 +1,4 @@
-package com.example.umc
+package com.example.umc.Quote
 
 import android.graphics.Color
 import android.os.Bundle
@@ -15,15 +15,17 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.umc.CategoryAdapter
 import com.example.umc.Diet.DietDetailFragment
 import com.example.umc.Main.MainActivity
-import com.example.umc.Quote.FoodPriceFragment
 import com.example.umc.Quote.MaterialFavoriteFragment
 import com.example.umc.Quote.PriceAdapter
 import com.example.umc.Quote.PriceDetailFragment
 import com.example.umc.Quote.PriceViewModel
 import com.example.umc.Quote.QuoteDetailFragment
+import com.example.umc.Quote.Sub.FoodPriceFragment
 import com.example.umc.Quote.Sub.QuoteFragmentSub
+import com.example.umc.R
 import com.example.umc.databinding.FragmentPriceBinding
 import com.example.umc.model.Category
 import com.example.umc.model.Product
@@ -164,14 +166,22 @@ class PriceFragment : Fragment() {
                 false
             }
         }
+
     }
 
 
     private fun setupBestRecyclerView() {
         val priceViewModel = ViewModelProvider(this).get(PriceViewModel::class.java)
 
-        val bestAdapter = PriceAdapter(emptyList()) { product ->
-            navigateToFoodPriceFragment(product)
+        // PriceAdapter 초기화
+        val bestAdapter = PriceAdapter(emptyList()) { rankingItem ->
+            // itemId 설정
+            priceViewModel.setSelectedItemId(rankingItem.itemId) // itemId 설정
+
+            // FoodPriceFragment로 이동
+            navigateToFoodPriceFragment(rankingItem)
+
+            // 가격 트렌드 가져오
         }
 
         binding.bestRecyclerView.apply {
@@ -185,17 +195,24 @@ class PriceFragment : Fragment() {
                 Product(
                     id = rankingItem.rank.toInt(),
                     name = rankingItem.name,
-                    price = 0, // 실제 가격 데이터가 있다면 반영
-                    unit = "kg",
-                    imageUrl = rankingItem.imgUrl
+                    price = rankingItem.price, // 실제 가격 데이터 반영
+                    unit = rankingItem.unit,
+                    itemId = rankingItem.itemId,
+                    delta = rankingItem.delta,
+                    imageUrl = rankingItem.imgUrl // 가격 트렌드 가져오기
                 )
             }
+
+            // RecyclerView Adapter에 데이터 설정
             bestAdapter.updateData(productList)
         }
 
         // 데이터 가져오기
         priceViewModel.fetchHotMaterialList()
     }
+
+
+
 
     /*
 
@@ -221,7 +238,8 @@ class PriceFragment : Fragment() {
 
     private fun setupHotRecyclerView() {
         val hotProducts = listOf(
-            Product(1, "이모카세 김", 0, "kg", "")
+            Product(1, "이모카세 김", "", "", "","",0.0),
+            Product(2,"급식대가 레시피", "","","","",0.0)
         )
 
         val hotAdapter = PriceAdapter(hotProducts) { product ->
@@ -235,6 +253,7 @@ class PriceFragment : Fragment() {
                 putString("calories", product.price.toString())  // 가격을 칼로리 값으로 전달
             }
             quoteDetailFragment.arguments = bundle
+
 
             val transaction = parentFragmentManager.beginTransaction()
             transaction.replace(R.id.main_container, quoteDetailFragment)
@@ -258,7 +277,8 @@ class PriceFragment : Fragment() {
                 putString("food_name", product.name)
                 putString("food_price", product.price.toString())
                 putString("price_unit", product.unit)
-                putString("price_percent", "")
+                putString("price_percent", product.delta.toString())
+                putString("item_id", product.itemId)  // itemId 값 추가
             }
         }
 
@@ -267,6 +287,8 @@ class PriceFragment : Fragment() {
             .addToBackStack(null)
             .commit()
     }
+
+
 
 
     private fun setupListeners() {

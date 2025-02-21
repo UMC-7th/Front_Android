@@ -11,6 +11,7 @@ data class GetMaterialAllData(
     val materialId: Int,
     val name: String,
     val unit: String,
+    val delta: Double,
     val variety: GetMaterialAllVariety
 )
 
