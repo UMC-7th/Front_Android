@@ -12,8 +12,10 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import com.example.umc.Main.MainActivity
 import com.example.umc.R
+import com.example.umc.Signin.LoginActivity
 import com.example.umc.UserApi.APi.NaverLoginApi
 import com.example.umc.UserApi.Response.NaverLoginResponse
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -53,28 +55,48 @@ class NaverLoginManager(
             visibility = View.VISIBLE
             settings.javaScriptEnabled = true
             settings.domStorageEnabled = true
-            settings.useWideViewPort = true
-            settings.loadWithOverviewMode = true
 
             webViewClient = object : WebViewClient() {
                 override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
-                    Log.d("NAVER_LOGIN", "URL 로딩: $url")
-                    if (url != null && url.startsWith(REDIRECT_URI)) {
-                        handleRedirectUrl(url)
-                        return true
+                    url?.let {
+                        Log.d("NAVER_LOGIN", "URL 로딩: $it")
+
+                        // ✅ 네이버 로그인 취소 감지
+                        if (it.contains("nid.naver.com/cancel") || it.contains("intent://")) {
+                            runOnUiThread {
+                                Toast.makeText(context, "네이버 로그인이 취소되었습니다.", Toast.LENGTH_SHORT).show()
+                                navigateToLoginScreen() // ✅ 취소 시 LoginActivity로 이동
+                            }
+                            return true // WebView 로드 중단
+                        }
+
+                        // ✅ 정상적인 로그인 리디렉트 처리
+                        if (it.startsWith(REDIRECT_URI)) {
+                            handleRedirectUrl(it)
+                            return true
+                        }
                     }
                     return false
                 }
 
-                override fun onPageFinished(view: WebView?, url: String?) {
-                    super.onPageFinished(view, url)
-                    Log.d("NAVER_LOGIN", "페이지 로드 완료: $url")
+                private fun runOnUiThread(function: () -> Unit) {
+
                 }
             }
 
             loadUrl(loginUrl)
         }
     }
+
+    private fun navigateToLoginScreen() {
+        CoroutineScope(Dispatchers.Main).launch {
+            webView.visibility = View.GONE
+            val intent = Intent(context, LoginActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            context.startActivity(intent)
+        }
+    }
+
 
     // ✅ 네이버 로그인 리디렉트 URL 처리
     private fun handleRedirectUrl(url: String) {
@@ -94,6 +116,7 @@ class NaverLoginManager(
         } else {
             Log.e("NAVER_LOGIN", "🚨 인증 코드 없음!")
             Toast.makeText(context, "네이버 로그인 실패!", Toast.LENGTH_SHORT).show()
+            navigateToLoginScreen() // 로그인 실패 시 다시 로그인 화면으로 이동
         }
     }
 
