@@ -25,7 +25,7 @@ class SplashActivity : ComponentActivity() {
         // 로딩 작업을 시뮬레이션
         Handler(Looper.getMainLooper()).postDelayed({
             keepSplashOnScreen = false
-            startActivity(Intent(this, LoginActivity::class.java))
+            startActivity(Intent(this, OnboardingMainActivity::class.java))
             finish()
         }, 3000) // 3초 딜레이
     }
