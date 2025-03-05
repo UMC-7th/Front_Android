@@ -3,6 +3,9 @@ package com.example.umc.UserApi
 import android.content.Context
 import android.provider.Settings
 import android.util.Log
+import com.example.umc.BuildConfig
+import com.example.umc.BuildConfig.KAKAO_NATIVE_APP_KEY
+import com.example.umc.BuildConfig.KAKAO_REDIRECT_URI
 import com.example.umc.UserApi.APi.KakaoAuthService
 import com.example.umc.UserApi.Kakao.AuthResponse
 import com.example.umc.UserApi.Response.LoginResult
@@ -12,16 +15,18 @@ class KakaoLoginManager(
     private val context: Context
 ) {
     companion object {
-        private const val TAG = "KakaoLoginManager"  // 명시적 TAG 선언
-        private const val KAKAO_NATIVE_APP_KEY = "3467c5d19149e86652d623f529cc95c1"
-        private const val REDIRECT_URI = "http://3.38.39.238:3000/auth/kakao/callback"
+        private const val TAG = "KakaoLoginManager"
     }
+
+    // ✅ 하드코딩된 값 제거, BuildConfig 사용
+    private val kakaoNativeAppKey: String = BuildConfig.KAKAO_NATIVE_APP_KEY
+    private val redirectUri: String = BuildConfig.KAKAO_REDIRECT_URI
 
     // 카카오 로그인 인증 페이지 URL 생성
     fun getKakaoAuthUrl(): String {
         return "https://kauth.kakao.com/oauth/authorize" +
                 "?client_id=$KAKAO_NATIVE_APP_KEY" +
-                "&redirect_uri=$REDIRECT_URI" +
+                "&redirect_uri=$KAKAO_REDIRECT_URI" +
                 "&response_type=code"
     }
 

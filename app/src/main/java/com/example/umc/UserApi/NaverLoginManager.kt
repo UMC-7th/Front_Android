@@ -10,6 +10,7 @@ import android.webkit.WebViewClient
 import android.widget.Toast
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
+import com.example.umc.BuildConfig
 import com.example.umc.Main.MainActivity
 import com.example.umc.R
 import com.example.umc.Signin.LoginActivity
@@ -28,12 +29,9 @@ class NaverLoginManager(
     private val webView: WebView  // ✅ WebView를 전달받아 사용
 ) {
 
-    private val CLIENT_ID: String by lazy {
-        context.getString(R.string.naver_client_id)  // ✅ `secrets.xml`에서 값 가져오기
-    }
-    private val REDIRECT_URI: String by lazy {
-        context.getString(R.string.naver_redirect_uri)
-    }
+    // ✅ `secrets.xml` 대신 `BuildConfig`에서 가져오기
+    private val CLIENT_ID: String = BuildConfig.NAVER_CLIENT_ID
+    private val REDIRECT_URI: String = BuildConfig.NAVER_REDIRECT_URI
 
     // 네이버 로그인 URL 생성
     fun getNaverAuthUrl(): String {
