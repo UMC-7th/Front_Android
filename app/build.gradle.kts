@@ -26,6 +26,15 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        buildConfigField("String", "KAKAO_NATIVE_APP_KEY", "\"${properties["KAKAO_NATIVE_APP_KEY"]}\"")
+        buildConfigField("String", "KAKAO_REDIRECT_URI", "\"${properties["KAKAO_REDIRECT_URI"]}\"")
+
+        //naver
+        val naverClientId = properties.getProperty("NAVER_CLIENT_ID") ?: "MISSING_CLIENT_ID"
+        val naverRedirectUri = properties.getProperty("NAVER_REDIRECT_URI") ?: "MISSING_REDIRECT_URI"
+
+        buildConfigField("String", "NAVER_CLIENT_ID", "\"$naverClientId\"")
+        buildConfigField("String", "NAVER_REDIRECT_URI", "\"$naverRedirectUri\"")
     }
 
     buildTypes {
