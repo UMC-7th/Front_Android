@@ -24,12 +24,12 @@ android {
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
-
+        // kakao app key
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         buildConfigField("String", "KAKAO_NATIVE_APP_KEY", "\"${properties["KAKAO_NATIVE_APP_KEY"]}\"")
         buildConfigField("String", "KAKAO_REDIRECT_URI", "\"${properties["KAKAO_REDIRECT_URI"]}\"")
 
-        //naver
+        // naver app key
         val naverClientId = properties.getProperty("NAVER_CLIENT_ID") ?: "MISSING_CLIENT_ID"
         val naverRedirectUri = properties.getProperty("NAVER_REDIRECT_URI") ?: "MISSING_REDIRECT_URI"
 
