@@ -35,6 +35,9 @@ android {
 
         buildConfigField("String", "NAVER_CLIENT_ID", "\"$naverClientId\"")
         buildConfigField("String", "NAVER_REDIRECT_URI", "\"$naverRedirectUri\"")
+
+        buildConfigField("String", "KAMIS_CERT_KEY", "\"${properties["KAMIS_CERT_KEY"]}\"")
+        buildConfigField("String", "KAMIS_CERT_ID", "\"${properties["KAMIS_CERT_ID"]}\"")
     }
 
     buildTypes {
