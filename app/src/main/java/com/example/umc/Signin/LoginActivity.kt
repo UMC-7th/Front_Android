@@ -23,8 +23,6 @@ import com.example.umc.SignUp.SignUpFragment
 import com.example.umc.Survey.SurveyGoalFragment
 import com.example.umc.UserApi.APi.KakaoAuthService
 import com.example.umc.UserApi.Kakao.AuthResponse
-import com.example.umc.UserApi.KakaoLoginManager
-import com.example.umc.UserApi.NaverLoginManager
 import com.example.umc.UserApi.Response.LoginResponse
 import com.example.umc.UserApi.Response.LoginResult
 import com.example.umc.UserApi.RetrofitClient

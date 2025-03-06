@@ -1,4 +1,4 @@
-package com.example.umc.UserApi
+package com.example.umc.Signin
 
 import android.content.Context
 import android.content.Intent
@@ -12,8 +12,6 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import com.example.umc.BuildConfig
 import com.example.umc.Main.MainActivity
-import com.example.umc.R
-import com.example.umc.Signin.LoginActivity
 import com.example.umc.UserApi.APi.NaverLoginApi
 import com.example.umc.UserApi.Response.NaverLoginResponse
 import kotlinx.coroutines.CoroutineScope
