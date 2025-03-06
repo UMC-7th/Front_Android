@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.umc.BuildConfig
 import com.example.umc.UserApi.RetrofitClient
 import com.example.umc.model.response.GetMaterialVariety
 import com.example.umc.model.response.KamisPriceResponse
@@ -11,6 +12,8 @@ import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.text.SimpleDateFormat
+import java.util.*
 
 class PriceDetailViewModel : ViewModel() {
     val varietyMaterialList = MutableLiveData<List<FoodItem>>()
@@ -56,11 +59,13 @@ class PriceDetailViewModel : ViewModel() {
 
     // 가격을 가져오는 메서드
     private fun fetchPriceForItem(foodItem: FoodItem) {
+        val today = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
+
         val call = RetrofitClient.kamisService.getDailySalesList(
             productNo = foodItem.itemId,
-            regDay = "2025-02-21", // 날짜 설정
-            certKey = "1177e9f8-8f03-45ec-9cef-318101246a8d", // 인증 키
-            certId = "rmarkdalswn@naver.com", // 인증 ID
+            regDay = today, // 오늘 날짜 (예: 2025-03-06)
+            certKey = BuildConfig.KAMIS_CERT_KEY, // `BuildConfig`를 통해 API 키 불러오기
+            certId = BuildConfig.KAMIS_CERT_ID,
             returnType = "json" // 응답 타입
         )
 
