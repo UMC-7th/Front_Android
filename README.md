@@ -6,20 +6,31 @@
 ![image](https://github.com/user-attachments/assets/9d56917b-472a-4e8b-8dec-2a82962368e5)
 
 
+<div align="center">
+
 ## 🍨 *****Contributors*****
 
-| 손주완 <br> [@vvan2](https://github.com/vvan2) | 김민주 <br> [@MINJU](https://github.com/MINJU-62) | 성규현 <br> [@dmp100](https://github.com/dmp100) | 최희원 <br> [@Choiheewon](https://github.com/heewon411) |
+| 손주완(Lead) <br> [@vvan2](https://github.com/vvan2) | 김민주 <br> [@MINJU](https://github.com/MINJU-62) | 성규현 <br> [@dmp100](https://github.com/dmp100) | 최희원 <br> [@Choiheewon](https://github.com/heewon411) |
 |:---:|:---:|:---:|:---:|
-| <img width="150" src="https://github.com/user-attachments/assets/f49b539a-f7a2-489f-a382-270155e5bbee"/> | <img width="150" src="https://github.com/user-attachments/assets/0368d3db-9463-47c8-8e49-e5ad12256024"/> | <img width="150" src="https://github.com/user-attachments/assets/daa04602-4d2d-456e-a11b-0c97509ea0c1"/> | <img width="150" src="https://github.com/user-attachments/assets/7c8d88a3-bcb6-40f9-a854-7331d7355445"/> |
+| <img width="200" src="https://github.com/user-attachments/assets/40d71434-fafc-437a-a8c9-2dcc276bc329"/> | <img width="200" src="https://github.com/user-attachments/assets/2204e157-2142-41a1-9357-5166daabb644"/> | <img width="200" src="https://github.com/user-attachments/assets/48571048-0733-41db-923f-83b97fa858ea"/> | <img width="200" src="https://github.com/user-attachments/assets/8631248c-6d9b-49f4-95f2-f956d3c22393"/> |
+|`스플래시`   `로그인`  `회원가입`<br> `애니메이션`  `알림설정` <br>   `내 정보관리` `장바구니` <br> `결제` `시세/상세페이지` | `식단/오늘`  `식단 등록내역` <br> `수동등록` `식재료 시세`<br> `식단 레시피`  `맛있는 일상 구독` <br> `즐겨찾기`  | `식단/월간`  `시세/메인` <br> `구독관리`  `구독내역` <br> `구독식단조회`    | `온보딩` `설문조사` <br> `주소록 관리`|
 
+</div>
 
 
 <br/>
 
+<div align="center">
+
 ## 🟨 *****SCREENSHOT*****
-| 온보딩,로그인 | 설문조사 | 식단 | 시세 | 구독 | 마이 |
-|:---:|:---:|:---:|:---:|:---:|:---:|
-| <img width="200" src="https://github.com/user-attachments/assets/c43c2fec-6e2a-459f-9b71-3637db952e83"/> | <img width="200" src="https://github.com/user-attachments/assets/e3731a75-dee7-435b-8f86-b7325acaa921"/> | <img width="200" src="https://github.com/user-attachments/assets/ac7c9ee3-0a1b-415f-be58-14e33da43123"/> | <img width="200" src="https://github.com/user-attachments/assets/bd749f82-3427-4b4e-83f1-18e468ed5508"/> | <img width="200" src="https://github.com/user-attachments/assets/d94119f8-afb6-4ecd-b30e-d5286c632cd1"/> | <img width="200" src="https://github.com/user-attachments/assets/fd0df426-9ee2-4cc6-b04d-57dd5ab6c5e7"/> |
+| 온보딩,로그인 | 설문조사 | 식단 |
+|:---:|:---:|:---:|
+| <img width="200" src="https://github.com/user-attachments/assets/c43c2fec-6e2a-459f-9b71-3637db952e83"/> | <img width="200" src="https://github.com/user-attachments/assets/e3731a75-dee7-435b-8f86-b7325acaa921"/> | <img width="200" src="https://github.com/user-attachments/assets/ac7c9ee3-0a1b-415f-be58-14e33da43123"/> |
+| 시세 | 구독 | 마이 |
+| <img width="200" src="https://github.com/user-attachments/assets/bd749f82-3427-4b4e-83f1-18e468ed5508"/> | <img width="200" src="https://github.com/user-attachments/assets/d94119f8-afb6-4ecd-b30e-d5286c632cd1"/> | <img width="200" src="https://github.com/user-attachments/assets/fd0df426-9ee2-4cc6-b04d-57dd5ab6c5e7"/> |
+
+</div>
+
 <br/>
 
 
